@@ -1,3 +1,9 @@
-= keycloak: A Commodore component to manage keycloak
+= keycloak: A Commodore component to manage Keycloak
 
-{doctitle} is a Commodore component for Managing keycloak.
+This component provides a set of tuned defaults and a simplified interface to
+deploy the https://hub.helm.sh/charts/codecentric/keycloak/9.0.1[Keycloak helm
+chart] on a Syn-enabled cluster.
+
+The component defaults to provisioning a Bitnami Postgres database via the
+Keycloak helm chart, but this behavior can be overridden using the
+`keycloak.postgres` parameters exposed by the component.

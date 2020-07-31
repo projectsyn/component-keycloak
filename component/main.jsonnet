@@ -5,6 +5,43 @@ local inv = kap.inventory();
 // The hiera parameters for the component
 local params = inv.parameters.keycloak;
 
+local admin_secret = kube.Secret(params.admin.secretname) {
+  metadata+: {
+    labels+: params.labels,
+  },
+  stringData: {
+    KEYCLOAK_USER: params.admin.username,
+    KEYCLOAK_PASSWORD: params.admin.password,
+  },
+};
+
+local external_db_secret =
+  local isdummysecret =
+    if params.postgres.builtin == true then
+      {
+        'commodore.syn.tools/dummy-secret': 'Keycloak Helm chart configured to use builtin database, this secret is just a placeholder',
+      }
+    else
+      {};
+  kube.Secret(params.postgres.external.secretname) {
+    metadata+: {
+      labels+: params.labels + isdummysecret,
+    },
+    stringData:
+      if params.postgres.builtin == false then
+        {
+          DB_VENDOR: 'postgres',
+          DB_ADDR: params.postgres.external.address,
+          DB_PORT: params.postgres.external.port,
+          DB_DATABASE: params.postgres.external.database,
+          DB_USER: params.postgres.external.user,
+          DB_PASSWORD: params.postgres.external.password,
+        }
+      else {},
+  };
+
 // Define outputs below
 {
+  '10_admin_secret': admin_secret,
+  '20_external_db_secret': external_db_secret,
 }
