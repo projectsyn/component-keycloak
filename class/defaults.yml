@@ -1,0 +1,3 @@
+parameters:
+  keycloak:
+    namespace: syn-keycloak

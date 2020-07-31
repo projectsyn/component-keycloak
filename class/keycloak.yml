@@ -1,0 +1,11 @@
+parameters:
+  kapitan:
+    compile:
+      - input_paths:
+          - keycloak/component/app.jsonnet
+        input_type: jsonnet
+        output_path: apps/
+      - input_paths:
+          - keycloak/component/main.jsonnet
+        input_type: jsonnet
+        output_path: keycloak/

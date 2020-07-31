@@ -1,0 +1,3 @@
+= keycloak: A Commodore component to manage keycloak
+
+{doctitle} is a Commodore component for Managing keycloak.
