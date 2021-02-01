@@ -5,6 +5,8 @@ local inv = kap.inventory();
 // The hiera parameters for the component
 local params = inv.parameters.keycloak;
 
+local namespace = kube.Namespace(params.namespace);
+
 local admin_secret = kube.Secret(params.admin.secretname) {
   metadata+: {
     labels+: params.labels,
@@ -42,6 +44,7 @@ local external_db_secret =
 
 // Define outputs below
 {
+  '00_namespace': namespace,
   '10_admin_secret': admin_secret,
   '20_external_db_secret': external_db_secret,
 }
