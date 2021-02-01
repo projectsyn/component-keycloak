@@ -51,4 +51,4 @@ parameters:
         user: keycloak
         password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/db-password}'
     charts:
-      keycloak: '9.0.1'
+      keycloak: '9.9.0'
