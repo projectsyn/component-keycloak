@@ -1,0 +1,262 @@
+= Parameters
+
+The parent key for all of the following parameters is `keycloak`.
+
+== `namespace`
+
+[horizontal]
+type:: string
+default:: `syn-keycloak`
+
+The namespace in which to deploy this component.
+
+
+== `hostname`
+
+[horizontal]
+type:: string
+default:: `keycloak.example.com`
+
+Defines the FQDN the keycloak ingress or route object is configured.
+Hostname should be overwritten on the cluster level.
+
+
+== `admin.secretname`
+
+[horizontal]
+type:: string
+default:: `keycloak-admin-user`
+
+
+== `admin.username`
+
+[horizontal]
+type:: string
+default:: `admin`
+
+
+== `admin.password`
+
+[horizontal]
+type:: string
+default:: Vault reference
+
+A Vault reference pointing to the Vault secret containing the Keycloak admin password.
+
+It is required to pregenerate the password in Vault.
+
+[source,bash]
+----
+vault kv put -cas=0 clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak admin-password=$(pwgen -s 32 1)
+----
+
+
+== `replicas`
+
+[horizontal]
+type:: integer
+default:: 2
+
+The Keycloak pod replicas.
+Usualy two for the redundancy during the maintenance.
+
+
+== `ingress.enabled`
+
+[horizontal]
+type:: bool
+default:: `false`
+
+Create an ingress object used usually for standard Kubernetes clusters.
+
+
+== `route.enabled`
+
+[horizontal]
+type:: bool
+default:: `false`
+
+Create a route object on an OpenShift cluster.
+
+
+== `labels."app.kubernetes.io/name"`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+
+== `labels."app.kubernetes.io/instance"`
+
+[horizontal]
+type:: string
+default:: `syn-keycloak`
+
+
+== `labels."app.kubernetes.io/version"`
+
+[horizontal]
+type:: string
+default:: `v11.0.0`
+
+
+== `labels."app.kubernetes.io/component"`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+
+== `labels."app.kubernetes.io/managed-by"`
+
+[horizontal]
+type:: string
+default:: `commodore`
+
+
+== `resources.requests.memory`
+
+[horizontal]
+type:: string
+default:: `512Mi`
+
+
+== `resources.requests.cpu`
+
+[horizontal]
+type:: string
+default:: `500m`
+
+
+== `resources.limits.memory`
+
+[horizontal]
+type:: string
+default:: `1Gi`
+
+
+== `resources.limits.cpu`
+
+[horizontal]
+type:: string
+default:: `1`
+
+
+== `extraJavaOpts`
+
+[horizontal]
+type:: string
+default:: ``
+
+The extraJavaOpts can add instance specific configurations to Keycloak.
+
+Example to add a truststore configuration:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraJavaOpts: >-
+      -Djavax.net.ssl.trustStore=/opt/jboss/keycloak/standalone/configuration/test/truststore.jks
+      -Djavax.net.ssl.trustStorePassword=trustStorePass
+      -Djavax.net.ssl.trustStoreType=jks
+----
+
+Example to increase the log level:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraJavaOpts: >-
+      -Djavax.net.debug=all
+----
+
+
+== `monitoring.enabled`
+
+[horizontal]
+type:: bool
+default:: `true`
+
+Enable ServiceMonitor, PrometheusRule, and all Keycloak statistics on the metrics endpoint by default.
+
+
+== `monitoring.statistics`
+
+[horizontal]
+type:: string
+default:: `all`
+
+
+== `monitoring.rules`
+
+[horizontal]
+type:: list
+default:: `[]`
+
+
+== `postgres.builtin`
+
+[horizontal]
+type:: bool
+default:: `true`
+
+Use Bitnami Postgres installed by the Keycloak chart by default.
+
+
+== `postgres.external.secretname`
+
+[horizontal]
+type:: string
+default:: `keycloak-db-credentials`
+
+
+== `postgres.external.address`
+
+[horizontal]
+type:: string
+default:: `postgres.example.com`
+
+
+== `postgres.external.port`
+
+[horizontal]
+type:: string
+default:: `5432`
+
+
+== `postgres.external.database`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+
+== `postgres.external.user`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+
+== `postgres.external.password`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+It is required to pregenerate the password in Vault if you using an external database.
+
+[source,bash]
+----
+vault kv patch clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak db-password=$(pwgen -s 32 1)
+
+----
+
+
+== `charts.keycloak`
+
+[horizontal]
+type:: helm chart version
+default:: `9.9.0`
+
+A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
