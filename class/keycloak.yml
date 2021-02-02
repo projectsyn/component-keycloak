@@ -3,7 +3,6 @@ parameters:
     dependencies:
       - type: https
         source: https://github.com/codecentric
-        unpack: true
         output_path: dependencies/keycloak/helmcharts
     compile:
       - input_paths:
