@@ -76,6 +76,8 @@ parameters:
             rules: ${keycloak:monitoring:rules}
           postgresql:
             enabled: ${keycloak:postgres:builtin}
+            image:
+              registry: quay.io
             master:
               labels: ${keycloak:labels}
         helm_params:
