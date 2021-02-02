@@ -2,7 +2,7 @@ parameters:
   kapitan:
     dependencies:
       - type: https
-        source: 'https://github.com/codecentric/helm-charts/releases/download/keycloak-${keycloak:charts:keycloak}/keycloak-${keycloak:charts:keycloak}.tgz'
+        source: https://github.com/codecentric
         unpack: true
         output_path: dependencies/keycloak/helmcharts
     compile:
