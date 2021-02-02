@@ -21,7 +21,7 @@ local external_db_secret =
   local isdummysecret =
     if params.postgres.builtin == true then
       {
-        'commodore.syn.tools/dummy-secret': 'Keycloak Helm chart configured to use builtin database, this secret is just a placeholder',
+        'commodore.syn.tools/dummy-secret': 'true',
       }
     else
       {};
