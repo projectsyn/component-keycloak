@@ -18,12 +18,19 @@ local admin_secret = kube.Secret(params.admin.secretname) {
 };
 
 local external_db_secret =
-  if params.postgres.builtin == false then
-    kube.Secret(params.postgres.external.secretname) {
-      metadata+: {
-        labels+: params.labels,
-      },
-      stringData:
+  local isdummysecret =
+    if params.postgres.builtin == true then
+      {
+        'commodore.syn.tools/dummy-secret': 'Keycloak Helm chart configured to use builtin database, this secret is just a placeholder',
+      }
+    else
+      {};
+  kube.Secret(params.postgres.external.secretname) {
+    metadata+: {
+      labels+: params.labels + isdummysecret,
+    },
+    stringData:
+      if params.postgres.builtin == false then
         {
           DB_VENDOR: 'postgres',
           DB_ADDR: params.postgres.external.address,
@@ -32,11 +39,12 @@ local external_db_secret =
           DB_USER: params.postgres.external.user,
           DB_PASSWORD: params.postgres.external.password,
         }
-    };
+      else {},
+  };
 
 // Define outputs below
 {
   '00_namespace': namespace,
   '10_admin_secret': admin_secret,
-  [if external_db_secret != null then '20_external_db_secret']: external_db_secret,
+  '20_external_db_secret': external_db_secret,
 }
