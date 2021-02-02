@@ -50,8 +50,6 @@ parameters:
           extraEnvFrom: |
             - secretRef:
                 name: ${keycloak:admin:secretname}
-            - secretRef:
-                name: ${keycloak:postgres:external:secretname}
           serviceAccount:
             labels: ${keycloak:labels}
           ingress:
