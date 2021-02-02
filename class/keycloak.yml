@@ -1,7 +1,9 @@
 parameters:
   kapitan:
     dependencies:
-      - type: https
+      - type: helm
+        chart_name: keyclaok
+        version: ${keycloak:charts:keycloak}
         source: https://github.com/codecentric
         output_path: dependencies/keycloak/helmcharts
     compile:
