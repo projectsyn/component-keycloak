@@ -19,7 +19,7 @@ local admin_secret = kube.Secret(params.admin.secretname) {
 
 local external_db_secret =
   local isdummysecret =
-    if params.postgres.builtin == true then
+    if params.postgres.builtin then
       {
         'commodore.syn.tools/dummy-secret': 'true',
       }
@@ -30,7 +30,7 @@ local external_db_secret =
       labels+: params.labels + isdummysecret,
     },
     stringData:
-      if params.postgres.builtin == false then
+      if !params.postgres.builtin then
         {
           DB_VENDOR: 'postgres',
           DB_ADDR: params.postgres.external.address,
