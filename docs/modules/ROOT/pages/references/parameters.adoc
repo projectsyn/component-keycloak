@@ -212,7 +212,7 @@ type:: list
 default:: `[]`
 
 
-== `postgres.builtin`
+== `database.builtin`
 
 [horizontal]
 type:: bool
@@ -221,42 +221,49 @@ default:: `true`
 Use Bitnami Postgres installed by the Keycloak chart by default.
 
 
-== `postgres.external.secretname`
+== `database.external.secretname`
 
 [horizontal]
 type:: string
 default:: `keycloak-db-credentials`
 
 
-== `postgres.external.address`
+== `database.external.vendor`
+
+[horizontal]
+type:: string
+default:: `postgres`
+
+
+== `database.external.host`
 
 [horizontal]
 type:: string
 default:: `postgres.example.com`
 
 
-== `postgres.external.port`
+== `database.external.port`
 
 [horizontal]
 type:: string
 default:: `5432`
 
 
-== `postgres.external.database`
+== `database.external.database`
 
 [horizontal]
 type:: string
 default:: `keycloak`
 
 
-== `postgres.external.user`
+== `database.external.username`
 
 [horizontal]
 type:: string
 default:: `keycloak`
 
 
-== `postgres.external.password`
+== `database.external.password`
 
 [horizontal]
 type:: string

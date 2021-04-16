@@ -19,25 +19,25 @@ local admin_secret = kube.Secret(params.admin.secretname) {
 
 local external_db_secret =
   local isdummysecret =
-    if params.postgres.builtin then
+    if params.database.builtin then
       {
         'commodore.syn.tools/dummy-secret': 'true',
       }
     else
       {};
-  kube.Secret(params.postgres.external.secretname) {
+  kube.Secret(params.database.external.secretname) {
     metadata+: {
       labels+: params.labels + isdummysecret,
     },
     stringData:
-      if !params.postgres.builtin then
+      if !params.database.builtin then
         {
-          DB_VENDOR: 'postgres',
-          DB_ADDR: params.postgres.external.address,
-          DB_PORT: params.postgres.external.port,
-          DB_DATABASE: params.postgres.external.database,
-          DB_USER: params.postgres.external.user,
-          DB_PASSWORD: params.postgres.external.password,
+          DB_VENDOR: params.database.external.vendor,
+          DB_ADDR: params.database.external.host,
+          DB_PORT: params.database.external.port,
+          DB_DATABASE: params.database.external.database,
+          DB_USER: params.database.external.username,
+          DB_PASSWORD: params.database.external.password,
         }
       else {},
   };

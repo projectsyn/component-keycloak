@@ -44,14 +44,15 @@ parameters:
       statistics: all
       rules: []
     # Use Bitnami Postgres installed by the Keycloak chart by default
-    postgres:
+    database:
       builtin: true
       external:
         secretname: keycloak-db-credentials
-        address: postgres.example.com
+        vendor: postgres
+        host: postgres.example.com
         port: 5432
         database: keycloak
-        user: keycloak
+        username: keycloak
         password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/db-password}'
     helm_values:
       replicas: ${keycloak:replicas}
@@ -84,7 +85,7 @@ parameters:
         - secretRef:
             name: ${keycloak:admin:secretname}
         - secretRef:
-            name: ${keycloak:postgres:external:secretname}
+            name: ${keycloak:database:external:secretname}
       serviceAccount:
         labels: ${keycloak:labels}
       ingress:
@@ -110,7 +111,7 @@ parameters:
         labels: ${keycloak:labels}
         rules: ${keycloak:monitoring:rules}
       postgresql:
-        enabled: ${keycloak:postgres:builtin}
+        enabled: ${keycloak:database:builtin}
         image:
           registry: quay.io
         master:
