@@ -11,6 +11,24 @@ default:: `syn-keycloak`
 The namespace in which to deploy this component.
 
 
+== `release_name`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+Usually there is just one deployment and therefore no change is required.
+
+
+== `charts.keycloak`
+
+[horizontal]
+type:: helm chart version
+default:: `9.9.1`
+
+A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
+
+
 == `hostname`
 
 [horizontal]
@@ -252,10 +270,15 @@ vault kv patch clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak db-password=$(pwg
 ----
 
 
-== `charts.keycloak`
+== `helm_values`
 
 [horizontal]
-type:: helm chart version
-default:: `9.9.1`
+type:: dict
+default::
++
+[source,yaml]
+----
+----
 
-A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
+All helm_values are passed to the helm chart.
+This allows to configure all https://github.com/codecentric/helm-charts/tree/keycloak-9.1.1/charts/keycloak#configuration[keycloak helm chart values].
