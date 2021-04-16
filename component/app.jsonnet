@@ -6,5 +6,5 @@ local argocd = import 'lib/argocd.libjsonnet';
 local app = argocd.App('keycloak', params.namespace);
 
 {
-  'keycloak': app,
+  keycloak: app,
 }

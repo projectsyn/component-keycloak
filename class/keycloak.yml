@@ -1,5 +1,11 @@
 parameters:
   kapitan:
+    dependencies:
+      - type: helm
+        chart_name: keycloak
+        version: ${keycloak:charts:keycloak}
+        source: https://codecentric.github.io/helm-charts
+        output_path: dependencies/keycloak/helmcharts/keycloak
     compile:
       - input_paths:
           - keycloak/component/app.jsonnet
@@ -9,3 +15,73 @@ parameters:
           - keycloak/component/main.jsonnet
         input_type: jsonnet
         output_path: keycloak/
+      - output_path: keycloak/01_keycloak_helmchart
+        input_type: helm
+        output_type: yaml
+        input_paths:
+          - keycloak/helmcharts/keycloak
+        helm_values:
+          replicas: ${keycloak:replicas}
+          statefulsetLabels: ${keycloak:labels}
+          resources: ${keycloak:resources}
+          # extraEnv *MUST* be a string, as it's fed through a templating
+          # function.
+          extraEnv: |
+            - name: JAVA_OPTS
+              value: >-
+                        -XX:+UseContainerSupport
+                        -XX:MaxRAMPercentage=50.0
+                        -Djava.net.preferIPv4Stack=true
+                        -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS
+                        -Djava.awt.headless=true
+                        ${keycloak:extraJavaOpts}
+            - name: KEYCLOAK_STATISTICS
+              value: ${keycloak:monitoring:statistics}
+            - name: JGROUPS_DISCOVERY_PROTOCOL
+              value: dns.DNS_PING
+            - name: JGROUPS_DISCOVERY_PROPERTIES
+              value: 'dns_query={{ include "keycloak.serviceDnsName" . }}'
+            - name: CACHE_OWNERS_COUNT
+              value: "${keycloak:replicas}"
+            - name: CACHE_OWNERS_AUTH_SESSIONS_COUNT
+              value: "${keycloak:replicas}"
+            - name: PROXY_ADDRESS_FORWARDING
+              value: "true"
+          extraEnvFrom: |
+            - secretRef:
+                name: ${keycloak:admin:secretname}
+            - secretRef:
+                name: ${keycloak:postgres:external:secretname}
+          serviceAccount:
+            labels: ${keycloak:labels}
+          ingress:
+            enabled: ${keycloak:ingress:enabled}
+            labels: ${keycloak:labels}
+            rules:
+              - host: ${keycloak:hostname}
+                paths: ["/"]
+            tls:
+              - hosts:
+                  - ${keycloak:hostname}
+          route:
+            enabled: ${keycloak:route:enabled}
+            labels: ${keycloak:labels}
+            host: ${keycloak:hostname}
+          service:
+            labels: ${keycloak:labels}
+          serviceMonitor:
+            enabled: ${keycloak:monitoring:enabled}
+            labels: ${keycloak:labels}
+          prometheusRule:
+            enabled: ${keycloak:monitoring:enabled}
+            labels: ${keycloak:labels}
+            rules: ${keycloak:monitoring:rules}
+          postgresql:
+            enabled: ${keycloak:postgres:builtin}
+            image:
+              registry: quay.io
+            master:
+              labels: ${keycloak:labels}
+        helm_params:
+          release_name: keycloak
+          namespace: '${keycloak:namespace}'

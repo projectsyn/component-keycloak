@@ -1,3 +1,54 @@
 parameters:
   keycloak:
     namespace: syn-keycloak
+    # Hostname should be overwritten on the cluster level
+    hostname: keycloak.example.com
+    # Keycloak Admin
+    admin:
+      secretname: keycloak-admin-user
+      username: admin
+      password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/admin-password}'
+    # Replica count
+    replicas: 2
+    # Ingress or Route should be enabled on the distribution level
+    ingress:
+      enabled: false
+    route:
+      enabled: false
+    # Labels can be extended in the config hierarchy by providing further
+    # entries in key `labels`.
+    labels:
+      app.kubernetes.io/name: keycloak
+      app.kubernetes.io/instance: syn-keycloak
+      app.kubernetes.io/version: v11.0.0
+      app.kubernetes.io/component: keycloak
+      app.kubernetes.io/managed-by: commodore
+    # Pod resource requests and limits
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "1Gi"
+        cpu: "1"
+    # Extra java opts are appended to the default options set in
+    # `class/keycloak.yml`.
+    extraJavaOpts: ""
+    # Enable ServiceMonitor, PrometheusRule, and all Keycloak statistics on
+    # the metrics endpoint by default.
+    monitoring:
+      enabled: true
+      statistics: all
+      rules: []
+    # Use Bitnami Postgres installed by the Keycloak chart by default
+    postgres:
+      builtin: true
+      external:
+        secretname: keycloak-db-credentials
+        address: postgres.example.com
+        port: 5432
+        database: keycloak
+        user: keycloak
+        password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/db-password}'
+    charts:
+      keycloak: '9.9.1'
