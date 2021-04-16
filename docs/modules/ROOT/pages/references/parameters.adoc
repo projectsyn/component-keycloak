@@ -29,14 +29,14 @@ default:: `9.9.1`
 A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
 
 
-== `hostname`
+== `fqdn`
 
 [horizontal]
 type:: string
 default:: `keycloak.example.com`
 
 Defines the FQDN the keycloak ingress or route object is configured.
-Hostname should be overwritten on the cluster level.
+FQDN should be overwritten on the cluster level.
 
 
 == `admin.secretname`

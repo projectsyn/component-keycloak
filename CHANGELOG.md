@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+# Changed
+
+- Rename keycloak:hostname to keycloak:fqdn([#5])
 - Make external db vendor unspecific ([#4])
 
 ## [v0.2.0]
@@ -27,3 +30,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#1]: https://github.com/projectsyn/component-keycloak/pull/1
 [#3]: https://github.com/projectsyn/component-keycloak/pull/3
 [#4]: https://github.com/projectsyn/component-keycloak/pull/4
+[#5]: https://github.com/projectsyn/component-keycloak/pull/5

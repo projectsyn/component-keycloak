@@ -4,8 +4,8 @@ parameters:
     release_name: keycloak
     charts:
       keycloak: '9.9.1'
-    # Hostname should be overwritten on the cluster level
-    hostname: keycloak.example.com
+    # FQDN should be overwritten on the cluster level
+    fqdn: keycloak.example.com
     # Keycloak Admin
     admin:
       secretname: keycloak-admin-user
@@ -92,15 +92,15 @@ parameters:
         enabled: ${keycloak:ingress:enabled}
         labels: ${keycloak:labels}
         rules:
-          - host: ${keycloak:hostname}
+          - host: ${keycloak:fqdn}
             paths: ["/"]
         tls:
           - hosts:
-              - ${keycloak:hostname}
+              - ${keycloak:fqdn}
       route:
         enabled: ${keycloak:route:enabled}
         labels: ${keycloak:labels}
-        host: ${keycloak:hostname}
+        host: ${keycloak:fqdn}
       service:
         labels: ${keycloak:labels}
       serviceMonitor:
