@@ -16,6 +16,8 @@ parameters:
     # Ingress or Route should be enabled on the distribution level
     ingress:
       enabled: false
+      annotations: {}
+      secretName: ${keycloak:fqdn}
     route:
       enabled: false
     # Labels can be extended in the config hierarchy by providing further
@@ -90,6 +92,7 @@ parameters:
         labels: ${keycloak:labels}
       ingress:
         enabled: ${keycloak:ingress:enabled}
+        annotations: ${keycloak:ingress:annotations}
         labels: ${keycloak:labels}
         rules:
           - host: ${keycloak:fqdn}
@@ -97,6 +100,7 @@ parameters:
         tls:
           - hosts:
               - ${keycloak:fqdn}
+            secretName: ${keycloak:ingress:secretName}
       route:
         enabled: ${keycloak:route:enabled}
         labels: ${keycloak:labels}

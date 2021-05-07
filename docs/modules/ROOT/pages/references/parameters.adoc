@@ -88,6 +88,35 @@ default:: `false`
 Create an ingress object used usually for standard Kubernetes clusters.
 
 
+== `ingress.annotations`
+
+[horizontal]
+type:: dict
+default:: `{}`
+
+Define annotations for the ingress object.
+
+This allows an automatic ACME based certificate creation via cert-manager:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    ingress:
+      annotations:
+        kubernetes.io/tls-acme: 'true'
+        cert-manager.io/cluster-issuer: letsencrypt-production
+----
+
+
+== `ingress.secretName`
+
+[horizontal]
+type:: string
+default:: `${keycloak:fqdn}`
+
+Allows overwriting the default TLS secret name of `${keycloak:fqdn}`.
+
+
 == `route.enabled`
 
 [horizontal]
