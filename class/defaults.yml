@@ -3,7 +3,7 @@ parameters:
     namespace: syn-keycloak
     release_name: keycloak
     charts:
-      keycloak: '10.3.0'
+      keycloak: '10.3.1'
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Keycloak Admin
