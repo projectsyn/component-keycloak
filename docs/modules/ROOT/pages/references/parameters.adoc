@@ -24,7 +24,7 @@ Usually there is just one deployment and therefore no change is required.
 
 [horizontal]
 type:: helm chart version
-default:: `10.3.0`
+default:: `10.3.1`
 
 A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
 
@@ -317,4 +317,4 @@ default::
 ----
 
 All helm_values are passed to the helm chart.
-This allows to configure all https://github.com/codecentric/helm-charts/tree/keycloak-10.3.0/charts/keycloak#configuration[keycloak helm chart values].
+This allows to configure all https://github.com/codecentric/helm-charts/tree/keycloak-10.3.1/charts/keycloak#configuration[keycloak helm chart values].
