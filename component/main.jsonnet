@@ -17,6 +17,15 @@ local admin_secret = kube.Secret(params.admin.secretname) {
   },
 };
 
+local keycloak_postgresql_secret = kube.Secret(params.database.existingSecret) {
+  metadata+: {
+    labels+: params.labels,
+  },
+  stringData: {
+    'postgresql-password': params.database.postgresqlPassword,
+  },
+};
+
 local external_db_secret =
   local isdummysecret =
     if params.database.builtin then
@@ -47,4 +56,5 @@ local external_db_secret =
   '00_namespace': namespace,
   '10_admin_secret': admin_secret,
   '20_external_db_secret': external_db_secret,
+  [if params.database.builtin then '20_keycloak_postgresql_secret']: keycloak_postgresql_secret,
 }

@@ -250,6 +250,29 @@ default:: `true`
 Use Bitnami Postgres installed by the Keycloak chart by default.
 
 
+== `database.existingSecret`
+
+[horizontal]
+type:: bool
+default:: `keycloak-postgresql`
+
+
+== `database.postgresqlPassword`
+
+[horizontal]
+type:: string
+default:: Vault reference
+
+A Vault reference pointing to the Vault secret containing the Keycloak database user password.
+
+It is required to pregenerate the password in Vault.
+
+[source,bash]
+----
+vault kv put -cas=0 clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak db-password=$(pwgen -s 32 1)
+----
+
+
 == `database.external.secretname`
 
 [horizontal]

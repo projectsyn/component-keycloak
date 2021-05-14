@@ -48,6 +48,8 @@ parameters:
     # Use Bitnami Postgres installed by the Keycloak chart by default
     database:
       builtin: true
+      existingSecret: keycloak-postgresql
+      postgresqlPassword: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/db-password}'
       external:
         secretname: keycloak-db-credentials
         vendor: postgres
@@ -116,6 +118,7 @@ parameters:
         rules: ${keycloak:monitoring:rules}
       postgresql:
         enabled: ${keycloak:database:builtin}
+        existingSecret: ${keycloak:database:existingSecret}
         image:
           registry: quay.io
         master:
