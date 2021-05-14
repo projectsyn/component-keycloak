@@ -272,6 +272,15 @@ It is required to pregenerate the password in Vault.
 vault kv put -cas=0 clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak db-password=$(pwgen -s 32 1)
 ----
 
+To change the password after the initial setup requires the following commands:
+
+[source,bash]
+----
+kubectl -n syn-keycloak exec -ti keycloak-postgresql-0 -- sh
+PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" PGPASSWORD="<old pw>" psql
+ALTER USER keycloak WITH PASSWORD '<new pw>';
+----
+
 
 == `database.external.secretname`
 
