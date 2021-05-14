@@ -4,6 +4,9 @@ on:
     branches:
       - master
 
+env:
+  COMPONENT_NAME: keycloak
+
 jobs:
   linting:
     runs-on: ubuntu-latest
@@ -16,3 +19,16 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run ${{ matrix.command }}
         run: make ${{ matrix.command }}
+
+  # This tests just whether compilation works, not whether the output is correct.
+  compile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.COMPONENT_NAME }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: ${{ env.COMPONENT_NAME }}
+      - name: Compile component
+        run: make compile
