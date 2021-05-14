@@ -1,4 +1,5 @@
 parameters:
+  _instance: test
   kapitan:
     dependencies:
       - type: helm

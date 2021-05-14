@@ -1,4 +1,5 @@
 parameters:
+  multi_instance: true
   keycloak:
     namespace: syn-keycloak
     release_name: keycloak
@@ -8,9 +9,9 @@ parameters:
     fqdn: keycloak.example.com
     # Keycloak Admin
     admin:
-      secretname: keycloak-admin-user
+      secretname: ${_instance}-keycloak-admin-user
       username: admin
-      password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/admin-password}'
+      password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/${_instance}-admin-password}'
     # Replica count
     replicas: 2
     # Ingress or Route should be enabled on the distribution level
@@ -24,7 +25,7 @@ parameters:
     # entries in key `labels`.
     labels:
       app.kubernetes.io/name: keycloak
-      app.kubernetes.io/instance: syn-keycloak
+      app.kubernetes.io/instance: ${_instance}
       app.kubernetes.io/version: v11.0.0
       app.kubernetes.io/component: keycloak
       app.kubernetes.io/managed-by: commodore
@@ -49,13 +50,13 @@ parameters:
     database:
       builtin: true
       external:
-        secretname: keycloak-db-credentials
+        secretname: ${_instance}-keycloak-db-credentials
         vendor: postgres
         host: postgres.example.com
         port: 5432
         database: keycloak
         username: keycloak
-        password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/db-password}'
+        password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/${_instance}-db-password}'
     helm_values:
       replicas: ${keycloak:replicas}
       statefulsetLabels: ${keycloak:labels}
