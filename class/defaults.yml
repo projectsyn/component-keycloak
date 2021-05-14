@@ -2,14 +2,14 @@ parameters:
   multi_instance: true
   keycloak:
     namespace: syn-keycloak
-    release_name: keycloak
+    release_name: keycloak-${_instance}
     charts:
       keycloak: '10.3.1'
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Keycloak Admin
     admin:
-      secretname: ${_instance}-keycloak-admin-user
+      secretname: ${keycloak:release_name}-admin-user
       username: admin
       password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/${_instance}-admin-password}'
     # Replica count
@@ -48,15 +48,23 @@ parameters:
       rules: []
     # Use Bitnami Postgres installed by the Keycloak chart by default
     database:
-      builtin: true
+      provider: builtin
+
+      secretname: ${keycloak:release_name}-postgresql
+      password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/${_instance}-db-password}'
+      database: keycloak
+      username: keycloak
+
+      # For provider=external
       external:
-        secretname: ${_instance}-keycloak-db-credentials
         vendor: postgres
         host: postgres.example.com
         port: 5432
-        database: keycloak
-        username: keycloak
-        password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/${_instance}-db-password}'
+
+      # For provider=builtin
+      builtin:
+        enabled: true
+
     helm_values:
       replicas: ${keycloak:replicas}
       statefulsetLabels: ${keycloak:labels}
@@ -88,7 +96,7 @@ parameters:
         - secretRef:
             name: ${keycloak:admin:secretname}
         - secretRef:
-            name: ${keycloak:database:external:secretname}
+            name: ${keycloak:database:secretname}
       serviceAccount:
         labels: ${keycloak:labels}
       ingress:
@@ -116,7 +124,8 @@ parameters:
         labels: ${keycloak:labels}
         rules: ${keycloak:monitoring:rules}
       postgresql:
-        enabled: ${keycloak:database:builtin}
+        enabled: ${keycloak:database:builtin:enabled}
+        existingSecret: ${keycloak:database:secretname}
         image:
           registry: quay.io
         master:

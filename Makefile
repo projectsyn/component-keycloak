@@ -39,3 +39,15 @@ format_jsonnet: $(JSONNET_FILES)
 .PHONY: compile
 compile:
 	$(COMMODORE_CMD)
+
+.PHONY: test-builtin
+test-builtin: commodore_args = -f tests/builtin.yml
+test-builtin: compile ## Compile component with builtin database provider
+
+.PHONY: test-external
+test-external: commodore_args = -f tests/external.yml
+test-external: compile ## Compile component with external database provider
+
+.PHONY: clean
+clean: ## Clean the project
+	rm -rf compiled dependencies vendor helmcharts jsonnetfile*.json || true

@@ -1,5 +1,5 @@
 parameters:
-  _instance: test
+  _instance: external
   kapitan:
     dependencies:
       - type: helm
@@ -8,3 +8,9 @@ parameters:
         source: https://codecentric.github.io/helm-charts
         # Need to overwrite this path:
         output_path: /keycloak/helmcharts/keycloak/${keycloak:charts:keycloak}/
+
+  keyloak:
+    database:
+      provider: external
+      builtin:
+        enabled: false

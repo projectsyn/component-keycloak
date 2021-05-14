@@ -23,6 +23,11 @@ jobs:
   # This tests just whether compilation works, not whether the output is correct.
   compile:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        command:
+          - test-builtin
+          - test-external
     defaults:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
@@ -31,4 +36,4 @@ jobs:
         with:
           path: ${{ env.COMPONENT_NAME }}
       - name: Compile component
-        run: make compile
+        run: make ${{ matrix.command }}
