@@ -5,23 +5,11 @@ SHELL := bash
 .DELETE_ON_ERROR:
 .SUFFIXES:
 
-DOCKER_CMD   ?= docker
-DOCKER_ARGS  ?= run --rm --user "$$(id -u)" -v "$${PWD}:/component" --workdir /component
+include Makefile.vars.mk
 
-JSONNET_FILES   ?= $(shell find . -type f -name '*.*jsonnet' -or -name '*.libsonnet')
-JSONNETFMT_ARGS ?= --in-place
-JSONNET_IMAGE   ?= docker.io/bitnami/jsonnet:latest
-JSONNET_DOCKER  ?= $(DOCKER_CMD) $(DOCKER_ARGS) --entrypoint=jsonnetfmt $(JSONNET_IMAGE)
-
-YAML_FILES      ?= $(shell find . -type f -name '*.yaml' -or -name '*.yml')
-YAMLLINT_ARGS   ?= --no-warnings
-YAMLLINT_CONFIG ?= .yamllint.yml
-YAMLLINT_IMAGE  ?= docker.io/cytopia/yamllint:latest
-YAMLLINT_DOCKER ?= $(DOCKER_CMD) $(DOCKER_ARGS) $(YAMLLINT_IMAGE)
-
-VALE_CMD  ?= $(DOCKER_CMD) $(DOCKER_ARGS) --volume "$${PWD}"/docs/modules:/pages vshn/vale:2.1.1
-VALE_ARGS ?= --minAlertLevel=error --config=/pages/ROOT/pages/.vale.ini /pages
-
+.PHONY: help
+help: ## Show this help
+	@grep -E -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = "(: ).*?## "}; {gsub(/\\:/,":", $$1)}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: all
 all: lint
@@ -47,3 +35,7 @@ format: format_jsonnet
 .PHONY: format_jsonnet
 format_jsonnet: $(JSONNET_FILES)
 	$(JSONNET_DOCKER) $(JSONNETFMT_ARGS) -- $?
+
+.PHONY: compile
+compile:
+	$(COMMODORE_CMD)

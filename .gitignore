@@ -1,1 +1,8 @@
 helmcharts
+manifests/
+.idea
+compiled/
+vendor/
+
+# Ignore generated jsonnetfile, unless we need more dependencies
+jsonnetfile*.json
