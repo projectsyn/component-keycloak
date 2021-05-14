@@ -1,0 +1,118 @@
+= Upgrade from 1.x to 2.x
+
+This guide describes the steps to perform an upgrade of the component from version 1.x to 2.x.
+
+[NOTE]
+====
+The 2.x version supports component multi-instantiation.
+As such, the instance name is now included in many generated Kubernetes resource names.
+Non-instantiated components get the instance name `keycloak`.
+====
+
+[NOTE]
+====
+Following parameters will change in the manifests:
+
+* `app.kubernetes.io/instance: syn-keycloak` -> `app.kubernetes.io/instance: keycloak` (excluding any selector labels though)
+====
+
+== Requirements
+
+* `vault`
+
+== Step-by-step
+
+. Set the release name to the same as existing instance name
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    release_name: keycloak
+----
+
+. Rename Vault secret fields
++
+[source,bash]
+----
+export VAULT_ADDR=<vault-endpoint>
+export TENANT_ID=<the-tenant-id>
+export CLUSTER_ID=<the-cluster-id>
+instance=keycloak
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
+
+vault login -method=ldap username=<firstname.lastname>
+
+admin_pass="$(vault kv get -field=admin-password ${key})"
+db_pass="$(vault kv get -field=db-password ${key})"
+
+vault kv put "${key}" ${instance}-admin-password="${admin_pass}" ${instance}-db-password="${db_pass}"
+----
++
+[WARNING]
+====
+`vault kv put` will overwrite existing fields of the same key.
+
+* If there are other fields or passwords present, use the `vault kv patch` command to not overwrite existing fields.
+* If in doubt, query the existing fields with `vault kv get <key>` first.
+====
+
+=== When using external database
+
+. Move following 4 parameters "1 level up" from here
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      # Remove this flag!
+      builtin: false
+
+      external:
+        secretname:
+        password:
+        database:
+        username:
+----
+to here
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    # Add this flag:
+    provider: external
+
+    database:
+      secretname:
+      password:
+      database:
+      username:
+
+      # Add this flag:
+      builtin:
+        enabled: false
+----
+
+=== When using built-in database
+
+. Replace parameter
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      builtin: true
+----
+with this
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      builtin:
+        enabled: true
+----

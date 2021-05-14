@@ -65,10 +65,18 @@ It is required to pregenerate the password in Vault.
 
 [source,bash]
 ----
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
 instance=keycloak
-vault kv put -cas=0 clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak ${instance}-admin-password=$(pwgen -s 32 1)
-----
 
+# Query for existing secrets first
+vault kv get "${key}"
+
+# If there are existing secrets, add your instance secrets:
+vault kv patch "${key}" ${instance}-admin-password=$(pwgen -s 32 1)
+
+# If there is no pre-existing secret, create new:
+vault kv put -cas=0 "${key}" ${instance}-admin-password=$(pwgen -s 32 1)
+----
 
 == `replicas`
 
@@ -275,8 +283,17 @@ It is required to pregenerate the password in Vault.
 
 [source,bash]
 ----
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
 instance=keycloak
-vault kv patch clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak ${instance}-db-password=$(pwgen -s 32 1)
+
+# Query for existing secrets first
+vault kv get "${key}"
+
+# If there are existing secrets, add your instance secrets:
+vault kv patch "${key}" ${instance}-db-password=$(pwgen -s 32 1)
+
+# If there is no pre-existing secret, create new:
+vault kv put -cas=0 "${key}" ${instance}-db-password=$(pwgen -s 32 1)
 ----
 
 

@@ -36,6 +36,14 @@ format: format_jsonnet ## All-in-one formatting
 format_jsonnet: $(JSONNET_FILES) ## Format jsonnet files
 	$(JSONNET_DOCKER) $(JSONNETFMT_ARGS) -- $?
 
+.PHONY: docs-serve
+docs-serve: ## Preview the documentation
+	$(ANTORA_PREVIEW_CMD)
+
+.PHONY: docs-vale
+docs-vale: ## Lint the documentation
+	$(VALE_CMD) $(VALE_ARGS)
+
 .PHONY: compile
 .compile:
 	$(COMMODORE_CMD)
