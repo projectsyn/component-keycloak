@@ -1,0 +1,30 @@
+# Use external database
+
+The following steps show how to setup keycloak with an external database.
+
+. Configure component parameters.
++
+[source,yaml]
+----
+keycloak:
+  database:
+    provider: external
+
+    # Disable built-in provider even if provider != builtin
+    builtin:
+      enabled: false
+
+    external:
+      # Required parameters
+      host: my-database-server.tld
+
+      # Optional (default) parameters
+      vendor: postgres
+      port: 5432
+
+    # only if deviating from default values:
+    database: my-database
+    username: my-username
+----
+
+. Compile the cluster catalog

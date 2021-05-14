@@ -1,2 +1,7 @@
 * xref:index.adoc[Home]
+
+.How-to guides
+* xref:how-tos/use-external-db.adoc[Use external database]
+
+.Technical reference
 * xref:references/parameters.adoc[Parameters]

@@ -15,7 +15,7 @@ The namespace in which to deploy this component.
 
 [horizontal]
 type:: string
-default:: `keycloak`
+default:: `keycloak-${_instance}`
 
 Usually there is just one deployment and therefore no change is required.
 
@@ -43,7 +43,7 @@ FQDN should be overwritten on the cluster level.
 
 [horizontal]
 type:: string
-default:: `keycloak-admin-user`
+default:: `${keycloak:release_name}-admin-user`
 
 
 == `admin.username`
@@ -65,7 +65,8 @@ It is required to pregenerate the password in Vault.
 
 [source,bash]
 ----
-vault kv put -cas=0 clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak admin-password=$(pwgen -s 32 1)
+instance=keycloak
+vault kv put -cas=0 clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak ${instance}-admin-password=$(pwgen -s 32 1)
 ----
 
 
@@ -137,7 +138,7 @@ default:: `keycloak`
 
 [horizontal]
 type:: string
-default:: `syn-keycloak`
+default:: `${_instance}`
 
 
 == `labels."app.kubernetes.io/version"`
@@ -240,21 +241,59 @@ default:: `all`
 type:: list
 default:: `[]`
 
+== `database.provider`
 
-== `database.builtin`
+[horizontal]
+type:: string
+values:: `builtin`, `external`
+default:: `builtin`
+
+
+== `database.database`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+
+== `database.username`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+
+== `database.password`
+
+[horizontal]
+type:: string
+default:: Vault reference
+
+A Vault reference pointing to the Vault secret containing the Keycloak admin password.
+
+It is required to pregenerate the password in Vault.
+
+[source,bash]
+----
+instance=keycloak
+vault kv patch clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak ${instance}-db-password=$(pwgen -s 32 1)
+----
+
+
+== `database.secretname`
+
+[horizontal]
+type:: string
+default:: `${keycloak:release_name}-postgresql`
+
+
+== `database.builtin.enabled`
 
 [horizontal]
 type:: bool
 default:: `true`
 
 Use Bitnami Postgres installed by the Keycloak chart by default.
-
-
-== `database.external.secretname`
-
-[horizontal]
-type:: string
-default:: `keycloak-db-credentials`
 
 
 == `database.external.vendor`
@@ -276,34 +315,6 @@ default:: `postgres.example.com`
 [horizontal]
 type:: string
 default:: `5432`
-
-
-== `database.external.database`
-
-[horizontal]
-type:: string
-default:: `keycloak`
-
-
-== `database.external.username`
-
-[horizontal]
-type:: string
-default:: `keycloak`
-
-
-== `database.external.password`
-
-[horizontal]
-type:: string
-default:: `keycloak`
-
-It is required to pregenerate the password in Vault if you using an external database.
-
-[source,bash]
-----
-vault kv patch clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak db-password=$(pwgen -s 32 1)
-----
 
 
 == `helm_values`
