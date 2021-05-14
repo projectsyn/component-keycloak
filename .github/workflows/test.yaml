@@ -20,14 +20,13 @@ jobs:
       - name: Run ${{ matrix.command }}
         run: make ${{ matrix.command }}
 
-  # This tests just whether compilation works, not whether the output is correct.
-  compile:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        command:
-          - test-builtin
-          - test-external
+        provider:
+          - builtin
+          - external
     defaults:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
@@ -35,5 +34,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: ${{ env.COMPONENT_NAME }}
+      - name: Determine Go version from go.mod
+        run: echo "GO_VERSION=$(grep "go 1." tests/go.mod | cut -d " " -f 2)" >> $GITHUB_ENV
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: Compile component
-        run: make ${{ matrix.command }}
+        run: make test -e provider=${{ matrix.provider }}

@@ -1,5 +1,5 @@
 parameters:
-  _instance: external
+  _instance: builtin
   kapitan:
     dependencies:
       - type: helm

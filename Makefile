@@ -48,13 +48,10 @@ docs-vale: ## Lint the documentation
 .compile:
 	$(COMMODORE_CMD)
 
-.PHONY: test-builtin
-test-builtin: commodore_args = -f tests/builtin.yml
-test-builtin: .compile ## Compile component with builtin database provider
-
-.PHONY: test-external
-test-external: commodore_args = -f tests/external.yml
-test-external: .compile ## Compile component with external database provider
+.PHONY: test
+test: commodore_args = -f tests/$(provider).yml
+test: .compile ## Test component with a provider set by "provider=..."
+	cd tests/ && go test ./$(provider)/...
 
 .PHONY: clean
 clean: ## Clean the project
