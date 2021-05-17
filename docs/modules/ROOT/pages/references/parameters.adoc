@@ -10,6 +10,11 @@ default:: `syn-${_instance}`
 
 The namespace in which to deploy this component.
 
+[IMPORTANT]
+====
+When using multiple instances for this component, each instance needs its own namespace.
+You cannot deploy multiple instance into the same namespace.
+====
 
 == `release_name`
 
