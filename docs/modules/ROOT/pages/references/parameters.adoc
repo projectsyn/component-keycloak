@@ -277,7 +277,7 @@ To change the password after the initial setup requires the following commands:
 [source,bash]
 ----
 kubectl -n syn-keycloak exec -ti keycloak-postgresql-0 -- sh
-PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" PGPASSWORD="<old pw>" psql
+PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="<old pw>" psql
 ALTER USER keycloak WITH PASSWORD '<new pw>';
 ----
 
