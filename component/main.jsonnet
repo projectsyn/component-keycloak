@@ -27,7 +27,7 @@ local secrets = {
     DB_PASSWORD: params.database.password,
     DB_VENDOR: params.database.external.vendor,
     DB_ADDR: params.database.external.host,
-    DB_PORT: params.database.external.port,
+    DB_PORT: std.toString(params.database.external.port),
   },
 };
 
