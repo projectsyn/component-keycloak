@@ -2,6 +2,7 @@
 
 .How-to guides
 * xref:how-tos/use-external-db.adoc[Use external database]
+* xref:how-tos/multi-instance.adoc[Deploy multiple instances]
 * xref:how-tos/upgrade-1.x-to-2.x.adoc[Upgrade 1.x to 2.x]
 
 .Technical reference

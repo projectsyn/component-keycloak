@@ -1,0 +1,49 @@
+= Deploy multiple instances
+
+This guide provides an example how to deploy multiple instances of this component.
+
+. Prepare catalog
++
+[source,yaml]
+----
+# Add the instances and give them a name.
+applications:
+- keycloak as keycloak-test
+- keycloak as keycloak-prod
+
+parameters:
+  # Configure the test instance with defaults and built-in database
+  keycloak_test:
+    namespace: tenant-keycloak-test
+
+  # Configure the production instance using an external database
+  keycloak_prod:
+    namespace: tenant-keycloak-prod
+    database:
+      provider: external
+      builtin:
+        enabled: false
+      external:
+        host: my-postgres-db-server.tld
+----
++
+[NOTE]
+====
+By default, the component configures the namespace with `syn-<instance-name>`.
+Using the `syn-` prefix might not be what you want when using multiple instances or when deploying Keycloak for another tenant.
+Use the `namespace` parameter to customize the namespace, but be sure that each instance gets their own namespace.
+====
+
+. Set secrets
++
+[source,bash]
+----
+parent="clusters/kv/${TENANT_ID}/${CLUSTER_ID}"
+
+vault kv put -cas=0 "${parent}/keycloak-test" admin-password=$(pwgen -s 32 1) db-password=$(pwgen -s 32 1)
+vault kv put -cas=0 "${parent}/keycloak-prod" admin-password=$(pwgen -s 32 1) db-password=<your-external-db-password>
+----
+
+. Compile the catalog
+. Wait until changes are applied
+. Verify that the instances are up and configured correctly
