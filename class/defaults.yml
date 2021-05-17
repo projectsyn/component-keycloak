@@ -28,6 +28,11 @@ parameters:
       controllerNamespace: ingress-nginx
     route:
       enabled: false
+    acmecertificate:
+      enabled: false
+      name: ${keycloak:fqdn}
+      issuer:
+        name: letsencrypt-production
     # Labels can be extended in the config hierarchy by providing further
     # entries in key `labels`.
     labels:
@@ -129,6 +134,7 @@ parameters:
         enabled: ${keycloak:ingress:enabled}
         annotations: ${keycloak:ingress:annotations}
         labels: ${keycloak:labels}
+        servicePort: https
         rules:
           - host: ${keycloak:fqdn}
             paths: ["/"]

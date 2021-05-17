@@ -73,6 +73,26 @@ local ns_patch =
     }
   );
 
+local keycloak_tls = {
+  apiVersion: 'cert-manager.io/v1alpha2',
+  kind: 'Certificate',
+  metadata: {
+    name: params.acmecertificate.name,
+    labels: params.labels,
+  },
+  spec: {
+    secretName: params.acmecertificate.name,
+    dnsNames: [
+      params.acmecertificate.name,
+    ],
+    issuerRef: {
+      name: params.acmecertificate.issuer.name,
+      kind: 'ClusterIssuer',
+      group: 'cert-manager.io',
+    },
+  },
+};
+
 // Define outputs below
 {
   '00_namespace': namespace,
@@ -80,4 +100,5 @@ local ns_patch =
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
   [if params.database.tls.enabled then '12_db_certs']: db_cert_secret,
+  [if params.acmecertificate.enabled then '13_keycloak_tls']: keycloak_tls,
 }
