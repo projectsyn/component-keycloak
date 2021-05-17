@@ -9,7 +9,7 @@ parameters:
         # Need to overwrite this path:
         output_path: /keycloak/helmcharts/keycloak/${keycloak:charts:keycloak}/
 
-  keyloak:
+  keycloak:
     database:
       provider: external
       builtin:

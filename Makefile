@@ -51,7 +51,7 @@ docs-vale: ## Lint the documentation
 .PHONY: test
 test: commodore_args = -f tests/$(provider).yml
 test: .compile ## Test component with a provider set by "provider=..."
-	cd tests/ && go test ./$(provider)/...
+	cd tests/ && go test ./$(provider)/... -count=1
 
 .PHONY: clean
 clean: ## Clean the project

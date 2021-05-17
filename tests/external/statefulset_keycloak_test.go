@@ -16,14 +16,11 @@ func Test_Keycloak_StatefulSet_Secrets(t *testing.T) {
 	require.NotEmpty(t, subject.Spec.Template.Spec.Containers[0].EnvFrom)
 
 	env := subject.Spec.Template.Spec.Containers[0].Env
-	index := -1
-	for i, v := range env {
+	for _, v := range env {
 		if v.Name == "DB_PASSWORD" {
-			index = i
+			assert.NotEqual(t, "DB_PASSWORD", v.Name)
 		}
 	}
-	assert.GreaterOrEqual(t, index, 0)
-	assert.Equal(t, expectedDbSecretName, env[index].ValueFrom.SecretKeyRef.Name)
 
 	envFrom := subject.Spec.Template.Spec.Containers[0].EnvFrom
 	assert.Equal(t, expectedDbSecretName, envFrom[1].SecretRef.Name)
