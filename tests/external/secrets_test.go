@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	expectedDbSecretName = "keycloak-external-postgresql"
+	expectedDbSecretName = "external-postgresql"
 	testPath             = "../../compiled/keycloak/keycloak/external"
 )
 
@@ -22,5 +22,5 @@ func Test_Database_Secret_DefaultParameters(t *testing.T) {
 
 	data := subject.StringData
 	assert.Len(t, data, 1)
-	assert.Equal(t, "t-silent-test-1234/c-green-test-1234/keycloak/external-db-password", data["postgresql-password"])
+	assert.Equal(t, "t-silent-test-1234/c-green-test-1234/external/db-password", data["postgresql-password"])
 }

@@ -19,43 +19,9 @@ Following parameters will change in the manifests:
 == Requirements
 
 * `vault`
+* `commodore`
 
-== Step-by-step
-
-. Set the release name to the same as existing instance name
-+
-[source,yaml]
-----
-parameters:
-  keycloak:
-    release_name: keycloak
-----
-
-. Rename Vault secret fields
-+
-[source,bash]
-----
-export VAULT_ADDR=<vault-endpoint>
-export TENANT_ID=<the-tenant-id>
-export CLUSTER_ID=<the-cluster-id>
-instance=keycloak
-key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
-
-vault login -method=ldap username=<firstname.lastname>
-
-admin_pass="$(vault kv get -field=admin-password ${key})"
-db_pass="$(vault kv get -field=db-password ${key})"
-
-vault kv put "${key}" ${instance}-admin-password="${admin_pass}" ${instance}-db-password="${db_pass}"
-----
-+
-[WARNING]
-====
-`vault kv put` will overwrite existing fields of the same key.
-
-* If there are other fields or passwords present, use the `vault kv patch` command to not overwrite existing fields.
-* If in doubt, query the existing fields with `vault kv get <key>` first.
-====
+== Step-by-step guide
 
 === When using external database
 
@@ -90,9 +56,9 @@ parameters:
       database:
       username:
 
-      # Add this flag:
-      builtin:
-        enabled: false
+    # Add this flag:
+    builtin:
+      enabled: false
 ----
 
 === When using built-in database
@@ -115,4 +81,37 @@ parameters:
     database:
       builtin:
         enabled: true
+----
+
+. Set a new explicit database password in Vault
++
+[source,bash]
+----
+export VAULT_ADDR=<vault-endpoint>
+export TENANT_ID=<the-tenant-id>
+export CLUSTER_ID=<the-cluster-id>
+instance=keycloak
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/${instance}"
+
+vault login -method=ldap username=<firstname.lastname>
+
+db_pass=$(pwgen -s 32 1)
+
+vault kv patch "${key}" db-password=${db_pass}
+----
+
+. Compile and push the cluster catalog
+
+. Wait until changes are applied
+
+. Change database password in PostgreSQL
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti "${instance}-postgresql-0" -- sh
+PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="keycloak" psql
+ALTER USER keycloak WITH PASSWORD '<new-pw-from-above>';
 ----

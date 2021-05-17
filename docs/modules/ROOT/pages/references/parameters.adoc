@@ -6,7 +6,7 @@ The parent key for all of the following parameters is `keycloak`.
 
 [horizontal]
 type:: string
-default:: `syn-keycloak`
+default:: `syn-${_instance}`
 
 The namespace in which to deploy this component.
 
@@ -15,7 +15,7 @@ The namespace in which to deploy this component.
 
 [horizontal]
 type:: string
-default:: `keycloak-${_instance}`
+default:: `${_instance}`
 
 Usually there is just one deployment and therefore no change is required.
 
@@ -65,17 +65,18 @@ It is required to pregenerate the password in Vault.
 
 [source,bash]
 ----
-key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
+# Adjust to your environment
 instance=keycloak
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/${instance}"
 
 # Query for existing secrets first
 vault kv get "${key}"
 
 # If there are existing secrets, add your instance secrets:
-vault kv patch "${key}" ${instance}-admin-password=$(pwgen -s 32 1)
+vault kv patch "${key}" admin-password=$(pwgen -s 32 1)
 
 # If there is no pre-existing secret, create new:
-vault kv put -cas=0 "${key}" ${instance}-admin-password=$(pwgen -s 32 1)
+vault kv put -cas=0 "${key}" admin-password=$(pwgen -s 32 1)
 ----
 
 == `replicas`
@@ -283,24 +284,29 @@ It is required to pregenerate the password in Vault.
 
 [source,bash]
 ----
-key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
+# Adjust to your environment
 instance=keycloak
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/${instance}"
 
 # Query for existing secrets first
 vault kv get "${key}"
 
 # If there are existing secrets, add your instance secrets:
-vault kv patch "${key}" ${instance}-db-password=$(pwgen -s 32 1)
+vault kv patch "${key}" db-password=$(pwgen -s 32 1)
 
 # If there is no pre-existing secret, create new:
-vault kv put -cas=0 "${key}" ${instance}-db-password=$(pwgen -s 32 1)
+vault kv put -cas=0 "${key}" db-password=$(pwgen -s 32 1)
 ----
 
 To change the password after the initial setup issue the following commands:
 
 [source,bash]
 ----
-kubectl -n syn-keycloak exec -ti keycloak-postgresql-0 -- sh
+# Adjust to your environment
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti "${instance}-postgresql-0" -- sh
 PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" PGPASSWORD="<old pw>" psql
 ALTER USER keycloak WITH PASSWORD '<new pw>';
 ----

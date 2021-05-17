@@ -1,8 +1,8 @@
 parameters:
-  multi_instance: true
   keycloak:
-    namespace: syn-keycloak
-    release_name: keycloak-${_instance}
+    multi_instance: true
+    namespace: syn-${_instance}
+    release_name: ${_instance}
     charts:
       keycloak: '10.3.1'
     # FQDN should be overwritten on the cluster level
@@ -11,7 +11,7 @@ parameters:
     admin:
       secretname: ${keycloak:release_name}-admin-user
       username: admin
-      password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/${_instance}-admin-password}'
+      password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/admin-password}'
     # Replica count
     replicas: 2
     # Ingress or Route should be enabled on the distribution level
@@ -51,7 +51,7 @@ parameters:
       provider: builtin
 
       secretname: ${keycloak:release_name}-postgresql
-      password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/${_instance}-db-password}'
+      password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}'
       database: keycloak
       username: keycloak
 
