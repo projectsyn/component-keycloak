@@ -1,4 +1,4 @@
-# Use external database
+= Use external database
 
 The following steps show how to setup keycloak with an external database.
 
