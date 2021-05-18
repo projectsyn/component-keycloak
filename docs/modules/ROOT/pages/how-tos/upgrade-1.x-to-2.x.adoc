@@ -25,21 +25,21 @@ Following parameters will change in the manifests:
 
 === When using external database
 
-. Move the following 4 parameters "1 level up" from here
+. Move the following 4 `external` parameters "1 level up" from here
 +
 [source,yaml]
 ----
 parameters:
   keycloak:
     database:
-      # Remove this flag!
-      builtin: false
-
       external:
         secretname:
         password:
         database:
         username:
+
+      # Remove this flag!
+      builtin: false
 ----
 to here
 +
@@ -47,16 +47,14 @@ to here
 ----
 parameters:
   keycloak:
-    # Add this flag:
-    provider: external
-
     database:
       secretname:
       password:
       database:
       username:
 
-    # Add this flag:
+    # Add these flags:
+    provider: external
     builtin:
       enabled: false
 ----
