@@ -1,0 +1,43 @@
+= Use external database
+
+The following steps show how to setup Keycloak with an external database.
+
+====
+Requirements
+
+* `commodore`
+* `pwgen`
+* `vault`
+====
+
+. Configure component parameters.
++
+[source,yaml]
+----
+keycloak:
+  database:
+    provider: external
+
+    external:
+      # Required parameters
+      host: my-database-server.tld
+
+      # Optional (default) parameters
+      vendor: postgres
+      port: 5432
+
+    # only if deviating from default values:
+    database: my-database
+    username: my-username
+----
+
+. Set secrets
++
+[source,bash]
+----
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
+
+vault kv put -cas=0 "${key}" admin-password=$(pwgen -s 32 1) db-password=<your-external-db-password>
+----
+
+. Compile and push the cluster catalog

@@ -1,0 +1,38 @@
+= Use built-in database
+
+The following steps show how to setup Keycloak with the built-in database.
+
+[NOTE]
+====
+The default built-in database is a single-replica PostgreSQL instance using https://github.com/bitnami/charts/tree/master/bitnami/postgresql[Bitnami's PostgreSQL Helm chart].
+We don't need to configure anything unless you need to derive from the defaults.
+You can override those Helm values in `helm_values.postgresql`.
+====
+
+====
+Requirements
+
+* `commodore`
+* `pwgen`
+* `vault`
+====
+
+. Configure component parameters if deriving from defaults.
++
+[source,yaml]
+----
+keycloak:
+  helm_values:
+    postgresql: {} # Override built-in database values if needed
+----
+
+. Generate and store secrets in Vault
++
+[source,bash]
+----
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
+
+vault kv put -cas=0 "${key}" admin-password=$(pwgen -s 32 1) db-password=$(pwgen -s 32 1)
+----
+
+. Compile and push the cluster catalog

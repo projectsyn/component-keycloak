@@ -1,6 +1,13 @@
 parameters:
   keycloak:
-    namespace: syn-keycloak
+    multi_instance: true
+    # make lookup table constant to prevent changes to it through the hierarchy
+    =_enable_pg_chart:
+      # This lookup table controls whether to enable the chart depending on the value of `keycloak.database.provider`
+      builtin: true
+      external: false
+
+    namespace: syn-${_instance}
     release_name: keycloak
     charts:
       keycloak: '10.3.1'
@@ -10,7 +17,7 @@ parameters:
     admin:
       secretname: keycloak-admin-user
       username: admin
-      password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/admin-password}'
+      password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/admin-password}'
     # Replica count
     replicas: 2
     # Ingress or Route should be enabled on the distribution level
@@ -24,7 +31,7 @@ parameters:
     # entries in key `labels`.
     labels:
       app.kubernetes.io/name: keycloak
-      app.kubernetes.io/instance: syn-keycloak
+      app.kubernetes.io/instance: ${_instance}
       app.kubernetes.io/version: v11.0.0
       app.kubernetes.io/component: keycloak
       app.kubernetes.io/managed-by: commodore
@@ -47,16 +54,22 @@ parameters:
       rules: []
     # Use Bitnami Postgres installed by the Keycloak chart by default
     database:
-      builtin: true
+      provider: builtin
+
+      secretname: keycloak-postgresql
+      password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}'
+      database: keycloak
+      username: keycloak
+
+      # Used when `provider=external`
       external:
-        secretname: keycloak-db-credentials
         vendor: postgres
         host: postgres.example.com
         port: 5432
-        database: keycloak
-        username: keycloak
-        password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/db-password}'
+
     helm_values:
+      image:
+        repository: quay.io/keycloak/keycloak
       replicas: ${keycloak:replicas}
       statefulsetLabels: ${keycloak:labels}
       resources: ${keycloak:resources}
@@ -87,7 +100,7 @@ parameters:
         - secretRef:
             name: ${keycloak:admin:secretname}
         - secretRef:
-            name: ${keycloak:database:external:secretname}
+            name: ${keycloak:database:secretname}
       serviceAccount:
         labels: ${keycloak:labels}
       ingress:
@@ -115,7 +128,8 @@ parameters:
         labels: ${keycloak:labels}
         rules: ${keycloak:monitoring:rules}
       postgresql:
-        enabled: ${keycloak:database:builtin}
+        enabled: ${keycloak:_enable_pg_chart:${keycloak:database:provider}}
+        existingSecret: ${keycloak:database:secretname}
         image:
           registry: quay.io
         master:

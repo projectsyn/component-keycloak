@@ -17,34 +17,30 @@ local admin_secret = kube.Secret(params.admin.secretname) {
   },
 };
 
-local external_db_secret =
-  local isdummysecret =
-    if params.database.builtin then
-      {
-        'commodore.syn.tools/dummy-secret': 'true',
-      }
-    else
-      {};
-  kube.Secret(params.database.external.secretname) {
-    metadata+: {
-      labels+: params.labels + isdummysecret,
-    },
-    stringData:
-      if !params.database.builtin then
-        {
-          DB_VENDOR: params.database.external.vendor,
-          DB_ADDR: params.database.external.host,
-          DB_PORT: params.database.external.port,
-          DB_DATABASE: params.database.external.database,
-          DB_USER: params.database.external.username,
-          DB_PASSWORD: params.database.external.password,
-        }
-      else {},
-  };
+local secrets = {
+  builtin: {
+    'postgresql-password': params.database.password,
+  },
+  external: {
+    DB_DATABASE: params.database.database,
+    DB_USER: params.database.username,
+    DB_PASSWORD: params.database.password,
+    DB_VENDOR: params.database.external.vendor,
+    DB_ADDR: params.database.external.host,
+    DB_PORT: std.toString(params.database.external.port),
+  },
+};
+
+local db_secret = kube.Secret(params.database.secretname) {
+  metadata+: {
+    labels+: params.labels,
+  },
+  stringData: secrets[params.database.provider],
+};
 
 // Define outputs below
 {
   '00_namespace': namespace,
   '10_admin_secret': admin_secret,
-  '20_external_db_secret': external_db_secret,
+  '11_db_secret': db_secret,
 }

@@ -1,0 +1,10 @@
+parameters:
+  _instance: builtin
+  kapitan:
+    dependencies:
+      - type: helm
+        chart_name: keycloak
+        version: ${keycloak:charts:keycloak}
+        source: https://codecentric.github.io/helm-charts
+        # Need to overwrite this path:
+        output_path: /keycloak/helmcharts/keycloak/${keycloak:charts:keycloak}/

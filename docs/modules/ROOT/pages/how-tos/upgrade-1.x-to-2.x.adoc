@@ -1,0 +1,108 @@
+= Upgrade from 1.x to 2.x
+
+This guide describes the steps to perform an upgrade of the component from version 1.x to 2.x.
+
+[NOTE]
+====
+The 2.x version supports https://syn.tools/syn/SDDs/0025-commodore-component-instantiation.html[component instantiation].
+As such, the instance name is now included in many generated Kubernetes resource names.
+Non-instantiated components get the instance name `keycloak`.
+====
+
+[NOTE]
+====
+Following parameters will change in the manifests:
+
+* `app.kubernetes.io/instance: syn-keycloak` -> `app.kubernetes.io/instance: keycloak` (excluding any selector labels though)
+====
+
+====
+Requirements
+
+* `commodore`
+* `kubectl`
+* `pwgen`
+* `vault`
+====
+
+== Step-by-step guide
+
+=== When using external database
+
+. Move the following 4 `external` parameters "1 level up" from here
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      external:
+        secretname:
+        password:
+        database:
+        username:
+
+      # Remove this parameter:
+      builtin: false
+----
+to here
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      secretname:
+      password:
+      database:
+      username:
+
+    # Add this parameter:
+    provider: external
+----
+
+=== When using built-in database
+
+. Remove obsolete parameter
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      # Remove this parameter:
+      builtin: true
+----
+
+. Set a new explicit database password in Vault
++
+[source,bash]
+----
+export VAULT_ADDR=<vault-endpoint>
+export TENANT_ID=<the-tenant-id>
+export CLUSTER_ID=<the-cluster-id>
+instance=keycloak
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/${instance}"
+
+vault login -method=ldap username=<firstname.lastname>
+
+db_pass=$(pwgen -s 32 1)
+
+vault kv patch "${key}" db-password=${db_pass}
+----
+
+. Compile and push the cluster catalog
+
+. Wait until changes are applied
+
+. Change database password in PostgreSQL
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti "${instance}-postgresql-0" -- sh
+PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="keycloak" psql
+ALTER USER keycloak WITH PASSWORD '<new-pw-from-above>';
+----

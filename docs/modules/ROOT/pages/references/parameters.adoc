@@ -6,16 +6,21 @@ The parent key for all of the following parameters is `keycloak`.
 
 [horizontal]
 type:: string
-default:: `syn-keycloak`
+default:: `syn-${_instance}`
 
 The namespace in which to deploy this component.
 
+[IMPORTANT]
+====
+When using multiple instances for this component, each instance needs its own namespace.
+You cannot deploy multiple instances into the same namespace.
+====
 
 == `release_name`
 
 [horizontal]
 type:: string
-default:: `keycloak`
+default:: `${_instance}`
 
 Usually there is just one deployment and therefore no change is required.
 
@@ -43,7 +48,7 @@ FQDN should be overwritten on the cluster level.
 
 [horizontal]
 type:: string
-default:: `keycloak-admin-user`
+default:: `${keycloak:release_name}-admin-user`
 
 
 == `admin.username`
@@ -61,13 +66,21 @@ default:: Vault reference
 
 A Vault reference pointing to the Vault secret containing the Keycloak admin password.
 
-It is required to pregenerate the password in Vault.
-
 [source,bash]
 ----
-vault kv put -cas=0 clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak admin-password=$(pwgen -s 32 1)
-----
+# Adjust to your environment
+instance=keycloak
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/${instance}"
 
+# Query for existing secrets first
+vault kv get "${key}"
+
+# If there are existing secrets, add your instance secrets:
+vault kv patch "${key}" admin-password=$(pwgen -s 32 1)
+
+# If there is no pre-existing secret, create new:
+vault kv put -cas=0 "${key}" admin-password=$(pwgen -s 32 1)
+----
 
 == `replicas`
 
@@ -137,7 +150,7 @@ default:: `keycloak`
 
 [horizontal]
 type:: string
-default:: `syn-keycloak`
+default:: `${_instance}`
 
 
 == `labels."app.kubernetes.io/version"`
@@ -240,21 +253,70 @@ default:: `all`
 type:: list
 default:: `[]`
 
-
-== `database.builtin`
-
-[horizontal]
-type:: bool
-default:: `true`
-
-Use Bitnami Postgres installed by the Keycloak chart by default.
-
-
-== `database.external.secretname`
+== `database.provider`
 
 [horizontal]
 type:: string
-default:: `keycloak-db-credentials`
+values:: `builtin`, `external`
+default:: `builtin`
+
+
+== `database.database`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+
+== `database.username`
+
+[horizontal]
+type:: string
+default:: `keycloak`
+
+
+== `database.password`
+
+[horizontal]
+type:: string
+default:: Vault reference
+
+A Vault reference pointing to the Vault secret containing the Keycloak database password.
+
+[source,bash]
+----
+# Adjust to your environment
+instance=keycloak
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/${instance}"
+
+# Query for existing secrets first
+vault kv get "${key}"
+
+# If there are existing secrets, add your instance secrets:
+vault kv patch "${key}" db-password=$(pwgen -s 32 1)
+
+# If there is no pre-existing secret, create new:
+vault kv put -cas=0 "${key}" db-password=$(pwgen -s 32 1)
+----
+
+To change the password after the initial setup issue the following commands:
+
+[source,bash]
+----
+# Adjust to your environment
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti "${instance}-postgresql-0" -- sh
+PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="<old pw>" psql
+ALTER USER keycloak WITH PASSWORD '<new pw>';
+----
+
+== `database.secretname`
+
+[horizontal]
+type:: string
+default:: `${keycloak:release_name}-postgresql`
 
 
 == `database.external.vendor`
@@ -276,34 +338,6 @@ default:: `postgres.example.com`
 [horizontal]
 type:: string
 default:: `5432`
-
-
-== `database.external.database`
-
-[horizontal]
-type:: string
-default:: `keycloak`
-
-
-== `database.external.username`
-
-[horizontal]
-type:: string
-default:: `keycloak`
-
-
-== `database.external.password`
-
-[horizontal]
-type:: string
-default:: `keycloak`
-
-It is required to pregenerate the password in Vault if you using an external database.
-
-[source,bash]
-----
-vault kv patch clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak db-password=$(pwgen -s 32 1)
-----
 
 
 == `helm_values`
