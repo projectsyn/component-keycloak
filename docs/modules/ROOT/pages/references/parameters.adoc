@@ -13,7 +13,7 @@ The namespace in which to deploy this component.
 [IMPORTANT]
 ====
 When using multiple instances for this component, each instance needs its own namespace.
-You cannot deploy multiple instance into the same namespace.
+You cannot deploy multiple instances into the same namespace.
 ====
 
 == `release_name`
@@ -65,8 +65,6 @@ type:: string
 default:: Vault reference
 
 A Vault reference pointing to the Vault secret containing the Keycloak admin password.
-
-It is required to pregenerate the password in Vault.
 
 [source,bash]
 ----
@@ -283,9 +281,7 @@ default:: `keycloak`
 type:: string
 default:: Vault reference
 
-A Vault reference pointing to the Vault secret containing the Keycloak admin password.
-
-It is required to pregenerate the password in Vault.
+A Vault reference pointing to the Vault secret containing the Keycloak database password.
 
 [source,bash]
 ----
@@ -312,7 +308,7 @@ instance=keycloak
 namespace=syn-${instance}
 
 kubectl -n "${namespace}" exec -ti "${instance}-postgresql-0" -- sh
-PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" PGPASSWORD="<old pw>" psql
+PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="<old pw>" psql
 ALTER USER keycloak WITH PASSWORD '<new pw>';
 ----
 

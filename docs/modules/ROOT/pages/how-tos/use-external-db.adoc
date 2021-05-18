@@ -1,6 +1,6 @@
 = Use external database
 
-The following steps show how to setup keycloak with an external database.
+The following steps show how to setup Keycloak with an external database.
 
 . Configure component parameters.
 +
@@ -27,4 +27,13 @@ keycloak:
     username: my-username
 ----
 
-. Compile the cluster catalog
+. Set secrets
++
+[source,bash]
+----
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
+
+vault kv put -cas=0 "${key}" admin-password=$(pwgen -s 32 1) db-password=<your-external-db-password>
+----
+
+. Compile and push the cluster catalog

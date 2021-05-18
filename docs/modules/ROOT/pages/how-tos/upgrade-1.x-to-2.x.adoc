@@ -4,7 +4,7 @@ This guide describes the steps to perform an upgrade of the component from versi
 
 [NOTE]
 ====
-The 2.x version supports component multi-instantiation.
+The 2.x version supports https://syn.tools/syn/SDDs/0025-commodore-component-instantiation.html[component instantiation].
 As such, the instance name is now included in many generated Kubernetes resource names.
 Non-instantiated components get the instance name `keycloak`.
 ====
@@ -25,7 +25,7 @@ Following parameters will change in the manifests:
 
 === When using external database
 
-. Move following 4 parameters "1 level up" from here
+. Move the following 4 parameters "1 level up" from here
 +
 [source,yaml]
 ----
