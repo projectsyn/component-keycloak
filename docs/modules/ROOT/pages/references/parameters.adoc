@@ -151,6 +151,33 @@ default:: `false`
 Create a route object on an OpenShift cluster.
 
 
+== `acmecertificate.enabled`
+
+[horizontal]
+type:: bool
+default:: `false`
+
+Create a certificate object for the cert-manager to issue a certificate for the FQDN `${keycloak:fqdn}`.
+
+
+== `acmecertificate.name`
+
+[horizontal]
+type:: string
+default:: `${keycloak:fqdn}`
+
+Name of the secret the cert-manager saves the issued certificate to.
+
+
+== `acmecertificate.issuer.name`
+
+[horizontal]
+type:: string
+default:: `letsencrypt-production`
+
+Define the issuer name. This is usualy `letsencrypt-production` or `letsencrypt-staging`.
+
+
 == `labels."app.kubernetes.io/name"`
 
 [horizontal]
