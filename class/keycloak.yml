@@ -14,8 +14,8 @@ parameters:
       - input_paths:
           - keycloak/component/main.jsonnet
         input_type: jsonnet
-        output_path: keycloak/${_instance}
-      - output_path: keycloak/${_instance}/01_keycloak_helmchart
+        output_path: ${_instance}
+      - output_path: ${_instance}/01_keycloak_helmchart
         input_type: helm
         output_type: yaml
         input_paths:

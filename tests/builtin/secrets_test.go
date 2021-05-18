@@ -11,7 +11,7 @@ import (
 
 var (
 	expectedDbSecretName = "keycloak-postgresql"
-	testPath             = "../../compiled/keycloak/keycloak/builtin"
+	testPath             = "../../compiled/keycloak/builtin"
 )
 
 func Test_Database_Secret_DefaultParameters(t *testing.T) {
