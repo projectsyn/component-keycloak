@@ -1,0 +1,36 @@
+= Pin versions
+
+This tutorial explains how to pin Keycloak to specific version.
+
+== Pin Helm chart version
+
+The Keycloak deployment is mainly generated through https://github.com/codecentric/helm-charts/tree/master/charts/keycloak[codecentric's Keycloak Helm chart].
+New versions are released in the https://github.com/codecentric/helm-charts/releases[Releases page].
+
+Normally the component tries to stay up-to-date with the latest Helm chart version.
+If you need to override the chart version, you can pin it in the parameters:
+
+[source,yaml]
+----
+parameters:
+  keycloak:
+    charts:
+      keycloak: '<version>'
+----
+
+== Pin container image tag
+
+The version of Keycloak itself is defined in the Helm chart release.
+New versions are released in the https://quay.io/repository/keycloak/keycloak?tab=tags[Quay.io container registry].
+
+Since we're using an upstream Helm chart, it can sometimes take a while until new Keycloak releases actually make it into a new Helm chart release.
+If you need to override the Keycloak version, you can pin it in the parameters:
+
+[source,yaml]
+----
+parameters:
+  keycloak:
+    helm_values:
+      image:
+        tag: '<tag>'
+----
