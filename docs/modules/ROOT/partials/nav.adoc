@@ -1,5 +1,8 @@
 * xref:index.adoc[Home]
 
+.Tutorials
+* xref:tutorials/installation.adoc[Installation]
+
 .How-to guides
 * xref:how-tos/use-built-in-db.adoc[Use built-in database]
 * xref:how-tos/use-external-db.adoc[Use external database]

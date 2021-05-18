@@ -1,0 +1,20 @@
+= Installation
+
+In this short guide we are going to install one or multiple instances of Keycloak.
+
+. Decide on a database provider
++
+You can install Keycloak with the built-in database or by using an external database.
+The built-in database is configured by default.
+When using component instantiation, you can choose the provider individually per instance.
++
+* xref:how-tos/use-built-in-db.adoc[Use built-in database]
+* xref:how-tos/use-external-db.adoc[Use external database]
+
+. Decide whether you need multiple instances
++
+Since component version 2.x, multiple instances of the component can be installed.
+For example, `keycloak-prod` and `keycloak-test`.
+They need to be in separate namespaces though.
++
+* xref:how-tos/multi-instance.adoc[Deploy multiple instances]
