@@ -1,6 +1,12 @@
 parameters:
   keycloak:
     multi_instance: true
+    # make lookup table constant to prevent changes to it through the hierarchy
+    =_enable_pg_chart:
+      # This lookup table controls whether to enable the chart depending on the value of `keycloak.database.provider`
+      builtin: true
+      external: false
+
     namespace: syn-${_instance}
     release_name: keycloak
     charts:
@@ -55,15 +61,11 @@ parameters:
       database: keycloak
       username: keycloak
 
-      # For provider=external
+      # Used when `provider=external`
       external:
         vendor: postgres
         host: postgres.example.com
         port: 5432
-
-      # For provider=builtin
-      builtin:
-        enabled: true
 
     helm_values:
       image:
@@ -126,7 +128,7 @@ parameters:
         labels: ${keycloak:labels}
         rules: ${keycloak:monitoring:rules}
       postgresql:
-        enabled: ${keycloak:database:builtin:enabled}
+        enabled: ${keycloak:_enable_pg_chart:${keycloak:database:provider}}
         existingSecret: ${keycloak:database:secretname}
         image:
           registry: quay.io

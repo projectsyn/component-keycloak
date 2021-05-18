@@ -12,5 +12,3 @@ parameters:
   keycloak:
     database:
       provider: external
-      builtin:
-        enabled: false

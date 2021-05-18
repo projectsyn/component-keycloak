@@ -21,8 +21,6 @@ parameters:
     namespace: tenant-keycloak-prod
     database:
       provider: external
-      builtin:
-        enabled: false
       external:
         host: my-postgres-db-server.tld
 ----

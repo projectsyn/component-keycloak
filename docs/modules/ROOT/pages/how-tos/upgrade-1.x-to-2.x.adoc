@@ -38,7 +38,7 @@ parameters:
         database:
         username:
 
-      # Remove this flag!
+      # Remove this parameter:
       builtin: false
 ----
 to here
@@ -53,32 +53,21 @@ parameters:
       database:
       username:
 
-    # Add these flags:
+    # Add this parameter:
     provider: external
-    builtin:
-      enabled: false
 ----
 
 === When using built-in database
 
-. Replace parameter
+. Remove obsolete parameter
 +
 [source,yaml]
 ----
 parameters:
   keycloak:
     database:
+      # Remove this parameter:
       builtin: true
-----
-with this
-+
-[source,yaml]
-----
-parameters:
-  keycloak:
-    database:
-      builtin:
-        enabled: true
 ----
 
 . Set a new explicit database password in Vault

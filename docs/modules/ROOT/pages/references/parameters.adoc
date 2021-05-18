@@ -319,15 +319,6 @@ type:: string
 default:: `${keycloak:release_name}-postgresql`
 
 
-== `database.builtin.enabled`
-
-[horizontal]
-type:: bool
-default:: `true`
-
-Use Bitnami Postgres installed by the Keycloak chart by default.
-
-
 == `database.external.vendor`
 
 [horizontal]

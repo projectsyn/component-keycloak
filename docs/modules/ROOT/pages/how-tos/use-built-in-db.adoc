@@ -14,7 +14,6 @@ You can override those Helm values in `helm_values.postgresql`.
 [source,yaml]
 ----
 keycloak:
-  database: {} # Override common database defaults if needed
   helm_values:
     postgresql: {} # Override built-in database values if needed
 ----
