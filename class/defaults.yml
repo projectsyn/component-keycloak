@@ -2,14 +2,14 @@ parameters:
   keycloak:
     multi_instance: true
     namespace: syn-${_instance}
-    release_name: ${_instance}
+    release_name: keycloak
     charts:
       keycloak: '10.3.1'
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Keycloak Admin
     admin:
-      secretname: ${keycloak:release_name}-admin-user
+      secretname: keycloak-admin-user
       username: admin
       password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/admin-password}'
     # Replica count
@@ -50,7 +50,7 @@ parameters:
     database:
       provider: builtin
 
-      secretname: ${keycloak:release_name}-postgresql
+      secretname: keycloak-postgresql
       password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}'
       database: keycloak
       username: keycloak

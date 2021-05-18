@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	expectedDbSecretName = "builtin-postgresql"
+	expectedDbSecretName = "keycloak-postgresql"
 	testPath             = "../../compiled/keycloak/keycloak/builtin"
 )
 
