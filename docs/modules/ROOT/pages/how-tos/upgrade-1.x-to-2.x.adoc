@@ -16,10 +16,14 @@ Following parameters will change in the manifests:
 * `app.kubernetes.io/instance: syn-keycloak` -> `app.kubernetes.io/instance: keycloak` (excluding any selector labels though)
 ====
 
-== Requirements
+====
+Requirements
 
-* `vault`
 * `commodore`
+* `kubectl`
+* `pwgen`
+* `vault`
+====
 
 == Step-by-step guide
 

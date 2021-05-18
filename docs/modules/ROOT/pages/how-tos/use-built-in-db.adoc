@@ -9,6 +9,14 @@ We don't need to configure anything unless you need to derive from the defaults.
 You can override those Helm values in `helm_values.postgresql`.
 ====
 
+====
+Requirements
+
+* `commodore`
+* `pwgen`
+* `vault`
+====
+
 . Configure component parameters if deriving from defaults.
 +
 [source,yaml]

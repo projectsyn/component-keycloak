@@ -2,6 +2,14 @@
 
 The following steps show how to setup Keycloak with an external database.
 
+====
+Requirements
+
+* `commodore`
+* `pwgen`
+* `vault`
+====
+
 . Configure component parameters.
 +
 [source,yaml]
