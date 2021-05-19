@@ -12,3 +12,5 @@ parameters:
   keycloak:
     database:
       provider: external
+      tls:
+        enabled: true

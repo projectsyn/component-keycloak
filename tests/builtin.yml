@@ -8,3 +8,8 @@ parameters:
         source: https://codecentric.github.io/helm-charts
         # Need to overwrite this path:
         output_path: /keycloak/helmcharts/keycloak/${keycloak:charts:keycloak}/
+
+  keycloak:
+    database:
+      tls:
+        enabled: true

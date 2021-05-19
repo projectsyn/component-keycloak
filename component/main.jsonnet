@@ -17,9 +17,11 @@ local admin_secret = kube.Secret(params.admin.secretname) {
   },
 };
 
-local secrets = {
+local connection_secrets = {
   builtin: {
+    // this secret is shared between Keycloak and PostgreSQL
     'postgresql-password': params.database.password,
+    [if params.database.tls.enabled then 'JDBC_PARAMS']: params.database.tls.jdbcParams,
   },
   external: {
     DB_DATABASE: params.database.database,
@@ -28,6 +30,7 @@ local secrets = {
     DB_VENDOR: params.database.external.vendor,
     DB_ADDR: params.database.external.host,
     DB_PORT: std.toString(params.database.external.port),
+    [if params.database.tls.enabled then 'JDBC_PARAMS']: params.database.tls.jdbcParams,
   },
 };
 
@@ -35,7 +38,18 @@ local db_secret = kube.Secret(params.database.secretname) {
   metadata+: {
     labels+: params.labels,
   },
-  stringData: secrets[params.database.provider],
+  stringData: connection_secrets[params.database.provider],
+};
+
+local client_cert_secret = kube.Secret(params.database.tls.certSecretName) {
+  metadata+: {
+    labels+: params.labels,
+  },
+  type: 'kubernetes.io/tls',
+  stringData: {
+    'tls.key': params.database.tls.serverCertKey,
+    'tls.crt': params.database.tls.serverCert,
+  },
 };
 
 // Define outputs below
@@ -43,4 +57,5 @@ local db_secret = kube.Secret(params.database.secretname) {
   '00_namespace': namespace,
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
+  [if params.database.tls.enabled then '13_db_certs']: client_cert_secret,
 }

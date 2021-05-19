@@ -6,6 +6,20 @@ parameters:
       # This lookup table controls whether to enable the chart depending on the value of `keycloak.database.provider`
       builtin: true
       external: false
+    =_db_cert_volume:
+      # This lookup table configures extra volumes when using TLS in database connection
+      "False": ""
+      "True": |
+        - name: db-certs
+          secret:
+            secretName: ${keycloak:database:tls:certSecretName}
+    =_db_cert_mount:
+      # This lookup table configures extra volume mounts when using TLS in database connection
+      "False": ""
+      "True": |
+        - name: db-certs
+          readOnly: true
+          mountPath: /opt/jboss/certs
 
     namespace: syn-${_instance}
     release_name: keycloak
@@ -61,6 +75,17 @@ parameters:
       database: keycloak
       username: keycloak
 
+      tls:
+        enabled: false
+        certSecretName: keycloak-postgresql-tls
+        jdbcParams: sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt
+        #caCert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ca-cert}'
+        #caCertKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ca-cert-key}'
+        serverCert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert}'
+        serverCertKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-key}'
+        #clientCert: "changeme"
+        #clientCertKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/client-cert-key}'
+
       # Used when `provider=external`
       external:
         vendor: postgres
@@ -101,6 +126,8 @@ parameters:
             name: ${keycloak:admin:secretname}
         - secretRef:
             name: ${keycloak:database:secretname}
+      extraVolumes: ${keycloak:_db_cert_volume:${keycloak:database:tls:enabled}}
+      extraVolumeMounts: ${keycloak:_db_cert_mount:${keycloak:database:tls:enabled}}
       serviceAccount:
         labels: ${keycloak:labels}
       ingress:
@@ -134,3 +161,10 @@ parameters:
           registry: quay.io
         master:
           labels: ${keycloak:labels}
+        volumePermissions:
+          enabled: ${keycloak:database:tls:enabled}
+        tls:
+          enabled: ${keycloak:database:tls:enabled}
+          certificatesSecret: ${keycloak:database:tls:certSecretName}
+          certFilename: tls.crt
+          certKeyFilename: tls.key
