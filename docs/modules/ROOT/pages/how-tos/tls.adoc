@@ -41,7 +41,7 @@ parameters:
     database:
       tls:
         enabled: true
-        jdbcParams: sslmode=verify-ca
+        jdbcParams: sslmode=verify-ca&sslrootcert=/etc/ssl/certs/ca-bundle.crt
         verification: verify
     # Reset some default parameters:
         serverCert: ""
@@ -106,8 +106,8 @@ kubectl exec -it -n ${namespace} keycloak-postgresql-0 -c keycloak-postgresql --
 [source,bash]
 ----
 # First, connect to your database server where `psql` is available.
-# Then connect to the Keycloak database.
-PGDATABASE="..." PGUSER="..." PGPASSWORD="..." psql
+# Then connect to postgres.
+sudo -u postgres psql
 
 # List the connected users with the following query:
 SELECT datname, usename, ssl, client_addr FROM pg_stat_ssl JOIN pg_stat_activity ON pg_stat_ssl.pid = pg_stat_activity.pid;

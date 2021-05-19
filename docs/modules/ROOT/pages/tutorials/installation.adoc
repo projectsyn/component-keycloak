@@ -11,6 +11,13 @@ When using component instantiation, you can choose the provider individually per
 * xref:how-tos/use-built-in-db.adoc[Use built-in database]
 * xref:how-tos/use-external-db.adoc[Use external database]
 
+. Decide whether you need encrypted database connection
++
+Encrypting the connection to the database adds more security at the cost of some TLS overhead.
+Supported are self-signed certificates by default, though Let's Encrypt can be used for the external database provider.
++
+* xref:how-tos/tls.adoc[Encrypt database connection]
+
 . Decide whether you need multiple instances
 +
 Since component version 2.x, multiple instances of the component can be installed.
