@@ -14,3 +14,4 @@ parameters:
       provider: external
       tls:
         enabled: true
+        verification: verify

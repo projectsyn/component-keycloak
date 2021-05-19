@@ -21,6 +21,6 @@ func Test_Database_Secret_DefaultParameters(t *testing.T) {
 	require.NotEmpty(t, subject.StringData)
 
 	data := subject.StringData
-	assert.Len(t, data, 1)
+	assert.Len(t, data, 2)
 	assert.Equal(t, "t-silent-test-1234/c-green-test-1234/builtin/db-password", data["postgresql-password"])
 }

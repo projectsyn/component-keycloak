@@ -41,7 +41,7 @@ local db_secret = kube.Secret(params.database.secretname) {
   stringData: connection_secrets[params.database.provider],
 };
 
-local client_cert_secret = kube.Secret(params.database.tls.certSecretName) {
+local db_cert_secret = kube.Secret(params.database.tls.certSecretName) {
   metadata+: {
     labels+: params.labels,
   },
@@ -57,5 +57,5 @@ local client_cert_secret = kube.Secret(params.database.tls.certSecretName) {
   '00_namespace': namespace,
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
-  [if params.database.tls.enabled then '13_db_certs']: client_cert_secret,
+  [if params.database.tls.enabled && params.database.tls.verification != 'verify' then '13_db_certs']: db_cert_secret,
 }

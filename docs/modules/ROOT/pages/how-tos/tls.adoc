@@ -6,6 +6,12 @@ See the following manuals on how to setup connection encryption:
 * https://jdbc.postgresql.org/documentation/head/connect.html#ssl[JDBC connection parameters]
 * https://jdbc.postgresql.org/documentation/head/ssl-client.html[SSL verification methods]
 
+[IMPORTANT]
+====
+The built-in database provider only supports self-signed certificates.
+This is because Keycloak connects through the cluster-internal service and not an externally resolvable resp. verifiable hostname.
+====
+
 ====
 Requirements
 
@@ -17,6 +23,7 @@ Requirements
 
 . Enable TLS
 +
+.Self-signed or custom server certificate (built-in or external database)
 [source,yaml]
 ----
 parameters:
@@ -25,12 +32,31 @@ parameters:
       tls:
         enabled: true
 ----
++
+.Verified server certificate (only external database)
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      tls:
+        enabled: true
+        jdbcParams: sslmode=verify-ca
+        verification: verify
+    # Reset some default parameters:
+        serverCert: ""
+        serverCertKey: ""
+    helm_values:
+      extraVolumes: ""
+      extraVolumeMounts: ""
+----
 
 . Prepare certificate files
 +
 .Built-in database
 [source,bash]
 ----
+# Adjust the lifetime as necessary
 lifetime=365
 openssl req -x509 -newkey rsa:4096 -nodes -keyout server.key -out server.crt -days ${lifetime} -subj '/CN=keycloak'
 ----

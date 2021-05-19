@@ -77,14 +77,11 @@ parameters:
 
       tls:
         enabled: false
+        verification: selfsigned
         certSecretName: keycloak-postgresql-tls
         jdbcParams: sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt
-        #caCert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ca-cert}'
-        #caCertKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ca-cert-key}'
         serverCert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert}'
         serverCertKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-key}'
-        #clientCert: "changeme"
-        #clientCertKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/client-cert-key}'
 
       # Used when `provider=external`
       external:
