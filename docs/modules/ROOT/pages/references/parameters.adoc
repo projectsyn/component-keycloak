@@ -82,6 +82,8 @@ vault kv patch "${key}" admin-password=$(pwgen -s 32 1)
 vault kv put -cas=0 "${key}" admin-password=$(pwgen -s 32 1)
 ----
 
+See xref:how-tos/change-passwords.adoc[Change passwords] to change the password after the initial setup.
+
 == `replicas`
 
 [horizontal]
@@ -299,18 +301,7 @@ vault kv patch "${key}" db-password=$(pwgen -s 32 1)
 vault kv put -cas=0 "${key}" db-password=$(pwgen -s 32 1)
 ----
 
-To change the password after the initial setup issue the following commands:
-
-[source,bash]
-----
-# Adjust to your environment
-instance=keycloak
-namespace=syn-${instance}
-
-kubectl -n "${namespace}" exec -ti "${instance}-postgresql-0" -- sh
-PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="<old pw>" psql
-ALTER USER keycloak WITH PASSWORD '<new pw>';
-----
+See xref:how-tos/change-passwords.adoc[Change passwords] to change the password after the initial setup.
 
 == `database.secretname`
 
