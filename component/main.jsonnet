@@ -46,7 +46,6 @@ local db_cert_secret = kube.Secret(params.database.tls.certSecretName) {
   metadata+: {
     labels+: params.labels,
   },
-  type: 'kubernetes.io/tls',
   stringData:
     if params.database.tls.verification == 'selfsigned' then
       {
@@ -56,6 +55,7 @@ local db_cert_secret = kube.Secret(params.database.tls.certSecretName) {
     else
       {
         'README.txt': 'Keycloak is configured with DB TLS verification mode "%s", no custom CA cert required' % [ params.database.tls.verification ],
+        'tls.crt': '',
       },
 };
 
