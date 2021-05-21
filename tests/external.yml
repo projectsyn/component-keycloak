@@ -12,6 +12,6 @@ parameters:
   keycloak:
     database:
       provider: external
+      jdbcParams: sslmode=verify-ca&sslrootcert=/etc/ssl/certs/ca-bundle.crt
       tls:
-        enabled: true
         verification: verify

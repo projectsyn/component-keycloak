@@ -1,7 +1,10 @@
 = Encrypt database connection
 
 This guide provides an example how to setup a TLS encrypted database connection.
-See the following manuals on how to setup connection encryption:
+By default, database connection encryption is enabled.
+However there are additional steps required.
+
+See the following manuals on how to customize connection encryption:
 
 * https://jdbc.postgresql.org/documentation/head/connect.html#ssl[JDBC connection parameters]
 * https://jdbc.postgresql.org/documentation/head/ssl-client.html[SSL verification methods]
@@ -21,43 +24,15 @@ Requirements
 * `vault`
 ====
 
-. Enable TLS
-+
-.Self-signed or custom server certificate (built-in or external database)
-[source,yaml]
-----
-parameters:
-  keycloak:
-    database:
-      tls:
-        enabled: true
-----
-+
-.Verified server certificate (only external database)
-[source,yaml]
-----
-parameters:
-  keycloak:
-    database:
-      tls:
-        enabled: true
-        jdbcParams: sslmode=verify-ca&sslrootcert=/etc/ssl/certs/ca-bundle.crt
-        verification: verify
-    # Reset some default parameters:
-        serverCert: ""
-        serverCertKey: ""
-    helm_values:
-      extraVolumes: ""
-      extraVolumeMounts: ""
-----
+== Using self-signed certificates
 
-. Prepare certificate files
+. Prepare certificate files when using self-signed certificates
 +
 .Built-in database
 [source,bash]
 ----
 # Adjust the lifetime as necessary
-lifetime=365
+lifetime=3650
 openssl req -x509 -newkey rsa:4096 -nodes -keyout server.key -out server.crt -days ${lifetime} -subj '/CN=keycloak'
 ----
 +
@@ -87,9 +62,23 @@ vault kv patch "${parent}/${instance}" server-cert=@server.crt server-cert-key=@
 rm server.{key,crt}
 ----
 
-. Compile and push the cluster catalog
-. Wait until changes are applied
-. Verify that the instances are up and configured correctly
+== Using valid server certificates
+
+. Configure TLS verification mode when using verified/signed certificates
++
+.Verified server certificate (only external database)
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      # Verify server certificate using the built-in CA bundle.
+      jdbcParams: sslmode=verify-ca&sslrootcert=/etc/ssl/certs/ca-bundle.crt
+      tls:
+        verification: verify
+----
+
+== Verify that Keycloak connects securely
 
 . Verify that Keycloak connects using TLS
 +
@@ -114,3 +103,21 @@ SELECT datname, usename, ssl, client_addr FROM pg_stat_ssl JOIN pg_stat_activity
 ----
 +
 For each `client_addr` you should see a `t` in the `ssl` column.
+
+== Disable encryption
+
+While not recommended, it's possible to disable encryption.
+Set the following parameters and skip the Vault steps:
+
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      jdbcParams: ""
+      tls:
+        enabled: false
+    helm_values:
+      extraVolumes: ""
+      extraVolumeMounts: ""
+----

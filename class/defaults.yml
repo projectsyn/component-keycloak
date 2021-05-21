@@ -6,20 +6,6 @@ parameters:
       # This lookup table controls whether to enable the chart depending on the value of `keycloak.database.provider`
       builtin: true
       external: false
-    =_db_cert_volume:
-      # This lookup table configures extra volumes when using TLS in database connection
-      "False": ""
-      "True": |
-        - name: db-certs
-          secret:
-            secretName: ${keycloak:database:tls:certSecretName}
-    =_db_cert_mount:
-      # This lookup table configures extra volume mounts when using TLS in database connection
-      "False": ""
-      "True": |
-        - name: db-certs
-          readOnly: true
-          mountPath: /opt/jboss/certs
 
     namespace: syn-${_instance}
     release_name: keycloak
@@ -74,12 +60,12 @@ parameters:
       password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}'
       database: keycloak
       username: keycloak
+      jdbcParams: sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt
 
       tls:
-        enabled: false
+        enabled: true
         verification: selfsigned
         certSecretName: keycloak-postgresql-tls
-        jdbcParams: sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt
         serverCert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert}'
         serverCertKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-key}'
 
@@ -123,8 +109,19 @@ parameters:
             name: ${keycloak:admin:secretname}
         - secretRef:
             name: ${keycloak:database:secretname}
-      extraVolumes: ${keycloak:_db_cert_volume:${keycloak:database:tls:enabled}}
-      extraVolumeMounts: ${keycloak:_db_cert_mount:${keycloak:database:tls:enabled}}
+      extraVolumes: |
+        - name: db-certs
+          secret:
+            secretName: ${keycloak:database:tls:certSecretName}
+            defaultMode: 0400
+            items:
+              - key: tls.crt
+                path: tls.crt
+      extraVolumeMounts: |
+        - name: db-certs
+          readOnly: true
+          mountPath: /opt/jboss/certs
+
       serviceAccount:
         labels: ${keycloak:labels}
       ingress:

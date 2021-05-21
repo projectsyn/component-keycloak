@@ -21,7 +21,7 @@ local connection_secrets = {
   builtin: {
     // this secret is shared between Keycloak and PostgreSQL
     'postgresql-password': params.database.password,
-    [if params.database.tls.enabled then 'JDBC_PARAMS']: params.database.tls.jdbcParams,
+    [if params.database.jdbcParams != '' then 'JDBC_PARAMS']: params.database.jdbcParams,
   },
   external: {
     DB_DATABASE: params.database.database,
@@ -30,7 +30,7 @@ local connection_secrets = {
     DB_VENDOR: params.database.external.vendor,
     DB_ADDR: params.database.external.host,
     DB_PORT: std.toString(params.database.external.port),
-    [if params.database.tls.enabled then 'JDBC_PARAMS']: params.database.tls.jdbcParams,
+    [if params.database.jdbcParams != '' then 'JDBC_PARAMS']: params.database.jdbcParams,
   },
 };
 
@@ -41,15 +41,22 @@ local db_secret = kube.Secret(params.database.secretname) {
   stringData: connection_secrets[params.database.provider],
 };
 
+// this secret is shared between Keycloak and PostgreSQL
 local db_cert_secret = kube.Secret(params.database.tls.certSecretName) {
   metadata+: {
     labels+: params.labels,
   },
   type: 'kubernetes.io/tls',
-  stringData: {
-    'tls.key': params.database.tls.serverCertKey,
-    'tls.crt': params.database.tls.serverCert,
-  },
+  stringData:
+    if params.database.tls.verification == 'selfsigned' then
+      {
+        'tls.key': params.database.tls.serverCertKey,
+        'tls.crt': params.database.tls.serverCert,
+      }
+    else
+      {
+        'README.txt': 'Keycloak is configured with DB TLS verification mode "%s", no custom CA cert required' % [ params.database.tls.verification ],
+      },
 };
 
 // Define outputs below
@@ -57,5 +64,5 @@ local db_cert_secret = kube.Secret(params.database.tls.certSecretName) {
   '00_namespace': namespace,
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
-  [if params.database.tls.enabled && params.database.tls.verification != 'verify' then '13_db_certs']: db_cert_secret,
+  [if params.database.tls.enabled then '12_db_certs']: db_cert_secret,
 }
