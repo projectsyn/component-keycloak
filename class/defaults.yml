@@ -139,6 +139,8 @@ parameters:
         enabled: ${keycloak:route:enabled}
         labels: ${keycloak:labels}
         host: ${keycloak:fqdn}
+      networkPolicy:
+        enabled: true
       service:
         labels: ${keycloak:labels}
       serviceMonitor:
@@ -162,3 +164,5 @@ parameters:
           certificatesSecret: ${keycloak:database:tls:certSecretName}
           certFilename: tls.crt
           certKeyFilename: tls.key
+        networkPolicy:
+          enabled: true
