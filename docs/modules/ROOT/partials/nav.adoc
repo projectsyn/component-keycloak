@@ -12,5 +12,8 @@
 * xref:how-tos/upgrade-1.x-to-2.x.adoc[Upgrade 1.x to 2.x]
 * xref:how-tos/pin-versions.adoc[Pin versions]
 
+.Explanations
+* xref:explanations/default-features.adoc[Default features]
+
 .Technical reference
 * xref:references/parameters.adoc[Parameters]

@@ -1,0 +1,16 @@
+= Default features
+
+Many Helm Charts in the Kubernetes community have advanced features disabled by default in order to ease installations without configuring much.
+This is also the case with the Keycloak Helm chart this component depends upon.
+However, this component aims to provision Keycloak secure by default, so a lot of defaults have activated advanced features.
+This page gives an overview over the defaults.
+
+== Enabled features
+
+- Installs single-node PostgreSQL as the built-in database provider
+- Encrypted connection to database
+- Enabled network policies to protect from unexpected connections
+- Prometheus ServiceMonitor to scrape metrics
+- 2 replicas of Keycloak, with anti-affinity
+- Enabled Ingress
+- Configured requests and limits for CPU and memory resources
