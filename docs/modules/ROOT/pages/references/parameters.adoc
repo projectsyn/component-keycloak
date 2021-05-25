@@ -79,7 +79,7 @@ vault kv get "${key}"
 vault kv patch "${key}" admin-password=$(pwgen -s 32 1)
 
 # If there is no pre-existing secret, create new:
-vault kv put -cas=0 "${key}" admin-password=$(pwgen -s 32 1)
+vault kv put "${key}" admin-password=$(pwgen -s 32 1)
 ----
 
 See xref:how-tos/change-passwords.adoc[Change passwords] to change the password after the initial setup.
@@ -277,6 +277,16 @@ type:: string
 default:: `keycloak`
 
 
+== `database.jdbcParams`
+
+[horizontal]
+type:: string
+default:: `sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt`
+
+Please note that if you need to customize JDBC parameters, copy and append them to the default with `&`, otherwise TLS will be disabled.
+For example: `sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt&mycustomparameter=somevalue`
+
+
 == `database.password`
 
 [horizontal]
@@ -298,7 +308,7 @@ vault kv get "${key}"
 vault kv patch "${key}" db-password=$(pwgen -s 32 1)
 
 # If there is no pre-existing secret, create new:
-vault kv put -cas=0 "${key}" db-password=$(pwgen -s 32 1)
+vault kv put "${key}" db-password=$(pwgen -s 32 1)
 ----
 
 See xref:how-tos/change-passwords.adoc[Change passwords] to change the password after the initial setup.
@@ -327,19 +337,56 @@ default:: `postgres.example.com`
 == `database.external.port`
 
 [horizontal]
-type:: string
+type:: int
 default:: `5432`
+
+== `database.tls.enabled`
+
+[horizontal]
+type:: bool
+default:: `true`
+
+See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak with encryption or to disable it completely.
+
+
+== `database.tls.verification`
+
+[horizontal]
+type:: string
+values:: `selfsigned`, `verify`
+default:: `selfsigned`
+
+
+== `database.tls.certSecretName`
+
+[horizontal]
+type:: string
+default:: `keycloak-postgresql-tls`
+
+
+== `database.tls.serverCert`
+
+[horizontal]
+type:: string
+default:: Vault reference
+
+See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak with encryption.
+
+
+== `database.tls.serverCertKey`
+
+[horizontal]
+type:: string
+default:: Vault reference
+
+See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak with encryption.
 
 
 == `helm_values`
 
 [horizontal]
 type:: dict
-default::
-+
-[source,yaml]
-----
-----
+default:: see `defaults.yml`
 
 All helm_values are passed to the helm chart.
 This allows to configure all https://github.com/codecentric/helm-charts/tree/keycloak-10.3.1/charts/keycloak#configuration[keycloak helm chart values].

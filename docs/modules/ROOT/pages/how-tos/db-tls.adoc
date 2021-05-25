@@ -1,0 +1,123 @@
+= Encrypt database connection
+
+This guide provides an example how to setup a TLS encrypted database connection.
+By default, database connection encryption is enabled.
+However there are additional steps required.
+
+See the following manuals on how to customize connection encryption:
+
+* https://jdbc.postgresql.org/documentation/head/connect.html#ssl[JDBC connection parameters]
+* https://jdbc.postgresql.org/documentation/head/ssl-client.html[SSL verification methods]
+
+[IMPORTANT]
+====
+The built-in database provider only supports self-signed certificates.
+This is because Keycloak connects through the cluster-internal service and not an externally resolvable resp. verifiable hostname.
+====
+
+====
+Requirements
+
+* `commodore`
+* `kubectl`
+* `openssl`
+* `vault`
+====
+
+== Using self-signed certificates
+
+. Prepare certificate files when using self-signed certificates
++
+.Built-in database
+[source,bash]
+----
+# Adjust the lifetime as necessary
+lifetime=3650
+openssl req -x509 -newkey rsa:4096 -nodes -keyout server.key -out server.crt -days ${lifetime} -subj '/CN=keycloak'
+----
++
+.External database
+[source,bash]
+----
+# Save the cert and key in these temporary files
+editor server.key
+editor server.crt
+----
+
+. Store certificate in Vault
++
+[source,bash]
+----
+instance=keycloak
+parent="clusters/kv/${TENANT_ID}/${CLUSTER_ID}"
+
+# Use the 'patch' subcommand to add to existing secret
+vault kv patch "${parent}/${instance}" server-cert=@server.crt server-cert-key=@server.key
+----
+
+. Remove temporary files
++
+[source,bash]
+----
+rm server.{key,crt}
+----
+
+== Using valid server certificates
+
+. Configure TLS verification mode when using verified/signed certificates
++
+.Verified server certificate (only external database)
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      # Verify server certificate using the built-in CA bundle.
+      jdbcParams: sslmode=verify-ca&sslrootcert=/etc/ssl/certs/ca-bundle.crt
+      tls:
+        verification: verify
+----
+
+== Verify that Keycloak connects securely
+
+. Verify that Keycloak connects using TLS
++
+.Built-in database
+[source,bash]
+----
+namespace=syn-keycloak
+kubectl exec -it -n ${namespace} keycloak-postgresql-0 -c keycloak-postgresql -- sh -c \
+'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" '\
+'psql -c "SELECT datname, usename, ssl, client_addr FROM pg_stat_ssl JOIN pg_stat_activity ON pg_stat_ssl.pid = pg_stat_activity.pid;"'
+----
++
+.External database
+[source,bash]
+----
+# First, connect to your database server where `psql` is available.
+# Then connect to postgres.
+sudo -u postgres psql
+
+# List the connected users with the following query:
+SELECT datname, usename, ssl, client_addr FROM pg_stat_ssl JOIN pg_stat_activity ON pg_stat_ssl.pid = pg_stat_activity.pid;
+----
++
+For each `client_addr` you should see a `t` in the `ssl` column.
+
+== Disable encryption
+
+While not recommended, it's possible to disable encryption.
+Set the following parameters and skip the Vault steps:
+
+[source,yaml]
+----
+parameters:
+  keycloak:
+    database:
+      jdbcParams: ""
+      tls:
+        enabled: false
+    helm_values:
+      extraVolumes: ""
+      extraVolumeMounts: ""
+----

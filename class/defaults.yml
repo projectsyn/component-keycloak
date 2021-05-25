@@ -60,6 +60,14 @@ parameters:
       password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}'
       database: keycloak
       username: keycloak
+      jdbcParams: sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt
+
+      tls:
+        enabled: true
+        verification: selfsigned
+        certSecretName: keycloak-postgresql-tls
+        serverCert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert}'
+        serverCertKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-key}'
 
       # Used when `provider=external`
       external:
@@ -101,6 +109,19 @@ parameters:
             name: ${keycloak:admin:secretname}
         - secretRef:
             name: ${keycloak:database:secretname}
+      extraVolumes: |
+        - name: db-certs
+          secret:
+            secretName: ${keycloak:database:tls:certSecretName}
+            defaultMode: 0400
+            items:
+              - key: tls.crt
+                path: tls.crt
+      extraVolumeMounts: |
+        - name: db-certs
+          readOnly: true
+          mountPath: /opt/jboss/certs
+
       serviceAccount:
         labels: ${keycloak:labels}
       ingress:
@@ -134,3 +155,10 @@ parameters:
           registry: quay.io
         master:
           labels: ${keycloak:labels}
+        volumePermissions:
+          enabled: ${keycloak:database:tls:enabled}
+        tls:
+          enabled: ${keycloak:database:tls:enabled}
+          certificatesSecret: ${keycloak:database:tls:certSecretName}
+          certFilename: tls.crt
+          certKeyFilename: tls.key

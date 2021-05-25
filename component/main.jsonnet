@@ -17,9 +17,11 @@ local admin_secret = kube.Secret(params.admin.secretname) {
   },
 };
 
-local secrets = {
+local connection_secrets = {
   builtin: {
+    // this secret is shared between Keycloak and PostgreSQL
     'postgresql-password': params.database.password,
+    [if params.database.jdbcParams != '' then 'JDBC_PARAMS']: params.database.jdbcParams,
   },
   external: {
     DB_DATABASE: params.database.database,
@@ -28,6 +30,7 @@ local secrets = {
     DB_VENDOR: params.database.external.vendor,
     DB_ADDR: params.database.external.host,
     DB_PORT: std.toString(params.database.external.port),
+    [if params.database.jdbcParams != '' then 'JDBC_PARAMS']: params.database.jdbcParams,
   },
 };
 
@@ -35,7 +38,25 @@ local db_secret = kube.Secret(params.database.secretname) {
   metadata+: {
     labels+: params.labels,
   },
-  stringData: secrets[params.database.provider],
+  stringData: connection_secrets[params.database.provider],
+};
+
+// this secret is shared between Keycloak and PostgreSQL
+local db_cert_secret = kube.Secret(params.database.tls.certSecretName) {
+  metadata+: {
+    labels+: params.labels,
+  },
+  stringData:
+    if params.database.tls.verification == 'selfsigned' then
+      {
+        'tls.key': params.database.tls.serverCertKey,
+        'tls.crt': params.database.tls.serverCert,
+      }
+    else
+      {
+        'README.txt': 'Keycloak is configured with DB TLS verification mode "%s", no custom CA cert required' % [ params.database.tls.verification ],
+        'tls.crt': '',
+      },
 };
 
 // Define outputs below
@@ -43,4 +64,5 @@ local db_secret = kube.Secret(params.database.secretname) {
   '00_namespace': namespace,
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
+  [if params.database.tls.enabled then '12_db_certs']: db_cert_secret,
 }
