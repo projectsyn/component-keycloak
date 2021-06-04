@@ -74,22 +74,43 @@ local ns_patch =
   );
 
 local keycloak_tls = {
-  apiVersion: 'cert-manager.io/v1alpha2',
-  kind: 'Certificate',
-  metadata: {
-    name: params.acmecertificate.name,
-    labels: params.labels,
-  },
-  spec: {
-    secretName: params.acmecertificate.name,
-    dnsNames: [
-      params.acmecertificate.name,
-    ],
-    issuerRef: {
-      name: params.acmecertificate.issuer.name,
-      kind: 'ClusterIssuer',
-      group: 'cert-manager.io',
+  certmanager: {
+    apiVersion: params.tls.certmanager.apiVersion,
+    kind: 'Certificate',
+    metadata: {
+      name: params.tls.certmanager.certName,
+      labels: params.labels,
     },
+    spec: {
+      secretName: params.tls.secretName,
+      dnsNames: [
+        params.fqdn,
+      ],
+      issuerRef: {
+        name: params.tls.certmanager.issuer.name,
+        kind: params.tls.certmanager.issuer.kind,
+        group: params.tls.certmanager.issuer.group,
+      },
+    },
+  },
+  vault: kube.Secret(params.tls.secretName) {
+    metadata+: {
+      labels+: params.labels,
+    },
+    stringData: {
+      'tls.key': params.tls.vault.certKey,
+      'tls.crt': params.tls.vault.cert,
+    },
+  }
+};
+
+local ingress_tls = kube.Secret(params.ingress.tls.secretName) {
+  metadata+: {
+    labels+: params.labels,
+  },
+  stringData: {
+    'tls.key': params.ingress.tls.vault.certKey,
+    'tls.crt': params.ingress.tls.vault.cert,
   },
 };
 
@@ -100,5 +121,6 @@ local keycloak_tls = {
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
   [if params.database.tls.enabled then '12_db_certs']: db_cert_secret,
-  [if params.acmecertificate.enabled then '13_keycloak_tls']: keycloak_tls,
+  [if params.tls.variant != 'none' then '13_keycloak_tls']: keycloak_tls[params.tls.variant],
+  [if params.ingress.tls.vault.enabled then '14_ingress_tls']: ingress_tls,
 }

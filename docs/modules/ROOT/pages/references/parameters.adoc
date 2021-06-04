@@ -94,6 +94,78 @@ The Keycloak pod replicas.
 Usualy two for the redundancy during the maintenance.
 
 
+== `tls.variant`
+
+[horizontal]
+type:: string
+default:: `certmanager`
+
+Defines the variant how TLS certificates are deployed:
+
+* `none` for no TLS certificates
+* `certmanager` for certificates issued via cert-manager
+* `vault` for certificates stored in Vault
+
+
+== `tls.termination`
+
+[horizontal]
+type:: string
+default:: `passthrough`
+
+Defines the termination mode:
+
+* `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic
+* `reencrypt` TLS termination happens at the ingress or route, the traffic is reencrypted
+* `edge` TLS termination is done at the ingress or route, cluster internal traffic is unencrypted
+
+
+== `tls.secretName`
+
+[horizontal]
+type:: string
+default:: `passthrough`
+
+
+== `tls.vault.cert`
+
+[horizontal]
+type:: string
+default:: Vault reference
+
+
+== `tls.vault.cert`
+
+[horizontal]
+type:: String
+default:: Vault reference
+
+
+== `tls.certmanager.issuer.name`
+
+[horizontal]
+type:: string
+default:: `letsencrypt-production`
+
+Define the issuer name. This is usualy `letsencrypt-production` or `letsencrypt-staging`.
+
+
+== `tls.certmanager.issuer.kind`
+
+[horizontal]
+type:: string
+default:: `ClusterIssuer`
+
+Define the issuer kind. Can be `ClusterIssuer` or `Issuer`.
+
+
+== `tls.certmanager.issuer.group`
+
+[horizontal]
+type:: string
+default:: `cert-manager.io`
+
+
 == `ingress.enabled`
 
 [horizontal]
@@ -127,9 +199,9 @@ parameters:
 
 [horizontal]
 type:: string
-default:: `${keycloak:fqdn}`
+default:: `ingress-tls`
 
-Allows overwriting the default TLS secret name of `${keycloak:fqdn}`.
+Deprecated see `ingress.tls.secretName`.
 
 
 == `ingress.controllerNamespace`
@@ -142,6 +214,46 @@ The namespace where the ingress controller is running.
 This is only relevant when enabling the network policy with `helm_values.networkPolicy.enabled`.
 
 
+== `ingress.tls.secretName`
+
+[horizontal]
+type:: string
+default:: `ingress-tls`
+
+Allows overwriting the default TLS secret name of `ingress-tls`.
+
+
+== `ingress.tls.vault.enabled`
+
+[horizontal]
+type:: bool
+default:: `Depends on ${keycloak:tls:variant} ${keycloak:tls:termination}`
+
+Create ingress-tls certificate, if `${keycloak:tls:variant}` is `vault` and the `${keycloak:tls:termination}` is
+`edge` or `reencrypt`.
+
+
+== `ingress.tls.vault.enabled`
+
+[horizontal]
+type:: bool
+default:: `Depends on ${keycloak:tls:variant} ${keycloak:tls:termination}`
+
+
+== `ingress.tls.vault.cert`
+
+[horizontal]
+type:: string
+default:: Vault reference
+
+
+== `ingress.tls.vault.certKey`
+
+[horizontal]
+type:: string
+default:: Vault reference
+
+
 == `route.enabled`
 
 [horizontal]
@@ -149,33 +261,6 @@ type:: bool
 default:: `false`
 
 Create a route object on an OpenShift cluster.
-
-
-== `acmecertificate.enabled`
-
-[horizontal]
-type:: bool
-default:: `false`
-
-Create a certificate object for the cert-manager to issue a certificate for the FQDN `${keycloak:fqdn}`.
-
-
-== `acmecertificate.name`
-
-[horizontal]
-type:: string
-default:: `${keycloak:fqdn}`
-
-Name of the secret the cert-manager saves the issued certificate to.
-
-
-== `acmecertificate.issuer.name`
-
-[horizontal]
-type:: string
-default:: `letsencrypt-production`
-
-Define the issuer name. This is usualy `letsencrypt-production` or `letsencrypt-staging`.
 
 
 == `labels."app.kubernetes.io/name"`
