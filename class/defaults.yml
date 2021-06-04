@@ -104,7 +104,7 @@ parameters:
       annotations: {}
       secretName: ingress-tls
       tls:
-        secretName: ${keycloak:secretName}
+        secretName: ${keycloak:ingress:secretName}
         vault:
           enabled: ${keycloak:_ingress_tls_vault_secret_enabled:${keycloak:tls:variant}:${keycloak:tls:termination}}
           cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}'
