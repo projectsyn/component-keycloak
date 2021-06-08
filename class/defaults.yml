@@ -64,10 +64,7 @@ parameters:
         - mountPath: /etc/x509/https
           name: keycloak-tls
           readOnly: true
-      reencrypt: |
-        - mountPath: /etc/x509/https
-          name: keycloak-tls
-          readOnly: true
+      reencrypt: ${keycloak:_extravolumemounts_keycloak_tls:passthrough} # same as passthrough
       edge: ''
 
     namespace: syn-${_instance}
