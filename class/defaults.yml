@@ -142,6 +142,8 @@ parameters:
       networkPolicy:
         enabled: true
       service:
+        # Workaround until https://github.com/codecentric/helm-charts/pull/432 is solved
+        httpPort: 8080
         labels: ${keycloak:labels}
       serviceMonitor:
         enabled: ${keycloak:monitoring:enabled}
