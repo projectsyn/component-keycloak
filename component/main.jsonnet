@@ -1,6 +1,7 @@
 // main template for keycloak
 local kap = import 'lib/kapitan.libjsonnet';
 local kube = import 'lib/kube.libjsonnet';
+local rl = import 'lib/resource-locker.libjsonnet';
 local inv = kap.inventory();
 // The hiera parameters for the component
 local params = inv.parameters.keycloak;
@@ -59,9 +60,23 @@ local db_cert_secret = kube.Secret(params.database.tls.certSecretName) {
       },
 };
 
+// Add a label to the namespace of the ingress-controller for the network policy selector.
+local ns_patch =
+  rl.Patch(
+    kube.Namespace(params.ingress.controllerNamespace),
+    {
+      metadata: {
+        labels: {
+          name: params.ingress.controllerNamespace,
+        },
+      },
+    }
+  );
+
 // Define outputs below
 {
   '00_namespace': namespace,
+  [if params.ingress.enabled && params.helm_values.networkPolicy.enabled then '01_ingress_controller_ns_patch']: ns_patch,
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
   [if params.database.tls.enabled then '12_db_certs']: db_cert_secret,
