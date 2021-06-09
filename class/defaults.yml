@@ -141,7 +141,8 @@ parameters:
         labels: ${keycloak:labels}
         host: ${keycloak:fqdn}
       networkPolicy:
-        enabled: true
+        # Note: Do not enable when using ingress controller with hostNetwork=true.
+        enabled: false
         # Note: On Syn-managed OpenShift4 clusters there should be already NetworkPolicies that allow traffic from Ingress controller out-of-the-box.
         extraFrom:
           - podSelector:
