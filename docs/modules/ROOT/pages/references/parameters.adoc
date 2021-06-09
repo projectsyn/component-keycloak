@@ -132,6 +132,16 @@ default:: `${keycloak:fqdn}`
 Allows overwriting the default TLS secret name of `${keycloak:fqdn}`.
 
 
+== `ingress.controllerNamespace`
+
+[horizontal]
+type:: string
+default:: `ingress-nginx`
+
+The namespace where the ingress controller is running.
+This is only relevant when enabling the network policy with `helm_values.networkPolicy.enabled`.
+
+
 == `route.enabled`
 
 [horizontal]

@@ -25,6 +25,7 @@ parameters:
       enabled: false
       annotations: {}
       secretName: ${keycloak:fqdn}
+      controllerNamespace: ingress-nginx
     route:
       enabled: false
     # Labels can be extended in the config hierarchy by providing further
@@ -140,8 +141,19 @@ parameters:
         labels: ${keycloak:labels}
         host: ${keycloak:fqdn}
       networkPolicy:
-        enabled: true
+        # Note: Do not enable when using ingress controller with hostNetwork=true.
+        enabled: false
+        # Note: On Syn-managed OpenShift4 clusters there should be already NetworkPolicies that allow traffic from Ingress controller out-of-the-box.
+        extraFrom:
+          - podSelector:
+              matchLabels:
+                app: ingress-nginx
+            namespaceSelector:
+              matchLabels:
+                name: ${keycloak:ingress:controllerNamespace}
       service:
+        # Workaround until https://github.com/codecentric/helm-charts/pull/432 is solved
+        httpPort: 8080
         labels: ${keycloak:labels}
       serviceMonitor:
         enabled: ${keycloak:monitoring:enabled}
