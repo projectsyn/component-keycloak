@@ -1,0 +1,34 @@
+= Upgrade from 2.x to 3.x
+
+This guide describes the steps to perform an upgrade of the component from version 2.x to 3.x.
+
+== Step-by-step guide
+
+Version 2.1.0 introduced and enabled network policies by default.
+Version 3.0 disables the network policy **for Keycloak** due to a regression in certain environments.
+
+NOTE: The network policy for the built-in database is unaffected.
+
+=== When using default network policy settings
+
+Version 3.0 sets the parameter `helm_values.networkPolicy.enabled` back to `false`.
+The reason behind it is explained in xref:explanations/default-features.adoc[Default features].
+
+If the circumstances explained there don't apply to you and you still explicitly require this policy you can configure the following parameters to re-enable it:
+
+[source,yaml]
+----
+parameters:
+  keycloak:
+    ingress:
+      controllerNamespace: ingress-nginx # default, but set to where your ingress controller is
+    helm_values:
+      networkPolicy:
+        enabled: true
+----
+
+NOTE: If you don't use nginx as ingress controller, have a look at `helm_values.networkPolicy.extraFrom` parameter and customize as needed.
+
+=== When network policy already disabled
+
+If you've explicitly disabled the network policy for Keycloak since v2.1.0, you can remove the parameter `helm_values.networkPolicy.enabled` from the hierarchy (but you don't need to).
