@@ -117,7 +117,6 @@ Defines the termination mode:
 
 * `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic
 * `reencrypt` TLS termination happens at the ingress or route, the traffic is reencrypted
-* `edge` TLS termination is done at the ingress or route, cluster internal traffic is unencrypted
 
 
 == `tls.secretName`
@@ -230,7 +229,7 @@ type:: bool
 default:: `Depends on ${keycloak:tls:variant} ${keycloak:tls:termination}`
 
 Create ingress-tls certificate, if `${keycloak:tls:variant}` is `vault` and the `${keycloak:tls:termination}` is
-`edge` or `reencrypt`.
+`reencrypt`.
 
 
 == `ingress.tls.vault.enabled`

@@ -11,61 +11,27 @@ parameters:
       # and `keycloak.tls.termination`
       none:
         passthrough: ${keycloak:ingress:annotations}
-        edge: ${keycloak:ingress:annotations}
         reencrypt: ${keycloak:ingress:annotations}
       certmanager:
         passthrough:
           nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        edge:
-          kubernetes.io/tls-acme: 'true'
-          cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
         reencrypt:
           nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       vault:
         passthrough: ${keycloak:ingress:annotations}
-        edge: ${keycloak:ingress:annotations}
         reencrypt: ${keycloak:ingress:annotations}
     =_ingress_tls_vault_secret_enabled:
       # This lookup table controls whether create the ingress-tls secret depending on the value of `keycloak.tls.variant`
       # and `keycloak.tls.termination`
       none:
         passthrough: false
-        edge: false
         reencrypt: false
       certmanager:
         passthrough: false
-        edge: false
         reencrypt: false
       vault:
         passthrough: false
-        edge: true
         reencrypt: true
-    =_ingress_service_port:
-      # This lookup table controls whether to configure the port depending on the value of `keycloak.tls.termination`
-      passthrough: https
-      edge: http
-      reencrypt: https
-    =_extravolumes_keycloak_tls:
-      # This lookup table controls whether to inject the keycloak-tls depending on the value of `keycloak.tls.termination`
-      passthrough: |
-        - name: keycloak-tls
-          secret:
-            defaultMode: 420
-            secretName: ${keycloak:tls:secretName}
-      reencrypt: |
-        - name: keycloak-tls
-          secret:
-            defaultMode: 420
-            secretName: ${keycloak:tls:secretName}
-      edge: ''
-    =_extravolumemounts_keycloak_tls:
-      # This lookup table controls whether to use inject the keycloak-tls depending on the value of `keycloak.tls.termination`
-      passthrough: |
-        - mountPath: /etc/x509/https
-          name: keycloak-tls
-          readOnly: true
-      reencrypt: ${keycloak:_extravolumemounts_keycloak_tls:passthrough} # same as passthrough
-      edge: ''
 
     namespace: syn-${_instance}
     release_name: keycloak
@@ -198,12 +164,17 @@ parameters:
             items:
               - key: tls.crt
                 path: tls.crt
-        ${keycloak:_extravolumes_keycloak_tls:${keycloak:tls:termination}}
+        - name: keycloak-tls
+          secret:
+            secretName: ${keycloak:tls:secretName}
+            defaultMode: 420
       extraVolumeMounts: |
         - name: db-certs
           readOnly: true
           mountPath: /opt/jboss/certs
-        ${keycloak:_extravolumemounts_keycloak_tls:${keycloak:tls:termination}}
+        - name: keycloak-tls
+          readOnly: true
+          mountPath: /etc/x509/https
 
       serviceAccount:
         labels: ${keycloak:labels}
@@ -211,7 +182,7 @@ parameters:
         enabled: ${keycloak:ingress:enabled}
         annotations: ${keycloak:_ingress_annotations:${keycloak:tls:variant}:${keycloak:tls:termination}}
         labels: ${keycloak:labels}
-        servicePort: ${keycloak:_ingress_service_port:${keycloak:tls:termination}}
+        servicePort: https
         rules:
           - host: ${keycloak:fqdn}
             paths: ["/"]
