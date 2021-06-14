@@ -83,7 +83,7 @@ parameters:
     # TLS configuration
     tls:
       variant: certmanager
-      termination: passthrough
+      termination: reencrypt
       secretName: keycloak-tls
       vault:
         cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}'
