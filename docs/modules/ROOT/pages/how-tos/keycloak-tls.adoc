@@ -1,0 +1,61 @@
+= Setup a TLS certificate for Keycloak
+
+This guide provides an example how to setup a TLS certificate for Keycloak.
+By default a certificate is required. It depends on the ingress configuration, if this certificate is configured in vault (self-signed/CA issued) or issued via the cert-manager.
+
+See the following manuals on how to setup the Keycloak encryption:
+
+* https://hub.docker.com/r/jboss/keycloak/[Docker image configuration]
+
+====
+Requirements
+
+* `commodore`
+* `kubectl`
+* `openssl`
+* `vault`
+====
+
+== Using self-signed certificates for the cluster internal connection
+
+. Prepare certificate files when using self-signed certificates
++
+[source,bash]
+----
+# Adjust the lifetime as necessary
+lifetime=3650
+openssl req -x509 -newkey rsa:4096 -nodes -keyout keycloak.key -out keycloak.crt -days ${lifetime} -subj '/CN=keycloak'
+----
+
+. Store certificate in Vault
++
+[source,bash]
+----
+instance=keycloak
+parent="clusters/kv/${TENANT_ID}/${CLUSTER_ID}"
+
+# Use the 'patch' subcommand to add to existing secret
+vault kv patch "${parent}/${instance}" keycloak-cert=@keycloak.crt keycloak-cert-key=@keycloak.key
+----
+
+. Remove temporary files
++
+[source,bash]
+----
+rm keycloak.{key,crt}
+----
+
+== Using CA issued certificates
+
+. Configure TLS verification mode when using CA issued certificates
++
+. Store certificate in Vault
++
+[source,bash]
+----
+instance=keycloak
+parent="clusters/kv/${TENANT_ID}/${CLUSTER_ID}"
+
+# Use the 'patch' subcommand to add to existing secret
+vault kv patch "${parent}/${instance}" keycloak-cert=@issued.crt keycloak-cert-key=@issued.key
+----
