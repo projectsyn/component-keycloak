@@ -16,7 +16,8 @@ parameters:
         passthrough:
           nginx.ingress.kubernetes.io/ssl-passthrough: "true"
         reencrypt:
-          nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+          kubernetes.io/tls-acme: 'true'
+          cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
       vault:
         passthrough: ${keycloak:ingress:annotations}
         reencrypt: ${keycloak:ingress:annotations}
