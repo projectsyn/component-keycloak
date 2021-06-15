@@ -174,6 +174,17 @@ default:: `false`
 Create an ingress object used usually for standard Kubernetes clusters.
 
 
+== `ingress.controller`
+
+[horizontal]
+type:: string
+default:: `nginx`
+
+Does define the used ingress controller on the cluster side.
+
+Defaults to `nginx` and this is currently also the only valid option.
+
+
 == `ingress.annotations`
 
 [horizontal]
