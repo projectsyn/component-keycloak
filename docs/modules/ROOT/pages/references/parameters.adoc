@@ -180,9 +180,11 @@ Create an ingress object used usually for standard Kubernetes clusters.
 type:: dict
 default:: `{}`
 
-Define annotations for the ingress object.
+Default takes predefined annotations configured from `tls.variant` and `tls.termination`.
 
-This allows an automatic ACME based certificate creation via cert-manager:
+The default can always be replaced by an own definition of annotations.
+
+An example shows how to allow an automatic ACME based certificate creation via cert-manager:
 [source,yaml]
 ----
 parameters:

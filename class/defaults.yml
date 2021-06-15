@@ -10,8 +10,8 @@ parameters:
       # This lookup table controls whether to set specific annotations depending on the value of `keycloak.tls.variant`
       # and `keycloak.tls.termination`
       none:
-        passthrough: ${keycloak:ingress:annotations}
-        reencrypt: ${keycloak:ingress:annotations}
+        passthrough:
+        reencrypt:
       certmanager:
         passthrough:
           nginx.ingress.kubernetes.io/ssl-passthrough: "true"
@@ -19,8 +19,8 @@ parameters:
           kubernetes.io/tls-acme: 'true'
           cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
       vault:
-        passthrough: ${keycloak:ingress:annotations}
-        reencrypt: ${keycloak:ingress:annotations}
+        passthrough:
+        reencrypt:
     =_ingress_tls_vault_secret_enabled:
       # This lookup table controls whether create the ingress-tls secret depending on the value of `keycloak.tls.variant`
       # and `keycloak.tls.termination`
@@ -65,7 +65,7 @@ parameters:
     # Ingress or Route should be enabled on the distribution level
     ingress:
       enabled: false
-      annotations: {}
+      annotations: ${keycloak:_ingress_annotations:${keycloak:tls:variant}:${keycloak:tls:termination}}
       secretName: ingress-tls
       tls:
         secretName: ${keycloak:ingress:secretName}
@@ -181,7 +181,7 @@ parameters:
         labels: ${keycloak:labels}
       ingress:
         enabled: ${keycloak:ingress:enabled}
-        annotations: ${keycloak:_ingress_annotations:${keycloak:tls:variant}:${keycloak:tls:termination}}
+        annotations: ${keycloak:ingress:annotations}
         labels: ${keycloak:labels}
         servicePort: https
         rules:
