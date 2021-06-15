@@ -102,7 +102,6 @@ default:: `certmanager`
 
 Defines the variant how TLS certificates are deployed:
 
-* `none` for no TLS certificates
 * `certmanager` for certificates issued via cert-manager
 * `vault` for certificates stored in Vault
 
