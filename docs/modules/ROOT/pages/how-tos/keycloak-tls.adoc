@@ -1,7 +1,8 @@
 = Setup a TLS certificate for Keycloak
 
 This guide provides an example how to setup a TLS certificate for Keycloak.
-By default a certificate is required. It depends on the ingress configuration, if this certificate is configured in vault (self-signed/CA issued) or issued via the cert-manager.
+By default a certificate for Keycloak is required.
+It depends on the ingress configuration, if this certificate - self-signed or CA isused - is configured in vault or issued via the cert-manager.
 
 See the following manuals on how to setup the Keycloak encryption:
 
