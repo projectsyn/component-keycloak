@@ -15,7 +15,6 @@ parameters:
               nginx.ingress.kubernetes.io/ssl-passthrough: "true"
           vault:
               nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-          none:
         reencrypt:
           certmanager:
               kubernetes.io/tls-acme: 'true'
@@ -29,13 +28,9 @@ parameters:
             nginx.ingress.kubernetes.io/proxy-ssl-secret: ${keycloak:ingress:tls:secretName}
             nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
             nginx.ingress.kubernetes.io/proxy-ssl-protocols: "TLSv1.2 TLSv1.3"
-          none:
     =_ingress_tls_vault_secret_enabled:
       # This lookup table controls whether create the ingress-tls secret depending on the value of `keycloak.tls.variant`
       # and `keycloak.tls.termination`
-      none:
-        passthrough: false
-        reencrypt: false
       certmanager:
         passthrough: false
         reencrypt: false
