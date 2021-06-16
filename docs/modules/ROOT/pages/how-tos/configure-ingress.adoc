@@ -62,14 +62,14 @@ parameters:
       termination: passthrough
 ----
 
-. If you're using CA issued certificates, change the variant:
+. If you're using CA issued certificates, change the provider:
 +
 [source,yaml]
 ----
 parameters:
   keycloak:
     tls:
-      variant: vault
+      provider: vault
 ----
 +
 See xref:how-tos/keycloak-tls.adoc[Setup a TLS certificate for Keycloak] for how to store a certificate in vault.

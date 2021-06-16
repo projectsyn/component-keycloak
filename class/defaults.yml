@@ -8,7 +8,7 @@ parameters:
       external: false
     =_ingress_annotations:
       # This lookup table controls whether to set specific annotations depending on the value of `keycloak.ingress.controller`,
-      # `keycloak.tls.termination` and `keycloak.tls.variant`
+      # `keycloak.tls.termination` and `keycloak.tls.provider`
       nginx:
         passthrough:
           certmanager:
@@ -29,7 +29,7 @@ parameters:
             nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
             nginx.ingress.kubernetes.io/proxy-ssl-protocols: "TLSv1.2 TLSv1.3"
     =_ingress_tls_vault_secret_enabled:
-      # This lookup table controls whether create the ingress-tls secret depending on the value of `keycloak.tls.variant`
+      # This lookup table controls whether create the ingress-tls secret depending on the value of `keycloak.tls.provider`
       # and `keycloak.tls.termination`
       certmanager:
         passthrough: false
@@ -53,7 +53,7 @@ parameters:
     replicas: 2
     # TLS configuration
     tls:
-      variant: certmanager
+      provider: certmanager
       termination: reencrypt
       secretName: keycloak-tls
       vault:
@@ -70,12 +70,13 @@ parameters:
     ingress:
       enabled: true
       controller: nginx
-      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:tls:termination}:${keycloak:tls:variant}}
+      controllerNamespace: ingress-nginx
+      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:tls:termination}:${keycloak:tls:provider}}
       secretName: ingress-tls
       tls:
         secretName: ${keycloak:ingress:secretName}
         vault:
-          enabled: ${keycloak:_ingress_tls_vault_secret_enabled:${keycloak:tls:variant}:${keycloak:tls:termination}}
+          enabled: ${keycloak:_ingress_tls_vault_secret_enabled:${keycloak:tls:provider}:${keycloak:tls:termination}}
           cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}'
           certKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}'
     route:

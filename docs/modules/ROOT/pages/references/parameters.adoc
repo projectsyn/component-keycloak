@@ -94,13 +94,13 @@ The Keycloak pod replicas.
 Usualy two for the redundancy during the maintenance.
 
 
-== `tls.variant`
+== `tls.provider`
 
 [horizontal]
 type:: string
 default:: `certmanager`
 
-Defines the variant how TLS certificates are deployed:
+Defines how TLS certificates are provisioned:
 
 * `certmanager` for certificates issued via cert-manager
 * `vault` for certificates stored in Vault
@@ -190,7 +190,7 @@ Defaults to `nginx` and this is currently also the only valid option.
 type:: dict
 default:: `{}`
 
-Default takes predefined annotations configured from `tls.variant` and `tls.termination`.
+Default takes predefined annotations configured from `tls.provider` and `tls.termination`.
 
 The default can always be replaced by an own definition of annotations.
 
@@ -238,9 +238,9 @@ Allows overwriting the default TLS secret name of `ingress-tls`.
 
 [horizontal]
 type:: bool
-default:: `Depends on ${keycloak:tls:variant} ${keycloak:tls:termination}`
+default:: `Depends on ${keycloak:tls:provider} ${keycloak:tls:termination}`
 
-Create ingress-tls certificate, if `${keycloak:tls:variant}` is `vault` and the `${keycloak:tls:termination}` is
+Create ingress-tls certificate, if `${keycloak:tls:provider}` is `vault` and the `${keycloak:tls:termination}` is
 `reencrypt`.
 
 
@@ -248,7 +248,7 @@ Create ingress-tls certificate, if `${keycloak:tls:variant}` is `vault` and the 
 
 [horizontal]
 type:: bool
-default:: `Depends on ${keycloak:tls:variant} ${keycloak:tls:termination}`
+default:: `Depends on ${keycloak:tls:provider} ${keycloak:tls:termination}`
 
 
 == `ingress.tls.vault.cert`

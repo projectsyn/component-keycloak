@@ -121,6 +121,6 @@ local ingress_tls = kube.Secret(params.ingress.tls.secretName) {
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
   [if params.database.tls.enabled then '12_db_certs']: db_cert_secret,
-  '13_keycloak_tls': keycloak_tls[params.tls.variant],
+  [if params.ingress.tls.provider == 'vault' then '13_keycloak_certs']: keycloak_tls[params.tls.provider],
   [if params.ingress.tls.vault.enabled then '14_ingress_tls']: ingress_tls,
 }
