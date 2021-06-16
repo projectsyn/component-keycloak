@@ -1,58 +1,40 @@
 = Configure Keycloak ingress
 
-Incoming network traffic to the Keycloak service is usually routed via an ingress or a route object for OpenShift.
+Incoming network traffic to the Keycloak service is usually routed via an ingress.
 
-== Ingress over an NGINX Controller
+[NOTE]
+====
+Currently, only NGINX ingress controller is supported and tested.
+Others may work as well, but you may need to customize some parameters on your own (or contribute back to the component).
+====
 
-. In a first step the ingress object needs to be enabled
-+
-[source,bash]
-----
-parameters:
-  keycloak:
-    ingress:
-      enabled: true
-----
+See also the following manuals on how to setup the Keycloak encryption:
 
-. Configure the ingress controller (can be skipped as it is the default value)
-+
-[source,bash]
-----
-parameters:
-  keycloak:
-    ingress:
-      controller: nginx
-----
+* https://github.com/keycloak/keycloak-containers/blob/master/server/README.md[Docker image configuration]
 
-. Choose where the TLS session to Keycloak is terminated
+First, choose where the TLS session to Keycloak is terminated.
 
-.. Terminate the TLS session on the ingress and on Keycloak
-+
-[source,bash]
-----
-parameters:
-  keycloak:
-    tls:
-      termination: reencrypt
-----
-+
-This requires Keycloak has a self singed certificate.
-See xref:how-tos/keycloak-tls.adoc[Setup a TLS certificate for Keycloak].
+== Encryption mode: Re-encrypt
 
-.. Terminate the TLS session direct on Keycloak
-+
-[source,bash]
-----
-parameters:
-  keycloak:
-    tls:
-      termination: passthrough
-----
-+
-This requires also that the NGINX Controller is configured to pass through the TLS traffic.
-This is not enabled by default:
-+
-[source,bash]
+In re-encryption mode, the traffic is terminated at the NGINX ingress controller, and then re-encrypted when connecting to Keycloak pods.
+By default, this component will use Let's Encrypt (cert-manager) so that NGINX terminates with valid certificates.
+The connection to Keycloak is using self-signed certificates since Keycloak does not reload certificates when they have changed in the container.
+
+Re-encryption is the default, so there's not much to configure.
+Proceed with xref:how-tos/keycloak-tls.adoc[Setup a TLS certificate for Keycloak].
+
+== Encryption mode: Pass-through
+
+In the pass-through mode, the controller will not terminate the TLS session and instead directly forward the HTTPS traffic to Keycloak.
+The controller needs to support pass-through mode.
+
+[IMPORTANT]
+====
+This mode requires that the NGINX Controller is configured to pass through the TLS traffic.
+This is not enabled by default.
+With https://github.com/projectsyn/component-ingress-nginx[component-ingress-nginx], you can enable it like following:
+
+[source,yaml]
 ----
 parameters:
   ingress_nginx:
@@ -61,24 +43,28 @@ parameters:
         extraArgs:
           enable-ssl-passthrough: true
 ----
+====
+
+[WARNING]
+====
+When using certificates from Let's Encrypt (cert-manager), ensure that you regularly restart Keycloak.
+Otherwise, you may end up serving expired certificates!
+The default Keycloak container image does not reload the certificates when they have changed in the mounted filesystem.
+====
+
+. Terminate the TLS session directly in Keycloak
 +
-. Configure how the certificates being issued
-+
-.. If you plan to use the cert-manager to issue certificates:
-+
-[source,bash]
+[source,yaml]
 ----
 parameters:
   keycloak:
     tls:
-      variant: certmanager
+      termination: passthrough
 ----
+
+. If you're using CA issued certificates, change the variant:
 +
-By default certificates are issued from Let's encrypt.
-+
-.. Manually issued certificates stored in vault:
-+
-[source,bash]
+[source,yaml]
 ----
 parameters:
   keycloak:
@@ -86,4 +72,4 @@ parameters:
       variant: vault
 ----
 +
-See xref:how-tos/keycloak-tls.adoc[Setup a TLS certificate for Keycloak] for how to create a certificate.
+See xref:how-tos/keycloak-tls.adoc[Setup a TLS certificate for Keycloak] for how to store a certificate in vault.
