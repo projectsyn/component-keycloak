@@ -68,7 +68,7 @@ parameters:
           group: cert-manager.io
     # Ingress or Route should be enabled on the distribution level
     ingress:
-      enabled: false
+      enabled: true
       controller: nginx
       annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:tls:termination}:${keycloak:tls:variant}}
       secretName: ingress-tls
