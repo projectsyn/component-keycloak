@@ -20,23 +20,14 @@ parameters:
             kubernetes.io/tls-acme: 'true'
             cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            nginx.ingress.kubernetes.io/proxy-ssl-secret: ${keycloak:ingress:tls:secretName}
+            nginx.ingress.kubernetes.io/proxy-ssl-secret: ${keycloak:tls:secretName}
             nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
             nginx.ingress.kubernetes.io/proxy-ssl-protocols: "TLSv1.2 TLSv1.3"
           vault:
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            nginx.ingress.kubernetes.io/proxy-ssl-secret: ${keycloak:ingress:tls:secretName}
+            nginx.ingress.kubernetes.io/proxy-ssl-secret: ${keycloak:tls:secretName}
             nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
             nginx.ingress.kubernetes.io/proxy-ssl-protocols: "TLSv1.2 TLSv1.3"
-    =_ingress_tls_vault_secret_enabled:
-      # This lookup table controls whether create the ingress-tls secret depending on the value of `keycloak.tls.provider`
-      # and `keycloak.tls.termination`
-      certmanager:
-        passthrough: false
-        reencrypt: false
-      vault:
-        passthrough: false
-        reencrypt: true
 
     namespace: syn-${_instance}
     release_name: keycloak
@@ -76,7 +67,6 @@ parameters:
       tls:
         secretName: ${keycloak:ingress:secretName}
         vault:
-          enabled: ${keycloak:_ingress_tls_vault_secret_enabled:${keycloak:tls:provider}:${keycloak:tls:termination}}
           cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}'
           certKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}'
     route:

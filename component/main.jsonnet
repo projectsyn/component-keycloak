@@ -73,38 +73,39 @@ local ns_patch =
     }
   );
 
-local keycloak_tls = {
-  certmanager: {
-    apiVersion: params.tls.certmanager.apiVersion,
-    kind: 'Certificate',
-    metadata: {
-      name: params.tls.certmanager.certName,
-      labels: params.labels,
-    },
-    spec: {
-      secretName: params.tls.secretName,
-      dnsNames: [
-        params.fqdn,
-      ],
-      issuerRef: {
-        name: params.tls.certmanager.issuer.name,
-        kind: params.tls.certmanager.issuer.kind,
-        group: params.tls.certmanager.issuer.group,
-      },
-    },
+local keycloak_cert_secret = kube.Secret(params.tls.secretName) {
+  metadata+: {
+    labels+: params.labels,
   },
-  vault: kube.Secret(params.tls.secretName) {
-    metadata+: {
-      labels+: params.labels,
-    },
-    stringData: {
-      'tls.key': params.tls.vault.certKey,
-      'tls.crt': params.tls.vault.cert,
+  stringData: {
+    'tls.key': params.tls.vault.certKey,
+    'tls.crt': params.tls.vault.cert,
+    // CA is required by nginx in passthrough mode
+    'ca.crt': params.tls.vault.cert,
+  },
+};
+
+local cert_manager_cert = {
+  apiVersion: params.tls.certmanager.apiVersion,
+  kind: 'Certificate',
+  metadata: {
+    name: params.tls.certmanager.certName,
+    labels: params.labels,
+  },
+  spec: {
+    secretName: params.tls.secretName,
+    dnsNames: [
+      params.fqdn,
+    ],
+    issuerRef: {
+      name: params.tls.certmanager.issuer.name,
+      kind: params.tls.certmanager.issuer.kind,
+      group: params.tls.certmanager.issuer.group,
     },
   },
 };
 
-local ingress_tls = kube.Secret(params.ingress.tls.secretName) {
+local ingress_tls_secret = kube.Secret(params.ingress.tls.secretName) {
   metadata+: {
     labels+: params.labels,
   },
@@ -121,6 +122,7 @@ local ingress_tls = kube.Secret(params.ingress.tls.secretName) {
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
   [if params.database.tls.enabled then '12_db_certs']: db_cert_secret,
-  [if params.ingress.tls.provider == 'vault' then '13_keycloak_certs']: keycloak_tls[params.tls.provider],
-  [if params.ingress.tls.vault.enabled then '14_ingress_tls']: ingress_tls,
+  [if !(params.tls.termination == 'passthrough' && params.tls.provider == 'certmanager') then '13_keycloak_certs']: keycloak_cert_secret,
+  [if params.tls.termination == 'reencrypt' && params.tls.provider == 'vault' then '14_ingress_certs']: ingress_tls_secret,
+  [if params.tls.termination == 'passthrough' && params.tls.provider == 'certmanager' then '20_le_cert']: cert_manager_cert,
 }

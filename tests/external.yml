@@ -15,3 +15,6 @@ parameters:
       jdbcParams: sslmode=verify-ca&sslrootcert=/etc/ssl/certs/ca-bundle.crt
       tls:
         verification: verify
+    tls:
+      provider: vault
+      termination: passthrough
