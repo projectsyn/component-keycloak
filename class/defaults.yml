@@ -20,14 +20,8 @@ parameters:
             kubernetes.io/tls-acme: 'true'
             cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            nginx.ingress.kubernetes.io/proxy-ssl-secret: ${keycloak:tls:secretName}
-            nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
-            nginx.ingress.kubernetes.io/proxy-ssl-protocols: "TLSv1.2 TLSv1.3"
           vault:
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            nginx.ingress.kubernetes.io/proxy-ssl-secret: ${keycloak:tls:secretName}
-            nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
-            nginx.ingress.kubernetes.io/proxy-ssl-protocols: "TLSv1.2 TLSv1.3"
 
     namespace: syn-${_instance}
     release_name: keycloak
