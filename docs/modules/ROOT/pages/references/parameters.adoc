@@ -102,27 +102,27 @@ default:: `certmanager`
 
 Defines how TLS certificates are provisioned:
 
-* `certmanager` for certificates issued via cert-manager
-* `vault` for certificates stored in Vault
+* `certmanager` for certificates issued via cert-manager.
+* `vault` for certificates stored in Vault.
 
 
 == `tls.termination`
 
 [horizontal]
 type:: string
-default:: `passthrough`
+default:: `reencrypt`
 
 Defines the termination mode:
 
-* `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic
-* `reencrypt` TLS termination happens at the ingress or route, the traffic is reencrypted
+* `reencrypt` TLS termination happens at the ingress or route, the traffic is re-encrypted.
+* `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic.
 
 
 == `tls.secretName`
 
 [horizontal]
 type:: string
-default:: `passthrough`
+default:: `keycloak-tls`
 
 
 == `tls.vault.cert`
@@ -145,7 +145,8 @@ default:: Vault reference
 type:: string
 default:: `letsencrypt-production`
 
-Define the issuer name. This is usualy `letsencrypt-production` or `letsencrypt-staging`.
+Define the issuer name.
+This is usually `letsencrypt-production` or `letsencrypt-staging`.
 
 
 == `tls.certmanager.issuer.kind`
@@ -154,7 +155,8 @@ Define the issuer name. This is usualy `letsencrypt-production` or `letsencrypt-
 type:: string
 default:: `ClusterIssuer`
 
-Define the issuer kind. Can be `ClusterIssuer` or `Issuer`.
+Define the issuer kind.
+Can be `ClusterIssuer` or `Issuer`.
 
 
 == `tls.certmanager.issuer.group`
@@ -168,7 +170,7 @@ default:: `cert-manager.io`
 
 [horizontal]
 type:: bool
-default:: `false`
+default:: `true`
 
 Create an ingress object used usually for standard Kubernetes clusters.
 
@@ -181,7 +183,7 @@ default:: `nginx`
 
 Does define the used ingress controller on the cluster side.
 
-Defaults to `nginx` and this is currently also the only valid option.
+Defaults to `nginx` and this is currently also the only supported option.
 
 
 == `ingress.annotations`
@@ -190,7 +192,7 @@ Defaults to `nginx` and this is currently also the only valid option.
 type:: dict
 default:: `{}`
 
-Default takes predefined annotations configured from `tls.provider` and `tls.termination`.
+Default takes predefined annotations configured depending on `tls.provider` and `tls.termination`.
 
 The default can always be replaced by an own definition of annotations.
 
@@ -204,15 +206,6 @@ parameters:
         kubernetes.io/tls-acme: 'true'
         cert-manager.io/cluster-issuer: letsencrypt-production
 ----
-
-
-== `ingress.secretName`
-
-[horizontal]
-type:: string
-default:: `ingress-tls`
-
-Deprecated see `ingress.tls.secretName`.
 
 
 == `ingress.controllerNamespace`
@@ -231,24 +224,7 @@ This is only relevant when enabling the network policy with `helm_values.network
 type:: string
 default:: `ingress-tls`
 
-Allows overwriting the default TLS secret name of `ingress-tls`.
-
-
-== `ingress.tls.vault.enabled`
-
-[horizontal]
-type:: bool
-default:: `Depends on ${keycloak:tls:provider} ${keycloak:tls:termination}`
-
-Create ingress-tls certificate, if `${keycloak:tls:provider}` is `vault` and the `${keycloak:tls:termination}` is
-`reencrypt`.
-
-
-== `ingress.tls.vault.enabled`
-
-[horizontal]
-type:: bool
-default:: `Depends on ${keycloak:tls:provider} ${keycloak:tls:termination}`
+Allows overwriting the default secret name where the ingress controller looks for the certificates.
 
 
 == `ingress.tls.vault.cert`

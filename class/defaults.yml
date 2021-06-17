@@ -57,9 +57,8 @@ parameters:
       controller: nginx
       controllerNamespace: ingress-nginx
       annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:tls:termination}:${keycloak:tls:provider}}
-      secretName: ingress-tls
       tls:
-        secretName: ${keycloak:ingress:secretName}
+        secretName: ingress-tls
         vault:
           cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}'
           certKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}'
