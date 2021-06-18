@@ -129,14 +129,14 @@ default:: `keycloak-tls`
 
 [horizontal]
 type:: string
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}`
 
 
 == `tls.vault.cert`
 
 [horizontal]
 type:: String
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}`
 
 
 == `tls.certmanager.issuer.name`
@@ -231,14 +231,14 @@ Allows overwriting the default secret name where the ingress controller looks fo
 
 [horizontal]
 type:: string
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}`
 
 
 == `ingress.tls.vault.certKey`
 
 [horizontal]
 type:: string
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}`
 
 
 == `route.enabled`
@@ -400,7 +400,7 @@ For example: `sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt&mycustompar
 
 [horizontal]
 type:: string
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}`
 
 A Vault reference pointing to the Vault secret containing the Keycloak database password.
 
@@ -477,7 +477,7 @@ default:: `keycloak-postgresql-tls`
 
 [horizontal]
 type:: string
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert}`
 
 See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak with encryption.
 
@@ -486,7 +486,7 @@ See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak wi
 
 [horizontal]
 type:: string
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-key}`
 
 See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak with encryption.
 
