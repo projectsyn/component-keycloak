@@ -8,7 +8,7 @@ Currently, only NGINX ingress controller is supported and tested.
 Others may work as well, but you may need to customize some parameters on your own (or contribute back to the component).
 ====
 
-See also the following manuals on how to setup the Keycloak encryption:
+See also the following manual on how to setup the Keycloak encryption:
 
 * https://github.com/keycloak/keycloak-containers/blob/master/server/README.md[Docker image configuration]
 

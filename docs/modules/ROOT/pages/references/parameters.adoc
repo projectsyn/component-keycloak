@@ -145,8 +145,8 @@ default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert
 type:: string
 default:: `letsencrypt-production`
 
-Define the issuer name.
-This is usually `letsencrypt-production` or `letsencrypt-staging`.
+Define the cert-manager issuer name.
+If cert-manager is managed by https://github.com/projectsyn/component-cert-manager/[component cert-manager] with the default configuration, this is one of `letsencrypt-production` or `letsencrypt-staging`.
 
 
 == `tls.certmanager.issuer.kind`
@@ -192,9 +192,9 @@ Defaults to `nginx` and this is currently also the only supported option.
 type:: dict
 default:: `{}`
 
-Default takes predefined annotations configured depending on `tls.provider` and `tls.termination`.
+By default, a set of annotations is configured depending on `tls.provider` and `tls.termination`.
 
-The default can always be replaced by an own definition of annotations.
+The default annotations can extended with custom annotations as required.
 
 An example shows how to allow an automatic ACME based certificate creation via cert-manager:
 [source,yaml]
