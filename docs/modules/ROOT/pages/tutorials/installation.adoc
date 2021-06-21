@@ -16,7 +16,15 @@ When using component instantiation, you can choose the provider individually per
 Encrypting the connection to the database adds more security at the cost of some TLS overhead.
 Supported are self-signed certificates by default, though Let's Encrypt and other commercial certificates can be used for the external database provider.
 +
-* xref:how-tos/tls.adoc[Encrypt database connection]
+* xref:how-tos/db-tls.adoc[Encrypt database connection]
+
+. Decide on encryption mode between ingress controller and Keycloak
++
+By default the traffic between ingress controller and Keycloak pods is re-encrypted.
+You can also choose to passthrough the traffic directly to Keycloak on supported ingress controllers.
++
+.. xref:how-tos/configure-ingress.adoc[Configure ingress]
+.. xref:how-tos/keycloak-tls.adoc[Setup certificates for Keycloak]
 
 . Decide whether you need multiple instances
 +

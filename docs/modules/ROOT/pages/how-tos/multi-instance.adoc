@@ -40,14 +40,14 @@ Using the `syn-` prefix might not be what you want when using multiple instances
 Use the `namespace` parameter to customize the namespace, but be sure that each instance gets their own namespace.
 ====
 
-. Set secrets
+. Set secrets (don't forget to also xref:how-tos/keycloak-tls.adoc[store certificates for each Keycloak instance])
 +
 [source,bash]
 ----
 parent="clusters/kv/${TENANT_ID}/${CLUSTER_ID}"
 
-vault kv put -cas=0 "${parent}/keycloak-test" admin-password=$(pwgen -s 32 1) db-password=$(pwgen -s 32 1)
-vault kv put -cas=0 "${parent}/keycloak-prod" admin-password=$(pwgen -s 32 1) db-password=<your-external-db-password>
+vault kv put "${parent}/keycloak-test" admin-password=$(pwgen -s 32 1) db-password=$(pwgen -s 32 1)
+vault kv put "${parent}/keycloak-prod" admin-password=$(pwgen -s 32 1) db-password=<your-external-db-password>
 ----
 
 . Compile and push the cluster catalog

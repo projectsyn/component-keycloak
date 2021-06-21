@@ -12,7 +12,7 @@ This page gives an overview over the defaults.
 - Enabled network policy for database to protect from unexpected connections
 - Prometheus ServiceMonitor to scrape metrics
 - 2 replicas of Keycloak, with anti-affinity
-- Enabled Ingress
+- Enabled Ingress with re-encryption
 - Configured requests and limits for CPU and memory resources
 
 == Disabled features

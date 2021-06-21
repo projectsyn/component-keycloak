@@ -94,13 +94,96 @@ The Keycloak pod replicas.
 Usualy two for the redundancy during the maintenance.
 
 
+== `tls.provider`
+
+[horizontal]
+type:: string
+default:: `certmanager`
+
+Defines how TLS certificates are provisioned:
+
+* `certmanager` for certificates issued via cert-manager.
+* `vault` for certificates stored in Vault.
+
+
+== `tls.termination`
+
+[horizontal]
+type:: string
+default:: `reencrypt`
+
+Defines the termination mode:
+
+* `reencrypt` TLS termination happens at the ingress or route, the traffic is re-encrypted.
+* `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic.
+
+
+== `tls.secretName`
+
+[horizontal]
+type:: string
+default:: `keycloak-tls`
+
+
+== `tls.vault.cert`
+
+[horizontal]
+type:: string
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}`
+
+
+== `tls.vault.cert`
+
+[horizontal]
+type:: String
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}`
+
+
+== `tls.certmanager.issuer.name`
+
+[horizontal]
+type:: string
+default:: `letsencrypt-production`
+
+Define the cert-manager issuer name.
+If cert-manager is managed by https://github.com/projectsyn/component-cert-manager/[component cert-manager] with the default configuration, this is one of `letsencrypt-production` or `letsencrypt-staging`.
+
+
+== `tls.certmanager.issuer.kind`
+
+[horizontal]
+type:: string
+default:: `ClusterIssuer`
+
+Define the issuer kind.
+Can be `ClusterIssuer` or `Issuer`.
+
+
+== `tls.certmanager.issuer.group`
+
+[horizontal]
+type:: string
+default:: `cert-manager.io`
+
+
 == `ingress.enabled`
 
 [horizontal]
 type:: bool
-default:: `false`
+default:: `true`
 
 Create an ingress object used usually for standard Kubernetes clusters.
+
+
+== `ingress.controller`
+
+[horizontal]
+type:: string
+default:: `nginx`
+
+Does define the used ingress controller on the cluster side.
+
+Defaults to `nginx` and this is currently also the only supported option.
 
 
 == `ingress.annotations`
@@ -109,9 +192,11 @@ Create an ingress object used usually for standard Kubernetes clusters.
 type:: dict
 default:: `{}`
 
-Define annotations for the ingress object.
+By default, a set of annotations is configured depending on `tls.provider` and `tls.termination`.
 
-This allows an automatic ACME based certificate creation via cert-manager:
+The default annotations can extended with custom annotations as required.
+
+An example shows how to allow an automatic ACME based certificate creation via cert-manager:
 [source,yaml]
 ----
 parameters:
@@ -123,15 +208,6 @@ parameters:
 ----
 
 
-== `ingress.secretName`
-
-[horizontal]
-type:: string
-default:: `${keycloak:fqdn}`
-
-Allows overwriting the default TLS secret name of `${keycloak:fqdn}`.
-
-
 == `ingress.controllerNamespace`
 
 [horizontal]
@@ -140,6 +216,29 @@ default:: `ingress-nginx`
 
 The namespace where the ingress controller is running.
 This is only relevant when enabling the network policy with `helm_values.networkPolicy.enabled`.
+
+
+== `ingress.tls.secretName`
+
+[horizontal]
+type:: string
+default:: `ingress-tls`
+
+Allows overwriting the default secret name where the ingress controller looks for the certificates.
+
+
+== `ingress.tls.vault.cert`
+
+[horizontal]
+type:: string
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}`
+
+
+== `ingress.tls.vault.certKey`
+
+[horizontal]
+type:: string
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}`
 
 
 == `route.enabled`
@@ -301,7 +400,7 @@ For example: `sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt&mycustompar
 
 [horizontal]
 type:: string
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}`
 
 A Vault reference pointing to the Vault secret containing the Keycloak database password.
 
@@ -378,7 +477,7 @@ default:: `keycloak-postgresql-tls`
 
 [horizontal]
 type:: string
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert}`
 
 See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak with encryption.
 
@@ -387,7 +486,7 @@ See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak wi
 
 [horizontal]
 type:: string
-default:: Vault reference
+default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-key}`
 
 See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak with encryption.
 

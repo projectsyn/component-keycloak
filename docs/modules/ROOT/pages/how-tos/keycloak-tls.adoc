@@ -1,0 +1,48 @@
+= Setup a TLS certificate for Keycloak
+
+This guide provides an example how to setup a TLS certificate for Keycloak.
+
+====
+Requirements
+
+* `commodore`
+* `kubectl`
+* `openssl`
+* `vault`
+====
+
+. Prepare certificate files
++
+.Self-signed certificates
+[source,bash]
+----
+# Adjust the lifetime as necessary
+lifetime=3650
+openssl req -x509 -newkey rsa:4096 -nodes -keyout keycloak.key -out keycloak.crt -days ${lifetime} -subj '/CN=keycloak'
+----
++
+.CA issued certificates
+[source,bash]
+----
+# Save the cert and key in these temporary files
+editor keycloak.key
+editor keycloak.crt
+----
+
+. Store certificate in Vault
++
+[source,bash]
+----
+instance=keycloak
+parent="clusters/kv/${TENANT_ID}/${CLUSTER_ID}"
+
+# Use the 'patch' subcommand to add to existing secret
+vault kv patch "${parent}/${instance}" keycloak-cert=@keycloak.crt keycloak-cert-key=@keycloak.key
+----
+
+. Remove temporary files
++
+[source,bash]
+----
+rm keycloak.{key,crt}
+----

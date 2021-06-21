@@ -6,6 +6,22 @@ parameters:
       # This lookup table controls whether to enable the chart depending on the value of `keycloak.database.provider`
       builtin: true
       external: false
+    =_ingress_annotations:
+      # This lookup table controls whether to set specific annotations depending on the value of `keycloak.ingress.controller`,
+      # `keycloak.tls.termination` and `keycloak.tls.provider`
+      nginx:
+        passthrough:
+          certmanager:
+            nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+          vault:
+            nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+        reencrypt:
+          certmanager:
+            kubernetes.io/tls-acme: 'true'
+            cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          vault:
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 
     namespace: syn-${_instance}
     release_name: keycloak
@@ -20,12 +36,32 @@ parameters:
       password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/admin-password}'
     # Replica count
     replicas: 2
+    # TLS configuration
+    tls:
+      provider: certmanager
+      termination: reencrypt
+      secretName: keycloak-tls
+      vault:
+        cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}'
+        certKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}'
+      certmanager:
+        apiVersion: cert-manager.io/v1alpha2
+        certName: ${keycloak:tls:secretName}
+        issuer:
+          name: letsencrypt-production
+          kind: ClusterIssuer
+          group: cert-manager.io
     # Ingress or Route should be enabled on the distribution level
     ingress:
-      enabled: false
-      annotations: {}
-      secretName: ${keycloak:fqdn}
+      enabled: true
+      controller: nginx
       controllerNamespace: ingress-nginx
+      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:tls:termination}:${keycloak:tls:provider}}
+      tls:
+        secretName: ingress-tls
+        vault:
+          cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}'
+          certKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}'
     route:
       enabled: false
     # Labels can be extended in the config hierarchy by providing further
@@ -118,10 +154,17 @@ parameters:
             items:
               - key: tls.crt
                 path: tls.crt
+        - name: keycloak-tls
+          secret:
+            secretName: ${keycloak:tls:secretName}
+            defaultMode: 420
       extraVolumeMounts: |
         - name: db-certs
           readOnly: true
           mountPath: /opt/jboss/certs
+        - name: keycloak-tls
+          readOnly: true
+          mountPath: /etc/x509/https
 
       serviceAccount:
         labels: ${keycloak:labels}
@@ -129,13 +172,14 @@ parameters:
         enabled: ${keycloak:ingress:enabled}
         annotations: ${keycloak:ingress:annotations}
         labels: ${keycloak:labels}
+        servicePort: https
         rules:
           - host: ${keycloak:fqdn}
             paths: ["/"]
         tls:
           - hosts:
               - ${keycloak:fqdn}
-            secretName: ${keycloak:ingress:secretName}
+            secretName: ${keycloak:ingress:tls:secretName}
       route:
         enabled: ${keycloak:route:enabled}
         labels: ${keycloak:labels}
