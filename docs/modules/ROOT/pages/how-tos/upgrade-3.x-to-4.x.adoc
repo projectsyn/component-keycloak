@@ -1,0 +1,97 @@
+= Upgrade from 3.x to 4.x
+
+This guide describes the steps to perform an upgrade of the component from version 3.x to 4.x.
+
+The major changes affect the ingress feature and configuration.
+This component now features re-encrypted ingress by default.
+That is, traffic between the ingress controller and Keycloak is now encrypted.
+
+== Step-by-step guide
+
+. Decide where you want to terminate user traffic.
+  You can either terminate the TLS session at the ingress controller and re-encrypt traffic to Keycloak.
+  Or you can pass-through the TLS traffic directly to Keycloak, provided the ingress controller supports TLS pass-through.
+. Decide how you aim to provision and rotate TLS certificates.
+  The cert-manager operator provides easy Let's Encrypt certificate provisioning by default.
+  You can also provision your own CA issued certificate.
+
+The sections below explain more.
+
+=== Changed parameters
+
+* `ingress.secretName` has moved to `ingress.tls.secretName`.
+* `ingress.enabled` changed to `true` by default.
+* `ingress.annotations` received several annotations depending on `tls.provider` and `tls.termination`.
+* `helm_values.extraVolumes` and `helm_values.extraVolumeMounts` got an additional volume/mount from the `tls.secretName` secret.
+* `helm_values.ingress.servicePort` changed to `https` by default.
+
+NOTE: You might need to update your configuration if you've configured some of them.
+
+=== Re-encrypted TLS with Let's Encrypt
+
+> User traffic > Ingress controller (LE certificate) > Re-encrypt with self-signed certificate > Keycloak
+
+This mode is the default in v4.x.
+
+. Generate new long-running self-signed certificate and xref:how-tos/keycloak-tls.adoc[store in Vault].
+
+=== Re-encrypted TLS with CA issued certificate
+
+> User traffic > Ingress controller (own certificate) > Re-encrypt with self-signed certificate > Keycloak
+
+. Set the provider
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    tls:
+      provider: vault
+----
+
+. Generate new long-running self-signed certificate and xref:how-tos/keycloak-tls.adoc[store in Vault].
+
+=== Pass-through TLS with Let's Encrypt
+
+> User traffic > Ingress controller (pass-through) > Keycloak (with LE certificate)
+
+[NOTE]
+====
+This mode requires an ingress controller that supports SSL/TLS pass-through.
+See xref:how-tos/configure-ingress.adoc[Configure Ingress] for an example with component-ingress-nginx.
+====
+
+. Set the termination
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    tls:
+      termination: passthrough
+----
+
+[WARNING]
+====
+You need to restart Keycloak every time Let's Encrypt updates the certificate.
+Keycloak doesn't reload the certificate from the mounted secret.
+====
+
+=== Pass-through TLS with CA issued certificate
+
+> User traffic > Ingress controller (pass-through) > Keycloak (with own certificate)
+
+NOTE: This mode requires an ingress controller that supports SSL/TLS pass-through.
+
+. Set the termination and provider
++
+[source,yaml]
+----
+parameters:
+  keycloak:
+    tls:
+      termination: passthrough
+      provider: vault
+----
+
+. xref:how-tos/keycloak-tls.adoc[Store your certificate in Vault].
