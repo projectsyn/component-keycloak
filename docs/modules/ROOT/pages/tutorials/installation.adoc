@@ -1,6 +1,6 @@
 = Installation
 
-In this short guide we are going to install one or multiple instances of Keycloak.
+In this short guide we're going to install one or multiple instances of Keycloak.
 
 . Decide on a database provider
 +

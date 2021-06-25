@@ -24,11 +24,11 @@ The network policy is disabled by default since it depends on the cluster setup 
 
 [WARNING]
 ====
-Do not enable network policy if your cluster has an ingress controller installed where its pods are using the host network (`hostNetwork: true)`.
-At least with the Calico network plugin, network policy label selectors targeting the host networked ingress pods do not work.
+Don't enable network policy if your cluster has an ingress controller installed where its pods are using the host network (`hostNetwork: true)`.
+At least with the Calico network plugin, network policy label selectors targeting the host networked ingress pods don't work.
 We recommend to keep this feature disabled in that case.
 ====
 
 However, if you don't need an ingress controller to connect to Keycloak, or using an ingress controller that doesn't use host network, network policy might be enabled.
 
-NOTE: The network policy for the built-in database is not affected and is enabled by default (if using the built-in database).
+NOTE: The network policy for the built-in database isn't affected and is enabled by default (if using the built-in database).

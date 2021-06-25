@@ -4,7 +4,7 @@ This guide describes the steps to perform an upgrade of the component from versi
 
 The major changes affect the ingress feature and configuration.
 This component now features re-encrypted ingress by default.
-That is, traffic between the ingress controller and Keycloak is now encrypted.
+That means traffic between the ingress controller and Keycloak is now encrypted.
 
 == Step-by-step guide
 
