@@ -6,6 +6,7 @@ SHELL := bash
 .SUFFIXES:
 
 include Makefile.vars.mk
+include Makefile.custom.mk
 
 .PHONY: help
 help: ## Show this help
@@ -49,9 +50,8 @@ docs-vale: ## Lint the documentation
 	$(COMMODORE_CMD)
 
 .PHONY: test
-test: commodore_args = -f tests/$(provider).yml
-test: .compile ## Test component with a provider set by "provider=..."
-	cd tests/ && go test ./$(provider)/... -count=1
+test: commodore_args = -f tests/$(instance).yml
+test: .compile ## Compile the component
 
 .PHONY: clean
 clean: ## Clean the project

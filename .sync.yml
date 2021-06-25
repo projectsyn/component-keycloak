@@ -8,7 +8,7 @@
     entries:
       - builtin
       - external
-  makeTarget: test -e provider=${{ matrix.provider }}
+  makeTarget: test -e instance=${{ matrix.provider }}
 
 LICENSE:
   year: 2020
@@ -16,3 +16,7 @@ LICENSE:
 docs/antora.yml:
   name: keycloak
   title: keycloak
+
+.gitignore:
+  additionalEntries:
+    - jsonnetfile.json
