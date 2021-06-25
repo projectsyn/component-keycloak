@@ -1,8 +1,25 @@
-helmcharts
-manifests/
-.idea
-compiled/
-vendor/
+#
+# File managed by ModuleSync - Do Not Edit
+#
+# Additional entries can be added to `.sync.yml` in '.gitignore.additionalEntries'
+#
 
-# Ignore generated jsonnetfile, unless we need more dependencies
-jsonnetfile*.json
+# Commodore
+.cache/
+helmcharts/
+manifests/
+vendor/
+jsonnetfile.lock.json
+crds/
+compiled/
+
+# Editors
+.vscode/
+.idea/
+
+# Antora
+_archive/
+_public/
+
+# Additional entries
+jsonnetfile.json

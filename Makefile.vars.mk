@@ -1,3 +1,9 @@
+#
+# File managed by ModuleSync - Do Not Edit
+#
+# Additional Makefiles can be added to `.sync.yml` in 'Makefile.includes'
+#
+
 # Commodore takes the root dir name as the component name
 COMPONENT_NAME ?= $(shell basename ${PWD} | sed s/component-//)
 
