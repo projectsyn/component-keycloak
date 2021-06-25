@@ -1,3 +1,9 @@
+#
+# File managed by ModuleSync - Do Not Edit
+#
+# Additional Makefiles can be added to `.sync.yml` in 'Makefile.includes'
+#
+
 MAKEFLAGS += --warn-undefined-variables
 SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
@@ -6,7 +12,6 @@ SHELL := bash
 .SUFFIXES:
 
 include Makefile.vars.mk
-include Makefile.custom.mk
 
 .PHONY: help
 help: ## Show this help
@@ -27,7 +32,7 @@ lint_yaml: $(YAML_FILES) ## Lint yaml files
 	$(YAMLLINT_DOCKER) -f parsable -c $(YAMLLINT_CONFIG) $(YAMLLINT_ARGS) -- $?
 
 .PHONY: lint_adoc
-lint_adoc:
+lint_adoc: ## Lint documentation
 	$(VALE_CMD) $(VALE_ARGS)
 
 .PHONY: format
@@ -40,10 +45,6 @@ format_jsonnet: $(JSONNET_FILES) ## Format jsonnet files
 .PHONY: docs-serve
 docs-serve: ## Preview the documentation
 	$(ANTORA_PREVIEW_CMD)
-
-.PHONY: docs-vale
-docs-vale: ## Lint the documentation
-	$(VALE_CMD) $(VALE_ARGS)
 
 .PHONY: compile
 .compile:
