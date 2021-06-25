@@ -1,0 +1,22 @@
+:global:
+  componentName: keycloak
+  feature_goUnitTests: true
+
+.github/workflows/test.yaml:
+  matrix:
+    key: provider
+    entries:
+      - builtin
+      - external
+  makeTarget: test -e instance=${{ matrix.provider }}
+
+LICENSE:
+  year: 2020
+
+docs/antora.yml:
+  name: keycloak
+  title: keycloak
+
+.gitignore:
+  additionalEntries:
+    - jsonnetfile.json

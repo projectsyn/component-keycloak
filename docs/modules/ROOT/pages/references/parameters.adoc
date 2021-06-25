@@ -13,7 +13,7 @@ The namespace in which to deploy this component.
 [IMPORTANT]
 ====
 When using multiple instances for this component, each instance needs its own namespace.
-You cannot deploy multiple instances into the same namespace.
+You can't deploy multiple instances into the same namespace.
 ====
 
 == `release_name`
