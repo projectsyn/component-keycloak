@@ -1,5 +1,6 @@
 :global:
   componentName: keycloak
+  githubUrl: https://github.com/projectsyn/component-keycloak
   feature_goUnitTests: true
 
 .github/workflows/test.yaml:
@@ -20,3 +21,7 @@ docs/antora.yml:
 .gitignore:
   additionalEntries:
     - jsonnetfile.json
+
+Makefile:
+  includes:
+    - Makefile.custom.mk
