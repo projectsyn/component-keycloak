@@ -1,4 +1,5 @@
 // main template for keycloak
+local k8up = import 'lib/backup-k8up.libjsonnet';
 local kap = import 'lib/kapitan.libjsonnet';
 local kube = import 'lib/kube.libjsonnet';
 local rl = import 'lib/resource-locker.libjsonnet';
@@ -122,6 +123,48 @@ local create_ingress_cert_secret =
 local create_ingress_cert =
   params.ingress.enabled && params.tls.termination == 'passthrough' && params.tls.provider == 'certmanager';
 
+local k8up_repo_secret = kube.Secret(params.k8up.repo.secretName) {
+  metadata+: {
+    labels+: params.labels,
+  },
+  stringData: {
+    password: params.k8up.repo.password,
+  },
+};
+
+local k8up_repo_secret_ref = {
+  key: 'password',
+  name: k8up_repo_secret.metadata.name,
+};
+
+local k8up_s3_secret = kube.Secret(params.k8up.s3.secretName) {
+  metadata+: {
+    labels+: params.labels,
+  },
+  stringData: {
+    username: params.k8up.s3.accessKey,
+    password: params.k8up.s3.secretKey,
+  },
+};
+
+local k8up_s3_secret_ref = {
+  name: k8up_s3_secret.metadata.name,
+  accesskeyname: 'username',
+  secretkeyname: 'password',
+};
+
+local k8up_schedule =
+  local minute = std.foldl(function(x, y) x + y, std.encodeUTF8(std.md5(inv.parameters.cluster.name + params.namespace)), 0) % 60;
+  k8up.Schedule(
+    'backup',
+    '%d * * * *' % minute,
+    keep_jobs=params.k8up.keepjobs,
+    bucket=params.k8up.s3.bucket,
+    backupkey=k8up_repo_secret_ref,
+    s3secret=k8up_s3_secret_ref,
+    create_bucket=false,
+  ).schedule + k8up.PruneSpec('10 */4 * * *', 30, 20);
+
 // Define outputs below
 {
   '00_namespace': namespace,
@@ -132,4 +175,5 @@ local create_ingress_cert =
   [if create_keycloak_cert_secret then '13_keycloak_certs']: keycloak_cert_secret,
   [if create_ingress_cert_secret then '14_ingress_certs']: ingress_tls_secret,
   [if create_ingress_cert then '20_le_cert']: cert_manager_cert,
+  [if params.k8up.enabled then '30_k8up']: [ k8up_repo_secret, k8up_s3_secret, k8up_schedule ],
 }

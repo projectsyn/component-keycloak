@@ -491,6 +491,80 @@ default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-k
 See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak with encryption.
 
 
+== `k8up.enabled`
+
+[horizontal]
+type:: bool
+default:: `false`
+
+Defines whenever the k8up database schedule is enabled or not.
+Disabled by default.
+
+
+== `k8up.keepjobs`
+
+[horizontal]
+type:: int
+default:: `3`
+
+Defines how many backup jobs are kept.
+Helpful to see the state of the last jobs, but too many jobs causing overhead in terms of the metadata needs to be kept in K8s.
+
+
+== `k8up.repo.secretName`
+
+[horizontal]
+type:: string
+default:: `k8up-repo`
+
+Name of the secret created in the namespace to store the K8up repository password.
+
+
+== `k8up.repo.password`
+
+[horizontal]
+type:: string
+default:: `?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-repo-password}`
+
+Vault reference to the K8up repository password.
+
+
+== `k8up.s3.secretName`
+
+[horizontal]
+type:: string
+default:: `k8up-s3-credentials`
+
+Name of the secret created in the namespace to store the K8up S3 connection credentials.
+
+
+== `k8up.s3.bucket`
+
+[horizontal]
+type:: string
+default:: `k8up-${cluster:name}-syn-keycloak`
+
+Bucket name where the backups gets stored.
+
+
+== `k8up.s3.accessKey`
+
+[horizontal]
+type:: string
+default:: `?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-s3-accesskey}`
+
+S3 access key to the bucket where the backups gets stored.
+
+
+== `k8up.s3.secretKey`
+
+[horizontal]
+type:: string
+default:: `?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-s3-secretkey}`
+
+S3 access key to the bucket where the backups gets stored.
+
+
 == `helm_values`
 
 [horizontal]
