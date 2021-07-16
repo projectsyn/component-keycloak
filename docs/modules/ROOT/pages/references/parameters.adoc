@@ -139,6 +139,16 @@ type:: String
 default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}`
 
 
+== `tls.certmanager.apiVersion`
+
+[horizontal]
+type:: string
+default:: `cert-manager.io/v1`
+
+Cert-manager v1.0 is using `cert-manager.io/v1`.
+Versions below using `cert-manager.io/v1beta1` or older.
+
+
 == `tls.certmanager.issuer.name`
 
 [horizontal]

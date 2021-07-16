@@ -45,7 +45,7 @@ parameters:
         cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}'
         certKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}'
       certmanager:
-        apiVersion: cert-manager.io/v1alpha2
+        apiVersion: cert-manager.io/v1
         certName: ${keycloak:tls:secretName}
         issuer:
           name: letsencrypt-production
