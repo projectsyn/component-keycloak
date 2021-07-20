@@ -25,7 +25,7 @@ About the export/import the handbook states:
 
 [quote,'Keycloak Handbook, https://www.keycloak.org/docs/latest/server_admin/#_export_import[Export and Import]']
 ____
-It is important to note that because import and export happens at server startup, no other actions should be taken on the server or the database while this happens.
+It's important to note that because import and export happens at server startup, no other actions should be taken on the server or the database while this happens.
 ____
 Doesn't sounds like there is currently a lock perventing paralell access during the export and guarantee those consistency.
 
@@ -33,6 +33,6 @@ Doesn't sounds like there is currently a lock perventing paralell access during 
 ____
 Attributes containing secrets or private information will be masked in export file. Export files obtained via Admin Console are thus not appropriate for backups or data transfer between servers. Only boot-time exports are appropriate for that.
 ____
-Stop the service doing a export on startup, sounds not like a valuable solution, as we do not want to restart the service for that purpose.
+Stop the service doing a export on startup, sounds not like a valuable solution, as we don't want to restart the service for that purpose.
 
 Reconsider using this kind of backup in newer versions, once the export functionality might have been improved.
