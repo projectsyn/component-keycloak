@@ -122,12 +122,12 @@ parameters:
       keepjobs: 3
       repo:
         secretName: k8up-repo
-        password: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-repo-password}'
+        password: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-repo-password}'
       s3:
         secretName: k8up-s3-credentials
         bucket: k8up-${cluster:name}-syn-keycloak
         accessKey: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-s3-accesskey}'
-        secretKey: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-s3-secretkey}'
+        secretKey: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-secretkey}'
 
     helm_values:
       image:

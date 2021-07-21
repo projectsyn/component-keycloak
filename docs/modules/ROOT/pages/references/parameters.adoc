@@ -497,8 +497,7 @@ See xref:how-tos/db-tls.adoc[Encrypt database connection] to install Keycloak wi
 type:: bool
 default:: `false`
 
-Defines whenever the k8up database schedule is enabled or not.
-Disabled by default.
+Defines whether the K8up database backup is enabled or not.
 
 
 == `k8up.keepjobs`
@@ -508,7 +507,8 @@ type:: int
 default:: `3`
 
 Defines how many backup jobs are kept.
-Helpful to see the state of the last jobs, but too many jobs causing overhead in terms of the metadata needs to be kept in K8s.
+It's useful for debugging to have a few recent completed (or failed) backup jobs available in K8s.
+Keeping a lot of jobs may negatively impact the K8s cluster performance however.
 
 
 == `k8up.repo.secretName`
@@ -517,16 +517,16 @@ Helpful to see the state of the last jobs, but too many jobs causing overhead in
 type:: string
 default:: `k8up-repo`
 
-Name of the secret created in the namespace to store the K8up repository password.
+The name of the secret containing the password for the K8up restic repository.
 
 
 == `k8up.repo.password`
 
 [horizontal]
 type:: string
-default:: `?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-repo-password}`
+default:: `?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-repo-password}`
 
-Vault reference to the K8up repository password.
+Vault reference to the K8up restic repository password.
 
 
 == `k8up.s3.secretName`
@@ -535,7 +535,7 @@ Vault reference to the K8up repository password.
 type:: string
 default:: `k8up-s3-credentials`
 
-Name of the secret created in the namespace to store the K8up S3 connection credentials.
+The name of the secret containing the credentials to access the S3 bucket holding the backups.
 
 
 == `k8up.s3.bucket`
@@ -544,14 +544,14 @@ Name of the secret created in the namespace to store the K8up S3 connection cred
 type:: string
 default:: `k8up-${cluster:name}-syn-keycloak`
 
-Bucket name where the backups gets stored.
+The name of the S3 bucket where the backups gets stored.
 
 
 == `k8up.s3.accessKey`
 
 [horizontal]
 type:: string
-default:: `?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-s3-accesskey}`
+default:: `?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-accesskey}`
 
 S3 access key to the bucket where the backups gets stored.
 
@@ -560,9 +560,9 @@ S3 access key to the bucket where the backups gets stored.
 
 [horizontal]
 type:: string
-default:: `?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-s3-secretkey}`
+default:: `?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-secretkey}`
 
-S3 access key to the bucket where the backups gets stored.
+S3 secret key to the bucket where the backups gets stored.
 
 
 == `helm_values`
