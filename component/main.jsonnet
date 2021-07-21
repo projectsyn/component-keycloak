@@ -154,16 +154,15 @@ local k8up_s3_secret_ref = {
 };
 
 local k8up_schedule =
-  local minute = std.foldl(function(x, y) x + y, std.encodeUTF8(std.md5(inv.parameters.cluster.name + params.namespace)), 0) % 60;
   k8up.Schedule(
     'backup',
-    '%d * * * *' % minute,
+    '@hourly-random',
     keep_jobs=params.k8up.keepjobs,
     bucket=params.k8up.s3.bucket,
     backupkey=k8up_repo_secret_ref,
     s3secret=k8up_s3_secret_ref,
     create_bucket=false,
-  ).schedule + k8up.PruneSpec('10 */4 * * *', 30, 20);
+  ).schedule + k8up.PruneSpec('@daily-random', 30, 20);
 
 // Define outputs below
 {
