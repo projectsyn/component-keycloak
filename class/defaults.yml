@@ -223,7 +223,7 @@ parameters:
         existingSecret: ${keycloak:database:secretname}
         image:
           registry: quay.io
-        # master renamed to primary later https://github.com/bitnami/charts/commit/7eabc85fd4fae43127228a22829c7ce3fe85c389
+        # TODO: Rename master to primary when upgrading to Postgres 11 https://github.com/bitnami/charts/commit/7eabc85fd4fae43127228a22829c7ce3fe85c389
         master:
           annotations:
             k8up.syn.tools/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump'
