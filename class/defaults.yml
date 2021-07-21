@@ -22,11 +22,6 @@ parameters:
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
           vault:
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    =_enable_k8up_postgres_annotations:
-      # This lookup table controls whether to configure the k8up annotations depending on the value of `keycloak.k8up.enabled`
-      _True:
-        k8up.syn.tools/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump'
-      _False: {}
 
     namespace: syn-${_instance}
     release_name: keycloak
@@ -230,7 +225,8 @@ parameters:
           registry: quay.io
         # master renamed to primary later https://github.com/bitnami/charts/commit/7eabc85fd4fae43127228a22829c7ce3fe85c389
         master:
-          annotations: ${keycloak:_enable_k8up_postgres_annotations:_${keycloak:k8up:enabled}}
+          annotations:
+            k8up.syn.tools/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump'
           labels: ${keycloak:labels}
         volumePermissions:
           enabled: ${keycloak:database:tls:enabled}
