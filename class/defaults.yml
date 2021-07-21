@@ -126,7 +126,7 @@ parameters:
       s3:
         secretName: k8up-s3-credentials
         bucket: k8up-${cluster:name}-syn-keycloak
-        accessKey: '?{vaultkv:${customer:name}/${cluster:name}/keycloak/k8up-s3-accesskey}'
+        accessKey: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-accesskey}'
         secretKey: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-secretkey}'
 
     helm_values:
