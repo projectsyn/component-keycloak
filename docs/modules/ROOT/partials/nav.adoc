@@ -18,6 +18,7 @@
 
 .Explanations
 * xref:explanations/default-features.adoc[Default features]
+* xref:explanations/backup.adoc[Backup]
 
 .Technical reference
 * xref:references/parameters.adoc[Parameters]

@@ -112,6 +112,18 @@ parameters:
         host: postgres.example.com
         port: 5432
 
+    k8up:
+      enabled: false
+      keepjobs: 3
+      repo:
+        secretName: k8up-repo
+        password: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-repo-password}'
+      s3:
+        secretName: k8up-s3-credentials
+        bucket: k8up-${cluster:name}-syn-keycloak
+        accessKey: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-accesskey}'
+        secretKey: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-secretkey}'
+
     helm_values:
       image:
         repository: quay.io/keycloak/keycloak
@@ -211,7 +223,10 @@ parameters:
         existingSecret: ${keycloak:database:secretname}
         image:
           registry: quay.io
+        # TODO: Rename master to primary when upgrading to Postgres 11 https://github.com/bitnami/charts/commit/7eabc85fd4fae43127228a22829c7ce3fe85c389
         master:
+          annotations:
+            k8up.syn.tools/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump'
           labels: ${keycloak:labels}
         volumePermissions:
           enabled: ${keycloak:database:tls:enabled}

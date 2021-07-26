@@ -1,0 +1,42 @@
+= Keycloak Backup
+
+There are two possibilities to backup Keycloak.
+The first approach is to backup the database.
+The component currently supports backups of the database with https://k8up.io[K8up], if the builtin database is enabled.
+The second way is to export all objects via the Keycloak application.
+This approach is currently not supported by the component, but may be implemented in the future.
+
+== Database backup
+
+Most of the sources are recommending doing a database backup:
+
+* https://www.keycloak.org/docs/latest/upgrading/#_prep_migration[Handbook]
+* https://www.keycloak.org/docs/latest/server_installation/index.html#_backup-cr[Operator]
+* https://keycloak.discourse.group/t/best-practice-for-backing-up-the-db/4811[Forum]
+
+The handbook also mentions that configuration, themes, and scripts require a backup.
+In the case of a container deployment, those parts are attached to the container and so will usually be part of the deployment.
+The component currently doesn't backup anything other than the built-in database.
+
+== Export and import
+
+In theory, using Keycloak's export/import functionality would be the preferred way to implement a backup.
+However, the Keycloak documentation documents some downsides to this approach.
+
+The Keycloak handbook has the following to say regarding import/export:
+
+[quote,'Keycloak Handbook, https://www.keycloak.org/docs/latest/server_admin/#_export_import[Export and Import]']
+____
+It's important to note that because import and export happens at server startup, no other actions should be taken on the server or the database while this happens.
+____
+Reading this quote, it appears that there's currently no lock preventing parallel access during the export to guarantee consistent exports.
+
+[quote,'Keycloak Handbook, https://www.keycloak.org/docs/latest/server_admin/#admin-console-export-import[Admin console export/import]']
+____
+Attributes containing secrets or private information will be masked in export file. Export files obtained via Admin Console are thus not appropriate for backups or data transfer between servers. Only boot-time exports are appropriate for that.
+____
+To create an export suitable for backup purposes, we'd have to create a boot-time export, as other exports don't contain the secrets or other private information.
+Therefore we'd have to stop and restart the Keycloak service to create backups, which is undesirable.
+
+
+Reconsider using this kind of backup in newer versions, once the export functionality might have been improved.
