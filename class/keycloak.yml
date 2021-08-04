@@ -24,3 +24,10 @@ parameters:
           release_name: ${keycloak:release_name}
           namespace: '${keycloak:namespace}'
         helm_values: ${keycloak:helm_values}
+  commodore:
+    postprocess:
+      filters:
+        - type: jsonnet
+          filter: postprocess/api_version.jsonnet
+          path: ${_instance}/01_keycloak_helmchart/keycloak/charts/postgresql/templates
+          enabled: "${keycloak:helm_values:postgresql:enabled}"
