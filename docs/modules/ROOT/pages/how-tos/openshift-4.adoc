@@ -1,0 +1,38 @@
+= Installing on OpenShift 4
+
+This guide describes how to install this component on OpenShift 4.
+
+== Parameters for Keycloak
+
+You need to disable some security context fields, as OpenShift sets those automatically.
+
+[source,yaml,subs="attributes+"]
+----
+parameters:
+  keycloak:
+    helm_values:
+      podSecurityContext: null
+      securityContext: null
+      pgchecker:
+        securityContext: null
+----
+
+== Parameters for built-in Postgresql database
+
+If you are using the built-in database provider (by default unless `keycloak.database.provider` is overridden) you also need to adjust the following parameters.
+
+[source,yaml,subs="attributes+"]
+----
+parameters:
+  keycloak:
+    helm_values:
+      postgresql:
+        securityContext:
+          enabled: false
+        volumePermissions:
+          securityContext:
+            runAsUser: auto
+          shmVolume:
+            chmod:
+              enabled: false
+----
