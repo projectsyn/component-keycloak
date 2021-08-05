@@ -1,0 +1,10 @@
+= Upgrade from 4.x to 5.x
+
+This guide describes the steps to perform an upgrade of the component from version 4.x to 5.x.
+
+The major change removes the support of https://cert-manager.io[cert-manager] below 1.0.
+
+== Step-by-step guide
+
+. Rise the Project Syn cert-manager component version at least to v2.0.0.
+. Update the component itself
