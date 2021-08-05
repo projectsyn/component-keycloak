@@ -10,7 +10,7 @@ import (
 )
 
 func Test_Database_StatefulSet_Secrets(t *testing.T) {
-	subject := common.DecodeStatefulsetV1Beta2(t, testPath+"/01_keycloak_helmchart/keycloak/charts/postgresql/templates/statefulset.yaml")
+	subject := common.DecodeStatefulsetV1(t, testPath+"/01_keycloak_helmchart/keycloak/charts/postgresql/templates/statefulset.yaml")
 	require.NotEmpty(t, subject.Spec.Template.Spec.Containers)
 	require.NotEmpty(t, subject.Spec.Template.Spec.Containers[0].Env)
 
