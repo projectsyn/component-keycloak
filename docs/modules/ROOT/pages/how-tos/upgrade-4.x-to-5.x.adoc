@@ -6,5 +6,5 @@ The major change removes the support of https://cert-manager.io[cert-manager] be
 
 == Step-by-step guide
 
-. Rise the Project Syn cert-manager component version at least to v2.0.0.
+. Upgrade the https://github.com/projectsyn/component-cert-manager[Project Syn cert-manager] component version to v2 or newer.
 . Update the component itself
