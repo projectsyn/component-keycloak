@@ -10,12 +10,15 @@ You need to disable some security context fields, as OpenShift sets those automa
 ----
 parameters:
   keycloak:
+    ingress:
+      servicePort: http <1>
     helm_values:
       podSecurityContext: null
       securityContext: null
       pgchecker:
         securityContext: null
 ----
+<1> It's not possible to use the `reencrypt` termination if using Ingress with a self-signed destination certificate.
 
 == Parameters for built-in Postgresql database
 
