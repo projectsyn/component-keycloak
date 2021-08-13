@@ -7,7 +7,13 @@ local inv = kap.inventory();
 // The hiera parameters for the component
 local params = inv.parameters.keycloak;
 
-local namespace = kube.Namespace(params.namespace);
+local namespace = kube.Namespace(params.namespace) {
+  metadata+: {
+    labels+: {
+      SYNMonitoring: 'main',
+    },
+  },
+};
 
 local admin_secret = kube.Secret(params.admin.secretname) {
   metadata+: {
