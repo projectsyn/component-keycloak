@@ -55,5 +55,5 @@ local netpol =
   };
 
 {
-  '20_netpol': netpol,
+  '40_netpol': netpol,
 }
