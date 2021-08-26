@@ -9,19 +9,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 	appsv1 "k8s.io/api/apps/v1"
-	appsv1beta2 "k8s.io/api/apps/v1beta2"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 )
-
-func DecodeStatefulsetV1Beta2(t *testing.T, path string) *appsv1beta2.StatefulSet {
-	subject := &appsv1beta2.StatefulSet{}
-	scheme := NewSchemeWithDefault(t)
-	require.NoError(t, appsv1beta2.AddToScheme(scheme))
-	return DecodeWithSchema(t, path, subject, scheme).(*appsv1beta2.StatefulSet)
-}
 
 func DecodeStatefulsetV1(t *testing.T, path string) *appsv1.StatefulSet {
 	subject := &appsv1.StatefulSet{}

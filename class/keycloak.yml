@@ -15,6 +15,10 @@ parameters:
           - keycloak/component/main.jsonnet
         input_type: jsonnet
         output_path: ${_instance}
+      - input_paths:
+          - keycloak/component/prometheus-netpol.jsonnet
+        input_type: jsonnet
+        output_path: ${_instance}
       - output_path: ${_instance}/01_keycloak_helmchart
         input_type: helm
         output_type: yaml
@@ -24,3 +28,10 @@ parameters:
           release_name: ${keycloak:release_name}
           namespace: '${keycloak:namespace}'
         helm_values: ${keycloak:helm_values}
+  commodore:
+    postprocess:
+      filters:
+        - type: jsonnet
+          filter: postprocess/api_version.jsonnet
+          path: ${_instance}/01_keycloak_helmchart/keycloak/charts/postgresql/templates
+          enabled: "${keycloak:helm_values:postgresql:enabled}"
