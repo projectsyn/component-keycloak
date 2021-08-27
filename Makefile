@@ -29,8 +29,8 @@ lint_jsonnet: $(JSONNET_FILES) ## Lint jsonnet files
 	$(JSONNET_DOCKER) $(JSONNETFMT_ARGS) --test -- $?
 
 .PHONY: lint_yaml
-lint_yaml: $(YAML_FILES) ## Lint yaml files
-	$(YAMLLINT_DOCKER) -f parsable -c $(YAMLLINT_CONFIG) $(YAMLLINT_ARGS) -- $?
+lint_yaml: ## Lint yaml files
+	$(YAMLLINT_DOCKER) -f parsable -c $(YAMLLINT_CONFIG) $(YAMLLINT_ARGS) -- .
 
 .PHONY: lint_adoc
 lint_adoc: ## Lint documentation
@@ -53,8 +53,11 @@ docs-serve: ## Preview the documentation
 	$(COMMODORE_CMD)
 
 .PHONY: test
-test: commodore_args = -f tests/$(instance).yml --search-paths ./dependencies --alias $(instance)
+test: commodore_args = -f tests/$(instance).yml --search-paths ./dependencies
 test: .compile ## Compile the component
+	@echo
+	@echo
+	@cd tests && go test -count 1 ./...
 
 .PHONY: clean
 clean: ## Clean the project
