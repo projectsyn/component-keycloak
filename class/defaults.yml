@@ -83,6 +83,13 @@ parameters:
     # Extra java opts are appended to the default options set in
     # `class/keycloak.yml`.
     extraJavaOpts: ""
+
+    extraEnv: ""
+    extraEnvFrom: ""
+    extraVolumes: ""
+    extraVolumeMounts: ""
+    extraInitContainers: ""
+
     # Enable ServiceMonitor, PrometheusRule, and all Keycloak statistics on
     # the metrics endpoint by default.
     monitoring:
@@ -153,11 +160,13 @@ parameters:
           value: "${keycloak:helm_values:replicas}"
         - name: PROXY_ADDRESS_FORWARDING
           value: "true"
+        ${keycloak:extraEnv}
       extraEnvFrom: |
         - secretRef:
             name: ${keycloak:admin:secretname}
         - secretRef:
             name: ${keycloak:database:secretname}
+        ${keycloak:extraEnvFrom}
       extraVolumes: |
         - name: db-certs
           secret:
@@ -170,6 +179,7 @@ parameters:
           secret:
             secretName: ${keycloak:tls:secretName}
             defaultMode: 420
+        ${keycloak:extraVolumes}
       extraVolumeMounts: |
         - name: db-certs
           readOnly: true
@@ -177,6 +187,8 @@ parameters:
         - name: keycloak-tls
           readOnly: true
           mountPath: /etc/x509/https
+        ${keycloak:extraVolumeMounts}
+      extraInitContainers: ${keycloak:extraInitContainers}
 
       serviceAccount:
         labels: ${keycloak:labels}
