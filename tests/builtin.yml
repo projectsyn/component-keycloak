@@ -1,1 +1,22 @@
 ---
+parameters:
+  keycloak:
+    extraEnv:
+      FOO:
+        value: "bar"
+      DB_ADDR:
+        value: "AAAAAAAAAAAAAA"
+    extraInitContainers:
+      "theme-provider":
+        image: quay.io/vshn/keycloak-theme:v1.0.0
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+        args:
+          - -c
+          - |
+            echo "Copying theme..."
+            cp -R /theme/* /vshn-theme
+        volumeMounts:
+          - name: theme
+            mountPath: /vshn-theme

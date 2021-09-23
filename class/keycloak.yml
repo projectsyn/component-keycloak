@@ -35,3 +35,7 @@ parameters:
           filter: postprocess/api_version.jsonnet
           path: ${_instance}/01_keycloak_helmchart/keycloak/charts/postgresql/templates
           enabled: "${keycloak:helm_values:postgresql:enabled}"
+        - type: jsonnet
+          filter: postprocess/extra-env.jsonnet
+          path: ${_instance}/01_keycloak_helmchart/keycloak/templates
+          enabled: true
