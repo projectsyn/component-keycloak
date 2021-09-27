@@ -5,7 +5,7 @@ parameters:
       FOO:
         value: "bar"
       DB_ADDR:
-        value: "AAAAAAAAAAAAAA"
+        value: "patched"
     extraInitContainers:
       "theme-provider":
         image: quay.io/vshn/keycloak-theme:v1.0.0
@@ -20,3 +20,10 @@ parameters:
         volumeMounts:
           - name: theme
             mountPath: /vshn-theme
+    extraVolumes: 
+      test:
+        emptyDir: {}
+    extraVolumeMounts:
+      test:
+        readOnly: true
+        mountPath: /opt/test

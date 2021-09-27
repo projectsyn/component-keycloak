@@ -56,4 +56,3 @@ func ScanFiles(path string) (files []string, retErr error) {
 	})
 	return files, err
 }
-
