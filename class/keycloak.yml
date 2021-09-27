@@ -38,4 +38,3 @@ parameters:
         - type: jsonnet
           filter: postprocess/extra-env.jsonnet
           path: ${_instance}/01_keycloak_helmchart/keycloak/templates
-          enabled: true

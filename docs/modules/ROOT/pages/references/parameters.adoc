@@ -358,7 +358,9 @@ parameters:
 type:: dict
 default:: {}
 
-Extra environment variable added to the keycloak statefulset.
+Extra environment variables added to the Keycloak statefulset.
+Keys in the dict are used as value for field `name` in the resulting environment variable configuration
+Values must be valid Kubernetes environment variable configurations.
 
 
 Example:
@@ -377,7 +379,9 @@ parameters:
 type:: dict
 default:: {}
 
-Extra volumes added to the keycloak statefulset.
+Extra volumes added to the Keycloak statefulset.
+Keys in the dict are used as value for field `name` in the resulting volume configuration
+Values must be valid Kubernetes volume configurations.
 
 
 Example:
@@ -396,7 +400,9 @@ parameters:
 type:: dict
 default:: {}
 
-Extra volumemounts added to the keycloak container.
+Extra volume mounts added to the Keycloak container.
+Keys in the dict are used as value for field `name` in the resulting volume mount configuration
+Values must be valid Kubernetes volume mount configurations.
 
 Example:
 [source,yaml]
@@ -416,6 +422,8 @@ type:: dict
 default:: {}
 
 Extra init containers added to the keycloak statefulset.
+Keys in the dict are used as value for field `name` in the resulting container configuration
+Values must be valid Kubernetes container configurations.
 
 Example:
 [source,yaml]
