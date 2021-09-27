@@ -20,7 +20,7 @@ parameters:
         volumeMounts:
           - name: theme
             mountPath: /vshn-theme
-    extraVolumes: 
+    extraVolumes:
       test:
         emptyDir: {}
     extraVolumeMounts:

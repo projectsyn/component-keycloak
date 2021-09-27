@@ -352,6 +352,92 @@ parameters:
 ----
 
 
+== `extraEnv`
+
+[horizontal]
+type:: dict
+default:: {}
+
+Extra environment variable added to the keycloak statefulset.
+
+
+Example:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraEnv:
+      FOO:
+        value: bar
+----
+
+== `extraVolumes`
+
+[horizontal]
+type:: dict
+default:: {}
+
+Extra volumes added to the keycloak statefulset.
+
+
+Example:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraVolumes:
+      theme:
+        emptyDir: {}
+----
+
+== `extraVolumeMounts`
+
+[horizontal]
+type:: dict
+default:: {}
+
+Extra volumemounts added to the keycloak container.
+
+Example:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraVolumeMounts:
+      theme:
+        readOnly: true
+        mountPath: /opt/jboss/keycloak/themes/vshn
+----
+
+== `extraInitContainers`
+
+[horizontal]
+type:: dict
+default:: {}
+
+Extra init containers added to the keycloak statefulset.
+
+Example:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraInitContainers:
+      theme-provider:
+        image: quay.io/vshn/keycloak-theme:v1.0.0
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+        args:
+          - -c
+          - |
+            echo "Copying theme..."
+            cp -R /theme/* /vshn-theme
+        volumeMounts:
+          - name: theme
+            mountPath: /vshn-theme
+----
+
 == `monitoring.enabled`
 
 [horizontal]
