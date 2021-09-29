@@ -7,8 +7,8 @@ parameters:
       DB_ADDR:
         value: "patched"
     extraInitContainers:
-      "theme-provider":
-        image: quay.io/vshn/keycloak-theme:v1.0.0
+      theme-provider:
+        image: company/keycloak-theme:v1.0.0
         imagePullPolicy: IfNotPresent
         command:
           - sh
@@ -16,10 +16,10 @@ parameters:
           - -c
           - |
             echo "Copying theme..."
-            cp -R /theme/* /vshn-theme
+            cp -R /theme/* /company-theme
         volumeMounts:
           - name: theme
-            mountPath: /vshn-theme
+            mountPath: /company-theme
     extraVolumes:
       test:
         emptyDir: {}

@@ -358,8 +358,8 @@ parameters:
 type:: dict
 default:: {}
 
-Extra environment variables added to the Keycloak statefulset.
-Keys in the dict are used as value for field `name` in the resulting environment variable configuration
+Extra environment variables added to the Keycloak StatefulSet.
+Keys in the dict are used as value for field `name` in the resulting environment variable configuration.
 Values must be valid Kubernetes environment variable configurations.
 
 
@@ -379,8 +379,8 @@ parameters:
 type:: dict
 default:: {}
 
-Extra volumes added to the Keycloak statefulset.
-Keys in the dict are used as value for field `name` in the resulting volume configuration
+Extra volumes added to the Keycloak StatefulSet.
+Keys in the dict are used as value for field `name` in the resulting volume configuration.
 Values must be valid Kubernetes volume configurations.
 
 
@@ -401,7 +401,7 @@ type:: dict
 default:: {}
 
 Extra volume mounts added to the Keycloak container.
-Keys in the dict are used as value for field `name` in the resulting volume mount configuration
+Keys in the dict are used as value for field `name` in the resulting volume mount configuration.
 Values must be valid Kubernetes volume mount configurations.
 
 Example:
@@ -421,8 +421,8 @@ parameters:
 type:: dict
 default:: {}
 
-Extra init containers added to the keycloak statefulset.
-Keys in the dict are used as value for field `name` in the resulting container configuration
+Extra init containers added to the Keycloak StatefulSet.
+Keys in the dict are used as value for field `name` in the resulting container configuration.
 Values must be valid Kubernetes container configurations.
 
 Example:
@@ -432,7 +432,7 @@ parameters:
   keycloak:
     extraInitContainers:
       theme-provider:
-        image: quay.io/vshn/keycloak-theme:v1.0.0
+        image: company/keycloak-theme:v1.0.0
         imagePullPolicy: IfNotPresent
         command:
           - sh
@@ -440,10 +440,10 @@ parameters:
           - -c
           - |
             echo "Copying theme..."
-            cp -R /theme/* /vshn-theme
+            cp -R /theme/* /company-theme
         volumeMounts:
           - name: theme
-            mountPath: /vshn-theme
+            mountPath: /company-theme
 ----
 
 == `monitoring.enabled`

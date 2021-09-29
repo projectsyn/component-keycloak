@@ -34,7 +34,7 @@ func Test_Keycloak_StatefulSet_Secrets(t *testing.T) {
 	assert.Len(t, subject.Spec.Template.Spec.InitContainers, 2)
 	for _, c := range subject.Spec.Template.Spec.InitContainers {
 		if c.Name == "theme-provider" {
-			assert.Equal(t, "quay.io/vshn/keycloak-theme:v1.0.0", c.Image)
+			assert.Equal(t, "company/keycloak-theme:v1.0.0", c.Image)
 		}
 	}
 
