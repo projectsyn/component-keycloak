@@ -1,0 +1,67 @@
+= Configure Custom Theme
+
+Keycloak provides theme support for web pages and emails.
+This allows customizing the look and feel of end-user facing pages so they can be integrated with your applications.
+
+Our approach to configure a custom theme in Kubernetes is to bundle the theme in a Docker container and copy it to the correct location as an init container.
+
+== Creating Custom Theme
+
+A theme can provide one or more types to customize different aspects of Keycloak.
+A theme consists of: HTML templates, images, message bundles, stylesheets, scripts and theme properties.
+
+
+Follow xref:how-tos/keycloak-tls.adoc[the official guide] on how to create a custom theme or take a look at https://github.com/vshn/keycloak-theme[our current theme] for inspiration.
+
+Once you have created your custom theme, you'll need to package it into a Docker image.
+
+[source,dockerfile]
+----
+FROM docker.io/library/busybox
+
+COPY theme /theme
+
+RUN \
+  chmod -R ugo+r /theme
+
+USER 1001:0
+----
+
+
+
+== Deploying Custom Theme
+
+With the theme accessible as a Docker image we can deploy it using an init container.
+In combination with an emptyDir that's shared with the Keycloak container, we copy the theme over to the right place where Keycloak will pick it up automatically.
+
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraInitContainers:
+      theme-provider:
+        image: company/keycloak-theme:v1.0.0
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+        args:
+          - -c
+          - |
+            echo "Copying theme..."
+            cp -R /theme/* /company-theme
+        volumeMounts:
+          - name: theme
+            mountPath: /company-theme
+    extraVolumes:
+      theme:
+        emptyDir: {}
+    extraVolumeMounts:
+      theme:
+        readOnly: true
+        mountPath: /opt/jboss/keycloak/themes/company
+----
+
+[TIP]
+====
+See xref:how-tos/keycloak-tls.adoc[the official deploy guide] for a more detailed look into deploying themes.
+====
