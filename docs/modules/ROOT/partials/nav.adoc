@@ -10,6 +10,7 @@
 * xref:how-tos/db-tls.adoc[Encrypt database connection]
 * xref:how-tos/keycloak-tls.adoc[Setup a TLS certificate for Keycloak]
 * xref:how-tos/configure-ingress.adoc[Configure Keycloak ingress]
+* xref:how-tos/custom-theme.adoc[Configure custom theme]
 * xref:how-tos/change-passwords.adoc[Change passwords]
 * xref:how-tos/upgrade-1.x-to-2.x.adoc[Upgrade 1.x to 2.x]
 * xref:how-tos/upgrade-2.x-to-3.x.adoc[Upgrade 2.x to 3.x]
