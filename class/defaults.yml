@@ -83,6 +83,15 @@ parameters:
     # Extra java opts are appended to the default options set in
     # `class/keycloak.yml`.
     extraJavaOpts: ""
+    # Extra enviroment variable that are appended to the helm variable `extraEnv`
+    extraEnv: {}
+    # Extra volumes that are appended to the helm variable `extraVolumes`
+    extraVolumes: {}
+    # Extra volume mounts that are appended to the helm variable `extraVolumeMounts`
+    extraVolumeMounts: {}
+    # Extra init containers that are appended to the helm variable `extraInitContainers`
+    extraInitContainers: {}
+
     # Enable ServiceMonitor, PrometheusRule, and all Keycloak statistics on
     # the metrics endpoint by default.
     monitoring:
@@ -177,7 +186,6 @@ parameters:
         - name: keycloak-tls
           readOnly: true
           mountPath: /etc/x509/https
-
       serviceAccount:
         labels: ${keycloak:labels}
       ingress:

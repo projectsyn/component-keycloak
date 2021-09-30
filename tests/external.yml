@@ -8,3 +8,7 @@ parameters:
     tls:
       provider: vault
       termination: passthrough
+    extraVolumeMounts:
+      startup:
+        readOnly: true
+        mountPath: /opt/start

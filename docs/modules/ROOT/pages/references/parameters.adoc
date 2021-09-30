@@ -352,6 +352,100 @@ parameters:
 ----
 
 
+== `extraEnv`
+
+[horizontal]
+type:: dict
+default:: {}
+
+Extra environment variables added to the Keycloak StatefulSet.
+Keys in the dict are used as value for field `name` in the resulting environment variable configuration.
+Values must be valid Kubernetes environment variable configurations.
+
+
+Example:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraEnv:
+      FOO:
+        value: bar
+----
+
+== `extraVolumes`
+
+[horizontal]
+type:: dict
+default:: {}
+
+Extra volumes added to the Keycloak StatefulSet.
+Keys in the dict are used as value for field `name` in the resulting volume configuration.
+Values must be valid Kubernetes volume configurations.
+
+
+Example:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraVolumes:
+      theme:
+        emptyDir: {}
+----
+
+== `extraVolumeMounts`
+
+[horizontal]
+type:: dict
+default:: {}
+
+Extra volume mounts added to the Keycloak container.
+Keys in the dict are used as value for field `name` in the resulting volume mount configuration.
+Values must be valid Kubernetes volume mount configurations.
+
+Example:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraVolumeMounts:
+      theme:
+        readOnly: true
+        mountPath: /opt/jboss/keycloak/themes/vshn
+----
+
+== `extraInitContainers`
+
+[horizontal]
+type:: dict
+default:: {}
+
+Extra init containers added to the Keycloak StatefulSet.
+Keys in the dict are used as value for field `name` in the resulting container configuration.
+Values must be valid Kubernetes container configurations.
+
+Example:
+[source,yaml]
+----
+parameters:
+  keycloak:
+    extraInitContainers:
+      theme-provider:
+        image: company/keycloak-theme:v1.0.0
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+        args:
+          - -c
+          - |
+            echo "Copying theme..."
+            cp -R /theme/* /company-theme
+        volumeMounts:
+          - name: theme
+            mountPath: /company-theme
+----
+
 == `monitoring.enabled`
 
 [horizontal]
