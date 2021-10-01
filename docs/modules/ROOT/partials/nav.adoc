@@ -15,7 +15,7 @@
 * xref:how-tos/upgrade-1.x-to-2.x.adoc[Upgrade 1.x to 2.x]
 * xref:how-tos/upgrade-2.x-to-3.x.adoc[Upgrade 2.x to 3.x]
 * xref:how-tos/upgrade-3.x-to-4.x.adoc[Upgrade 3.x to 4.x]
-* xref:how-tos/upgrade-3.x-to-4.x.adoc[Upgrade 4.x to 5.x]
+* xref:how-tos/upgrade-4.x-to-5.x.adoc[Upgrade 4.x to 5.x]
 * xref:how-tos/openshift-4.adoc[Install on OpenShift 4]
 * xref:how-tos/pin-versions.adoc[Pin versions]
 
