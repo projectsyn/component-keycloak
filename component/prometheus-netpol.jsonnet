@@ -55,5 +55,5 @@ local netpol =
   };
 
 {
-  '40_netpol': netpol,
+  [if params.helm_values.networkPolicy.enabled then '40_netpol']: netpol,
 }
