@@ -8,7 +8,8 @@ local params = inv.parameters.keycloak;
 local statefulset_file = std.extVar('output_path') + '/statefulset.yaml';
 local statefulset = com.yaml_load(statefulset_file);
 
-local insertMap(sup, map) = std.set(
+local nameKeyF(c) = c.name;
+local insertMap(sup, map, keyF=nameKeyF) = std.set(
   [
     {
       name: k,
@@ -16,7 +17,7 @@ local insertMap(sup, map) = std.set(
     for k in std.objectFields(map)
   ]
   +
-  sup, function(c) c.name
+  sup, keyF
 );
 
 {
@@ -29,11 +30,12 @@ local insertMap(sup, map) = std.set(
               c {
                 env: insertMap(
                   if 'env' in super then super.env else [],
-                  params.extraEnv
+                  params.extraEnv,
                 ),
                 volumeMounts: insertMap(
                   if 'volumeMounts' in super then super.volumeMounts else [],
-                  params.extraVolumeMounts
+                  params.extraVolumeMounts,
+                  function(c) std.join('-', [ c.name, c.mountPath ])
                 ),
               }
             else
