@@ -26,7 +26,7 @@ parameters:
           - keycloak/helmcharts/keycloak/${keycloak:charts:keycloak}/
         helm_params:
           release_name: ${keycloak:release_name}
-          namespace: '${keycloak:namespace}'
+          namespace: "${keycloak:namespace}"
         helm_values: ${keycloak:helm_values}
   commodore:
     postprocess:
