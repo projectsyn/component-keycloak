@@ -410,7 +410,8 @@ Example:
 parameters:
   keycloak:
     extraVolumeMounts:
-      theme:
+      theme-vshn:
+        name: theme
         readOnly: true
         mountPath: /opt/jboss/keycloak/themes/vshn
 ----

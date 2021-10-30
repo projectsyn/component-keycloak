@@ -8,3 +8,22 @@ parameters:
     tls:
       provider: vault
       termination: passthrough
+    extraVolumes:
+      themes:
+        emptyDir: {}
+    extraVolumeMounts:
+      themes-test:
+        name: themes
+        readOnly: true
+        mountPath: /themes/test
+        subDir: test
+      themes-foo:
+        name: themes
+        readOnly: true
+        mountPath: /themes/foo
+        subDir: foo
+      themes-bar:
+        name: themes
+        readOnly: true
+        mountPath: /themes/bar
+        subDir: bar
