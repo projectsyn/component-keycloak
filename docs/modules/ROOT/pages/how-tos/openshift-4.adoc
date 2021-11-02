@@ -10,9 +10,9 @@ You need to disable some security context fields, as OpenShift sets those automa
 ----
 parameters:
   keycloak:
-    ingress:
-      servicePort: http <1>
     helm_values:
+      ingress:
+        servicePort: http <1>
       podSecurityContext: null
       securityContext: null
       pgchecker:
