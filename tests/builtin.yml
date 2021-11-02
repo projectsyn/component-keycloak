@@ -21,9 +21,10 @@ parameters:
           - name: theme
             mountPath: /company-theme
     extraVolumes:
-      test:
+      theme:
         emptyDir: {}
     extraVolumeMounts:
       test:
+        name: theme
         readOnly: true
         mountPath: /opt/test

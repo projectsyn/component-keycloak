@@ -1,11 +1,11 @@
-= Configure custom theme
+= Configure custom themes
 
 Keycloak provides theme support for web pages and emails.
 This allows customizing the look and feel of end-user facing pages so they can be integrated with your applications.
 
-The intended approach to configure a custom theme is to bundle the theme in a container image and copy it to the correct location as an init container.
+The intended approach to configure a custom themes is to bundle the themes in a container image and copy it to the correct location as an init container.
 
-== Creating custom theme
+== Creating custom themes
 
 A theme can provide one or more types to customize different aspects of Keycloak.
 A theme consists of: HTML templates, images, message bundles, stylesheets, scripts and theme properties.
@@ -29,7 +29,7 @@ USER 1001:0
 
 
 
-== Deploying custom theme
+== Deploying custom themes
 
 With the theme accessible in a container image we can deploy it using an init container.
 In combination with an emptyDir volume that's shared with the Keycloak container, we copy the theme over to the right place where Keycloak will pick it up automatically.
@@ -40,7 +40,7 @@ parameters:
   keycloak:
     extraInitContainers:
       theme-provider:
-        image: company/keycloak-theme:v1.0.0
+        image: company/keycloak-themes:v1.0.0
         imagePullPolicy: IfNotPresent
         command:
           - sh
@@ -48,18 +48,30 @@ parameters:
           - -c
           - |
             echo "Copying theme..."
-            cp -R /theme/* /company-theme
+            cp -R /themes/* /target/
         volumeMounts:
-          - name: theme
-            mountPath: /company-theme
+          - name: themes
+            mountPath: /target
+
     extraVolumes:
-      theme:
+      themes:
         emptyDir: {}
+
     extraVolumeMounts:
-      theme:
-        readOnly: true
+      theme-company:
+        name: themes
         mountPath: /opt/jboss/keycloak/themes/company
+        subPath: company
+        readOnly: true
+      theme-other:
+        name: themes
+        readOnly: true
+        mountPath: /opt/jboss/keycloak/themes/other-theme
+        subPath: other-theme
+        readOnly: true
 ----
+
+Note that simply mounting the "themes" volume to `+/opt/jboss/keycloak/themes+` will overwrite the default Keycloak themes.
 
 [TIP]
 ====

@@ -17,7 +17,7 @@ parameters:
             nginx.ingress.kubernetes.io/ssl-passthrough: "true"
         reencrypt:
           certmanager:
-            kubernetes.io/tls-acme: 'true'
+            kubernetes.io/tls-acme: "true"
             cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
             nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
           vault:
@@ -26,14 +26,14 @@ parameters:
     namespace: syn-${_instance}
     release_name: keycloak
     charts:
-      keycloak: '10.3.1'
+      keycloak: "10.3.1"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Keycloak Admin
     admin:
       secretname: keycloak-admin-user
       username: admin
-      password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/admin-password}'
+      password: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/admin-password}"
     # Replica count
     replicas: 2
     # TLS configuration
@@ -42,8 +42,8 @@ parameters:
       termination: reencrypt
       secretName: keycloak-tls
       vault:
-        cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}'
-        certKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}'
+        cert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}"
+        certKey: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}"
       certmanager:
         apiVersion: cert-manager.io/v1
         certName: ${keycloak:tls:secretName}
@@ -60,8 +60,8 @@ parameters:
       tls:
         secretName: ingress-tls
         vault:
-          cert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}'
-          certKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}'
+          cert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}"
+          certKey: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}"
     route:
       enabled: false
     # Labels can be extended in the config hierarchy by providing further
@@ -103,7 +103,7 @@ parameters:
       provider: builtin
 
       secretname: keycloak-postgresql
-      password: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}'
+      password: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}"
       database: keycloak
       username: keycloak
       jdbcParams: sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt
@@ -112,8 +112,8 @@ parameters:
         enabled: true
         verification: selfsigned
         certSecretName: keycloak-postgresql-tls
-        serverCert: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert}'
-        serverCertKey: '?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-key}'
+        serverCert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert}"
+        serverCertKey: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-key}"
 
       # Used when `provider=external`
       external:
@@ -126,12 +126,12 @@ parameters:
       keepjobs: 3
       repo:
         secretName: k8up-repo
-        password: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-repo-password}'
+        password: "?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-repo-password}"
       s3:
         secretName: k8up-s3-credentials
         bucket: k8up-${cluster:name}-syn-keycloak
-        accessKey: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-accesskey}'
-        secretKey: '?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-secretkey}'
+        accessKey: "?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-accesskey}"
+        secretKey: "?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-secretkey}"
 
     helm_values:
       image:

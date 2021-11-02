@@ -404,13 +404,16 @@ Extra volume mounts added to the Keycloak container.
 Keys in the dict are used as value for field `name` in the resulting volume mount configuration.
 Values must be valid Kubernetes volume mount configurations.
 
+Prefer this over using `helm_values.extraVolumeMounts` since with the later you'll have to make sure you don't accidentially break stuff (for example DB TLS and internal TLS are configured via extra volumes).
+
 Example:
 [source,yaml]
 ----
 parameters:
   keycloak:
     extraVolumeMounts:
-      theme:
+      theme-vshn:
+        name: theme
         readOnly: true
         mountPath: /opt/jboss/keycloak/themes/vshn
 ----
@@ -677,3 +680,5 @@ default:: see `defaults.yml`
 
 All helm_values are passed to the helm chart.
 This allows to configure all https://github.com/codecentric/helm-charts/tree/keycloak-10.3.1/charts/keycloak#configuration[keycloak helm chart values].
+
+Note that it's your own liability to make sure you don't break stuff by overwriting values here!
