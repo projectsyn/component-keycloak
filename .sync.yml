@@ -9,7 +9,7 @@
     entries:
       - builtin
       - external
-  makeTarget: test -e instance=${{ matrix.provider }}
+  makeTarget: gotest -e instance=${{ matrix.provider }}
 
 LICENSE:
   year: 2020
