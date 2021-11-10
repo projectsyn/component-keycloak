@@ -27,6 +27,10 @@ parameters:
         helm_params:
           release_name: ${keycloak:release_name}
           namespace: "${keycloak:namespace}"
+          # Tell Helm to generate networking.k8s.io/v1 Ingress objects
+          # This specifies argument `-a networking.k8s.io/v1/Ingress` for
+          # `helm template`.
+          api_versions: networking.k8s.io/v1/Ingress
         helm_values: ${keycloak:helm_values}
   commodore:
     postprocess:
