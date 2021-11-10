@@ -69,6 +69,16 @@ parameters:
         mountPath: /opt/jboss/keycloak/themes/other-theme
         subPath: other-theme
         readOnly: true
+
+    # Change the theme for the welcome page or default theme with extraEnvs (see also https://hub.docker.com/r/jboss/keycloak/)
+    # Theme name is the same as the folder in mountPath
+    extraEnv:
+      KEYCLOAK_WELCOME_THEME:
+        value: 'company'
+      KEYCLOAK_DEFAULT_THEME:
+        value: 'company'
+
+
 ----
 
 Note that simply mounting the "themes" volume to `+/opt/jboss/keycloak/themes+` will overwrite the default Keycloak themes.
