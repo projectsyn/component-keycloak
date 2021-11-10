@@ -7,3 +7,9 @@ chart] on a Syn-enabled cluster.
 The component defaults to provisioning a Bitnami Postgres database via the
 Keycloak helm chart, but this behavior can be overridden using the
 `keycloak.postgres` parameters exposed by the component.
+
+[NOTE]
+====
+This component doesn't support Kubernetes versions older than 1.14 anymore.
+This is because it generates `Ingress` resources with `apiVersion: networking.k8s.io/v1`.
+====

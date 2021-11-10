@@ -27,14 +27,14 @@ parameters:
         helm_params:
           release_name: ${keycloak:release_name}
           namespace: "${keycloak:namespace}"
+          # Tell Helm to generate networking.k8s.io/v1 Ingress objects
+          # This specifies argument `-a networking.k8s.io/v1/Ingress` for
+          # `helm template`.
+          api_versions: networking.k8s.io/v1/Ingress
         helm_values: ${keycloak:helm_values}
   commodore:
     postprocess:
       filters:
-        - type: jsonnet
-          filter: postprocess/api_version.jsonnet
-          path: ${_instance}/01_keycloak_helmchart/keycloak/charts/postgresql/templates
-          enabled: "${keycloak:helm_values:postgresql:enabled}"
         - type: jsonnet
           filter: postprocess/extra-env.jsonnet
           path: ${_instance}/01_keycloak_helmchart/keycloak/templates
