@@ -22,7 +22,6 @@ parameters:
             route.openshift.io/termination: "reencrypt"
           certmanager:
             <<: *reencrypt
-            kubernetes.io/tls-acme: "true"
             cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
           vault: *reencrypt
 
