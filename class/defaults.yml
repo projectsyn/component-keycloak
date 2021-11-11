@@ -7,23 +7,29 @@ parameters:
       builtin: true
       external: false
     =_ingress_annotations:
-      # This lookup table controls whether to set specific annotations depending on the value of `keycloak.ingress.controller`,
-      # `keycloak.tls.termination` and `keycloak.tls.provider`
-      nginx:
-        passthrough:
-          _passthrough: &passthrough
-            nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-            route.openshift.io/termination: "passthrough"
-          certmanager: *passthrough
-          vault: *passthrough
-        reencrypt:
-          _reencrypt: &reencrypt
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            route.openshift.io/termination: "reencrypt"
-          certmanager:
-            <<: *reencrypt
-            cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
-          vault: *reencrypt
+      # This lookup table controls whether to set specific annotations depending
+      # on the value of keycloak.ingress.tls.termination` and `keycloak.ingress.tls.provider`
+      passthrough:
+        _passthrough: &passthrough
+          nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+          route.openshift.io/termination: "passthrough"
+        certmanager: *passthrough
+        secret: *passthrough
+      reencrypt:
+        _reencrypt: &reencrypt
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          route.openshift.io/termination: "reencrypt"
+        certmanager:
+          <<: *reencrypt
+          cert-manager.io/cluster-issuer: ${keycloak:ingress:tls:certmanager:issuer}
+        secret: *reencrypt
+
+    =_service_annotations:
+      # This lookup table controls whether to set specific annotations depending
+      # on the value of keycloak.ingress.tls.termination` and `keycloak.ingress.tls.provider`
+      secret: {}
+      openshift:
+        service.beta.openshift.io/serving-cert-secret-name: ${keycloak:tls:secretName}
 
     namespace: syn-${_instance}
     release_name: keycloak
@@ -38,34 +44,34 @@ parameters:
       password: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/admin-password}"
     # Replica count
     replicas: 2
-    # TLS configuration
+
+    # Secrets
+    secrets: {}
+
+    # Internal TLS configuration
+    # For the ingress TLS config see `ingress.tls`
     tls:
-      provider: certmanager
-      termination: reencrypt
+      provider: secret
       secretName: keycloak-tls
-      vault:
-        cert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}"
-        certKey: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}"
-      certmanager:
-        apiVersion: cert-manager.io/v1
-        certName: ${keycloak:tls:secretName}
-        issuer:
-          name: letsencrypt-production
-          kind: ClusterIssuer
-          group: cert-manager.io
+
+    service:
+      annotations: ${keycloak:_service_annotations:${keycloak:tls:provider}}
+
     # Ingress or Route should be enabled on the distribution level
     ingress:
       enabled: true
-      controller: nginx
       controllerNamespace: ingress-nginx
-      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:tls:termination}:${keycloak:tls:provider}}
+      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:tls:termination}:${keycloak:ingress:tls:provider}}
       tls:
+        termination: reencrypt
+        provider: certmanager
         secretName: ingress-tls
-        vault:
-          cert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}"
-          certKey: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}"
+        certmanager:
+          issuer: letsencrypt-production
+
     route:
       enabled: false
+
     # Labels can be extended in the config hierarchy by providing further
     # entries in key `labels`.
     labels:
@@ -218,6 +224,7 @@ parameters:
               matchLabels:
                 name: ${keycloak:ingress:controllerNamespace}
       service:
+        annotations: ${keycloak:service:annotations}
         # Workaround until https://github.com/codecentric/helm-charts/pull/432 is solved
         httpPort: 8080
         labels: ${keycloak:labels}
