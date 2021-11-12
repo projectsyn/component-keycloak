@@ -213,7 +213,6 @@ parameters:
   keycloak:
     ingress:
       annotations:
-        kubernetes.io/tls-acme: 'true'
         cert-manager.io/cluster-issuer: letsencrypt-production
 ----
 
