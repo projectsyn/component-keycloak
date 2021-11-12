@@ -11,21 +11,20 @@ parameters:
       # `keycloak.tls.termination` and `keycloak.tls.provider`
       nginx:
         passthrough:
-          certmanager:
+          _passthrough: &passthrough
             nginx.ingress.kubernetes.io/ssl-passthrough: "true"
             route.openshift.io/termination: "passthrough"
-          vault:
-            nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-            route.openshift.io/termination: "passthrough"
+          certmanager: *passthrough
+          vault: *passthrough
         reencrypt:
+          _reencrypt: &reencrypt
+            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+            route.openshift.io/termination: "reencrypt"
           certmanager:
+            <<: *reencrypt
             kubernetes.io/tls-acme: "true"
             cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            route.openshift.io/termination: "reencrypt"
-          vault:
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            route.openshift.io/termination: "reencrypt"
+          vault: *reencrypt
 
     namespace: syn-${_instance}
     release_name: keycloak
