@@ -61,7 +61,7 @@ test: .compile ## Compile the component
 
 .PHONY: gen-golden
 gen-golden: commodore_args += -f tests/$(instance).yml
-gen-golden: .compile ## Update the reference version for target `golden-diff`.
+gen-golden: clean .compile ## Update the reference version for target `golden-diff`.
 	@rm -rf tests/golden/$(instance)
 	@mkdir -p tests/golden/$(instance)
 	@cp -R compiled/. tests/golden/$(instance)/.
