@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: external
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/version: v11.0.0
+    helm.sh/chart: keycloak-10.3.1
+  name: keycloak
+spec:
+  groups:
+    - name: keycloak
+      rules: []

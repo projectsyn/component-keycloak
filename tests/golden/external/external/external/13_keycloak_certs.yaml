@@ -1,0 +1,18 @@
+apiVersion: v1
+data: {}
+kind: Secret
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: external
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/version: v11.0.0
+    name: keycloak-tls
+  name: keycloak-tls
+stringData:
+  ca.crt: t-silent-test-1234/c-green-test-1234/external/keycloak-cert
+  tls.crt: t-silent-test-1234/c-green-test-1234/external/keycloak-cert
+  tls.key: t-silent-test-1234/c-green-test-1234/external/keycloak-cert-key
+type: Opaque

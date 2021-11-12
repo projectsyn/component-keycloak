@@ -54,3 +54,19 @@ jobs:
             ${{ runner.os }}-go-
       - name: Compile component
         run: make gotest -e instance=${{ matrix.provider }}
+  golden:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        provider:
+          - builtin
+          - external
+    defaults:
+      run:
+        working-directory: ${{ env.COMPONENT_NAME }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: ${{ env.COMPONENT_NAME }}
+      - name: Golden diff
+        run: make golden-diff -e instance=${{ matrix.provider }}
