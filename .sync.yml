@@ -2,6 +2,7 @@
   componentName: keycloak
   githubUrl: https://github.com/projectsyn/component-keycloak
   feature_goUnitTests: true
+  feature_goldenTests: true
 
 .github/workflows/test.yaml:
   matrix:
@@ -10,6 +11,7 @@
       - builtin
       - external
   makeTarget: gotest -e instance=${{ matrix.provider }}
+  goldenTest_makeTarget: golden-diff -e instance=${{ matrix.provider }}
 
 LICENSE:
   year: 2020
