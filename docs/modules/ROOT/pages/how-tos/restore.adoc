@@ -1,0 +1,104 @@
+= Restore Keycloak
+
+The following steps will guide you through restoring a backup of Keycloak.
+
+[IMPORTANT]
+====
+This guide only covers how to restore the built-in database.
+If you use an external database, please consult the documentation of your database provider on how to backup and restore it.
+====
+
+[NOTE]
+====
+You can only restore a database that has been backed up.
+Please refer to the xref:how-tos/use-built-in-db.adoc#_enable_backups[built-in database] setup guide on how to enable backups.
+====
+
+====
+Requirements
+
+* `kubctl` With access to the cluster running Keycloak
+* `base64`
+* https://restic.net/[`restic`]
+* (optional) https://stedolan.github.io/jq/[`jq`]
+====
+
+. Configure access to backups
++
+[source,bash]
+----
+# The namspace containing the keycloak instance. Change if necessary.
+export NAMESPACE=syn-keycloak
+
+export reposecret=$( \
+    kubectl -n $NAMESPACE get schedule backup \
+    -o go-template="{{.spec.backend.repoPasswordSecretRef.name}}" \
+  )
+export s3secret=$( \
+    kubectl -n $NAMESPACE get schedule backup \
+    -o jsonpath="{.spec.backend.s3.accessKeyIDSecretRef.name}" \
+  )
+
+export RESTIC_REPOSITORY=$( \
+    kubectl -n $NAMESPACE get schedule backup \
+    -o go-template="s3:{{.spec.backend.s3.endpoint}}/{{.spec.backend.s3.bucket}}/" \
+  )
+export RESTIC_PASSWORD=$( \
+    kubectl -n $NAMESPACE get secrets $reposecret \
+    -o jsonpath={.data.password} \
+    | base64 -d \
+  )
+export AWS_ACCESS_KEY_ID=$( \
+    kubectl -n $NAMESPACE get secrets $s3secret \
+    -o jsonpath="{.data.username}" \
+    | base64 -d \
+  )
+export AWS_SECRET_ACCESS_KEY=$( \
+    kubectl -n $NAMESPACE get secrets $s3secret \
+    -o jsonpath="{.data.password}" \
+    | base64 -d \
+  )
+----
+
+. List backups and choose the one to restore
++
+[source,bash]
+----
+restic snapshots
+
+export SNAPSHOT_ID=XXXXXX # Choose a snapshot id from the list
+----
++
+[TIP]
+====
+To choose the last available backup you can simply run
+[source,bash]
+----
+export SNAPSHOT_ID=$(restic snapshots --json --latest 1 --path /$NAMESPACE-keycloak-postgresql.sql | jq -r '.[0].id')
+----
+====
+
+. Load the backup and restore it
++
+[source,bash]
+----
+export POD=keycloak-postgresql-0
+
+restic dump "${SNAPSHOT_ID}" /$NAMESPACE-keycloak-postgresql.sql \
+  | kubectl -n $NAMESPACE exec -i $POD \
+  -- bash -c 'PGPASSWORD="${POSTGRES_PASSWORD}" psql --set ON_ERROR_STOP=on -U "${POSTGRES_USER}" ${POSTGRES_DB}'
+----
+
+[NOTE]
+====
+This guide assumes that you have direct access to the S3 bucket holding the backup.
+If the access is restricted to the Kubernetes cluster, you will need to adapt these steps.
+You could:
+
+. Perform the commands in a container running on the cluster
+. Restore the database backup to a PVC and copy if over
+
+Consult the official https://k8up.io/k8up/2.1/how-tos/restore.html#_restore_from_s3_to_pvc[K8up documentation] on options for restoring backups.
+====
+
+
