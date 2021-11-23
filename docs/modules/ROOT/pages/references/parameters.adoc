@@ -96,9 +96,6 @@ Usualy two for the redundancy during the maintenance.
 
 == `tls`
 
-[horizontal]
-type:: dict
-default:: _see below_
 
 This key configures encryption of *internal* traffic, meaning from the IngressController to Keycloak itself.
 
@@ -232,9 +229,6 @@ This is only relevant when enabling the network policy with `helm_values.network
 
 == `ingress.tls`
 
-[horizontal]
-type:: dict
-default:: _see below_
 
 This key configures encryption of *external* traffic, meaning from the client to the ingress controller.
 
