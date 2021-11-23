@@ -94,7 +94,18 @@ The Keycloak pod replicas.
 Usualy two for the redundancy during the maintenance.
 
 
-== `tls.provider`
+== `tls`
+
+[horizontal]
+type:: dict
+default:: _see below_
+
+This key configures encryption of *internal* traffic, meaning from the IngressController to Keycloak itself.
+
+For Ingress-specific TLS configuration, see `ingress.tls`.
+
+
+=== `tls.provider`
 
 [horizontal]
 type:: string
@@ -106,40 +117,42 @@ Defines how TLS certificates are provisioned:
 * `vault` for certificates stored in Vault.
 
 
-== `tls.termination`
+=== `tls.provider`
 
 [horizontal]
 type:: string
-default:: `reencrypt`
+default:: `secret`
 
-Defines the termination mode:
+Defines how TLS certificates for internal (ingress to pods) traffic are provisioned:
 
-* `reencrypt` TLS termination happens at the ingress or route, the traffic is re-encrypted.
-* `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic.
+* `certmanager` for certificates issued via cert-manager.
+* `vault` for certificates stored in Vault.
+
+Also see: `ingress.tls.provider`
 
 
-== `tls.secretName`
+=== `tls.secretName`
 
 [horizontal]
 type:: string
 default:: `keycloak-tls`
 
 
-== `tls.vault.cert`
+=== `tls.vault.cert`
 
 [horizontal]
 type:: string
 default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}`
 
 
-== `tls.vault.cert`
+=== `tls.vault.cert`
 
 [horizontal]
 type:: String
 default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}`
 
 
-== `tls.certmanager.apiVersion`
+=== `tls.certmanager.apiVersion`
 
 [horizontal]
 type:: string
@@ -149,7 +162,7 @@ Cert-Manager v1.x is using `cert-manager.io/v1` in their CRDs.
 Older cert-manager versions (v0.x) are using `cert-manager.io/v1beta1` or other.
 
 
-== `tls.certmanager.issuer.name`
+=== `tls.certmanager.issuer.name`
 
 [horizontal]
 type:: string
@@ -159,7 +172,7 @@ Define the cert-manager issuer name.
 If cert-manager is managed by https://github.com/projectsyn/component-cert-manager/[component cert-manager] with the default configuration, this is one of `letsencrypt-production` or `letsencrypt-staging`.
 
 
-== `tls.certmanager.issuer.kind`
+=== `tls.certmanager.issuer.kind`
 
 [horizontal]
 type:: string
@@ -169,7 +182,7 @@ Define the issuer kind.
 Can be `ClusterIssuer` or `Issuer`.
 
 
-== `tls.certmanager.issuer.group`
+=== `tls.certmanager.issuer.group`
 
 [horizontal]
 type:: string
@@ -206,16 +219,6 @@ By default, a set of annotations is configured depending on `tls.provider` and `
 
 The default annotations can extended with custom annotations as required.
 
-An example shows how to allow an automatic ACME based certificate creation via cert-manager:
-[source,yaml]
-----
-parameters:
-  keycloak:
-    ingress:
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-production
-----
-
 
 == `ingress.controllerNamespace`
 
@@ -227,7 +230,43 @@ The namespace where the ingress controller is running.
 This is only relevant when enabling the network policy with `helm_values.networkPolicy.enabled`.
 
 
-== `ingress.tls.secretName`
+== `ingress.tls`
+
+[horizontal]
+type:: dict
+default:: _see below_
+
+This key configures encryption of *external* traffic, meaning from the client to the ingress controller.
+
+For internal TLS configuration, see `tls` above.
+
+
+=== `ingress.tls.termination`
+
+[horizontal]
+type:: string
+default:: `reencrypt`
+
+Defines the termination mode:
+
+* `reencrypt` TLS termination happens at the ingress or route, the traffic is re-encrypted.
+* `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic.
+
+=== `ingress.tls.provider`
+
+[horizontal]
+type:: string
+default:: `certmanager`
+
+Defines how TLS certificates for external traffic (Ingress/Route) are provisioned:
+
+* `certmanager` for certificates issued via cert-manager.
+* `vault` for certificates stored in Vault.
+
+Also see: `tls.provider`
+
+
+=== `ingress.tls.secretName`
 
 [horizontal]
 type:: string
@@ -236,14 +275,23 @@ default:: `ingress-tls`
 Allows overwriting the default secret name where the ingress controller looks for the certificates.
 
 
-== `ingress.tls.vault.cert`
+=== `ingress.tls.certmanager.issuerName`
+
+[horizontal]
+type:: string
+default:: `letsencrypt-production`
+
+Name of the ClusterIssuer to use if `certmanager` is selected in `ingress.tls.provider`.
+
+
+=== `ingress.tls.vault.cert`
 
 [horizontal]
 type:: string
 default:: `?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}`
 
 
-== `ingress.tls.vault.certKey`
+=== `ingress.tls.vault.certKey`
 
 [horizontal]
 type:: string

@@ -7,7 +7,9 @@ parameters:
         verification: verify
     tls:
       provider: vault
-      termination: passthrough
+    ingress:
+      tls:
+        termination: passthrough
     extraVolumes:
       themes:
         emptyDir: {}
