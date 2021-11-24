@@ -1,0 +1,18 @@
+= Upgrade from v5 to v6
+
+This guide describes the steps to perform an upgrade of the component from version v5 to v6.
+
+== Changes
+
+Configuration of TLS aspect has been overhauled:
+* Separation of internal (ingress to Keycloak) and external (client to ingress) TLS configuration
+
+
+
+== Step-by-step guide
+
+When upgrading the component, the following changes to the inventory are required:
+
+. Move `tls.termination` to `ingress.tls.termination`
+. When using cert-manager for the ingress certificate, move `tls.certmanager.issuer.name` to `ingress.tls.certmanager.issuerName`
+. Copy `tls.provider` to `ingress.tls.provider` if not using default values

@@ -22,7 +22,7 @@ parameters:
             route.openshift.io/termination: "reencrypt"
           certmanager:
             <<: *reencrypt
-            cert-manager.io/cluster-issuer: ${keycloak:tls:certmanager:issuer:name}
+            cert-manager.io/cluster-issuer: ${keycloak:ingress:tls:certmanager:issuer}
           vault: *reencrypt
 
     namespace: syn-${_instance}
@@ -38,10 +38,11 @@ parameters:
       password: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/admin-password}"
     # Replica count
     replicas: 2
-    # TLS configuration
+
+    # Internal TLS configuration
+    # For the ingress TLS config see `ingress.tls`
     tls:
       provider: certmanager
-      termination: reencrypt
       secretName: keycloak-tls
       vault:
         cert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}"
@@ -53,19 +54,25 @@ parameters:
           name: letsencrypt-production
           kind: ClusterIssuer
           group: cert-manager.io
+
     # Ingress or Route should be enabled on the distribution level
     ingress:
       enabled: true
       controller: nginx
       controllerNamespace: ingress-nginx
-      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:tls:termination}:${keycloak:tls:provider}}
+      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:ingress:tls:termination}:${keycloak:tls:provider}}
       tls:
+        termination: reencrypt
         secretName: ingress-tls
+        certmanager:
+          issuer: letsencrypt-production
         vault:
           cert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}"
           certKey: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}"
+
     route:
       enabled: false
+
     # Labels can be extended in the config hierarchy by providing further
     # entries in key `labels`.
     labels:
@@ -74,6 +81,7 @@ parameters:
       app.kubernetes.io/version: v11.0.0
       app.kubernetes.io/component: keycloak
       app.kubernetes.io/managed-by: commodore
+
     # Pod resource requests and limits
     resources:
       requests:
