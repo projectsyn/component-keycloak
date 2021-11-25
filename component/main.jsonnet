@@ -87,28 +87,6 @@ local keycloak_cert_secret = kube.Secret(params.tls.secretName) {
   stringData: {
     'tls.key': params.tls.vault.certKey,
     'tls.crt': params.tls.vault.cert,
-    // CA is required by nginx in passthrough mode
-    'ca.crt': params.tls.vault.cert,
-  },
-};
-
-local cert_manager_cert = {
-  apiVersion: params.tls.certmanager.apiVersion,
-  kind: 'Certificate',
-  metadata: {
-    name: params.tls.certmanager.certName,
-    labels: params.labels,
-  },
-  spec: {
-    secretName: params.tls.secretName,
-    dnsNames: [
-      params.fqdn,
-    ],
-    issuerRef: {
-      name: params.tls.certmanager.issuer.name,
-      kind: params.tls.certmanager.issuer.kind,
-      group: params.tls.certmanager.issuer.group,
-    },
   },
 };
 
@@ -122,12 +100,8 @@ local ingress_tls_secret = kube.Secret(params.ingress.tls.secretName) {
   },
 };
 
-local create_keycloak_cert_secret =
-  params.ingress.enabled && !(params.ingress.tls.termination == 'passthrough' && params.tls.provider == 'certmanager');
-local create_ingress_cert_secret =
-  params.ingress.enabled && params.ingress.tls.termination == 'reencrypt' && params.tls.provider == 'vault';
-local create_ingress_cert =
-  params.ingress.enabled && params.ingress.tls.termination == 'passthrough' && params.tls.provider == 'certmanager';
+local create_keycloak_cert_secret = params.ingress.enabled && params.tls.provider == 'vault';
+local create_ingress_cert_secret = params.ingress.enabled && params.ingress.tls.provider == 'vault';
 
 local k8up_repo_secret = kube.Secret(params.k8up.repo.secretName) {
   metadata+: {
@@ -179,6 +153,5 @@ local k8up_schedule =
   [if params.database.tls.enabled then '12_db_certs']: db_cert_secret,
   [if create_keycloak_cert_secret then '13_keycloak_certs']: keycloak_cert_secret,
   [if create_ingress_cert_secret then '14_ingress_certs']: ingress_tls_secret,
-  [if create_ingress_cert then '20_le_cert']: cert_manager_cert,
   [if params.k8up.enabled then '30_k8up']: [ k8up_repo_secret, k8up_s3_secret, k8up_schedule ],
 }

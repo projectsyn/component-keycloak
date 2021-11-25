@@ -2,8 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
-    route.openshift.io/termination: passthrough
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    route.openshift.io/termination: reencrypt
   labels:
     app.kubernetes.io/component: keycloak
     app.kubernetes.io/instance: external

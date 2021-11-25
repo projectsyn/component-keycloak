@@ -9,7 +9,7 @@ parameters:
       provider: vault
     ingress:
       tls:
-        termination: passthrough
+        provider: vault
     extraVolumes:
       themes:
         emptyDir: {}

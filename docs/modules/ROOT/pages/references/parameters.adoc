@@ -212,7 +212,7 @@ Defaults to `nginx` and this is currently also the only supported option.
 type:: dict
 default:: `{}`
 
-By default, a set of annotations is configured depending on `tls.provider` and `tls.termination`.
+By default, a set of annotations is configured depending on `tls.provider`.
 
 The default annotations can extended with custom annotations as required.
 
@@ -234,17 +234,6 @@ This key configures encryption of *external* traffic, meaning from the client to
 
 For internal TLS configuration, see `tls` above.
 
-
-=== `ingress.tls.termination`
-
-[horizontal]
-type:: string
-default:: `reencrypt`
-
-Defines the termination mode:
-
-* `reencrypt` TLS termination happens at the ingress or route, the traffic is re-encrypted.
-* `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic.
 
 === `ingress.tls.provider`
 

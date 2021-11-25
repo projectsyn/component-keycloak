@@ -6,24 +6,16 @@ parameters:
       # This lookup table controls whether to enable the chart depending on the value of `keycloak.database.provider`
       builtin: true
       external: false
+
     =_ingress_annotations:
-      # This lookup table controls whether to set specific annotations depending on the value of `keycloak.ingress.controller`,
-      # `keycloak.tls.termination` and `keycloak.ingress.tls.provider`
-      nginx:
-        passthrough:
-          _passthrough: &passthrough
-            nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-            route.openshift.io/termination: "passthrough"
-          certmanager: *passthrough
-          vault: *passthrough
-        reencrypt:
-          _reencrypt: &reencrypt
-            nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-            route.openshift.io/termination: "reencrypt"
-          certmanager:
-            <<: *reencrypt
-            cert-manager.io/cluster-issuer: ${keycloak:ingress:tls:certmanager:issuer}
-          vault: *reencrypt
+      # Lookup tables for Ingress annotations based on `ingress.tls.provider`.
+      _reencrypt: &reencrypt
+        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        route.openshift.io/termination: reencrypt
+      certmanager:
+        <<: *reencrypt
+        cert-manager.io/cluster-issuer: ${keycloak:ingress:tls:certmanager:issuer}
+      vault: *reencrypt
 
     namespace: syn-${_instance}
     release_name: keycloak
@@ -60,9 +52,8 @@ parameters:
       enabled: true
       controller: nginx
       controllerNamespace: ingress-nginx
-      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:ingress:tls:termination}:${keycloak:ingress:tls:provider}}
+      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:tls:provider}}
       tls:
-        termination: reencrypt
         provider: certmanager
         secretName: ingress-tls
         certmanager:

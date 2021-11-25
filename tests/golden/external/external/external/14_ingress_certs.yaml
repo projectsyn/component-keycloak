@@ -9,9 +9,9 @@ metadata:
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
     app.kubernetes.io/version: v11.0.0
-    name: keycloak-tls
-  name: keycloak-tls
+    name: ingress-tls
+  name: ingress-tls
 stringData:
-  tls.crt: t-silent-test-1234/c-green-test-1234/external/keycloak-cert
-  tls.key: t-silent-test-1234/c-green-test-1234/external/keycloak-cert-key
+  tls.crt: t-silent-test-1234/c-green-test-1234/external/ingress-cert
+  tls.key: t-silent-test-1234/c-green-test-1234/external/ingress-cert-key
 type: Opaque
