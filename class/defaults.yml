@@ -8,7 +8,7 @@ parameters:
       external: false
     =_ingress_annotations:
       # This lookup table controls whether to set specific annotations depending on the value of `keycloak.ingress.controller`,
-      # `keycloak.tls.termination` and `keycloak.tls.provider`
+      # `keycloak.tls.termination` and `keycloak.ingress.tls.provider`
       nginx:
         passthrough:
           _passthrough: &passthrough
@@ -60,9 +60,10 @@ parameters:
       enabled: true
       controller: nginx
       controllerNamespace: ingress-nginx
-      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:ingress:tls:termination}:${keycloak:tls:provider}}
+      annotations: ${keycloak:_ingress_annotations:${keycloak:ingress:controller}:${keycloak:ingress:tls:termination}:${keycloak:ingress:tls:provider}}
       tls:
         termination: reencrypt
+        provider: certmanager
         secretName: ingress-tls
         certmanager:
           issuer: letsencrypt-production
