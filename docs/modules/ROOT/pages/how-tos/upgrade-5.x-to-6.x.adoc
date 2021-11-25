@@ -6,13 +6,13 @@ This guide describes the steps to perform an upgrade of the component from versi
 
 Configuration of TLS aspect has been overhauled:
 * Separation of internal (ingress to Keycloak) and external (client to ingress) TLS configuration
-* Deprecation of "passthrough" TLS termination mode. "reencrypt" is used instead.
+* Removal of "passthrough" TLS termination mode. "reencrypt" is used instead.
 
 
 == Step-by-step guide
 
 When upgrading the component, the following changes to the inventory are required:
 
-. Remove `tls.termination`. It has been deprecated and defaults to "reencrypt" now
+. Remove `tls.termination`. It's not supported anymore.
 . When using cert-manager for the ingress certificate, move `tls.certmanager.issuer.name` to `ingress.tls.certmanager.issuerName`
 . Copy `tls.provider` to `ingress.tls.provider` if not using default values
