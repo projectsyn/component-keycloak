@@ -11,7 +11,7 @@ local prometheus_namespace =
 local prometheus_name = 'prometheus';
 
 local keycloak_namespace = params.namespace;
-local keycloak_name = params.release_name;
+local keycloak_name = params.name;
 
 local name = prometheus_name + '-' + prometheus_namespace + '-to-' + keycloak_name;
 

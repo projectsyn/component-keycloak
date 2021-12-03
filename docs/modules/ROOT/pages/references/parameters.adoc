@@ -16,7 +16,7 @@ When using multiple instances for this component, each instance needs its own na
 You can't deploy multiple instances into the same namespace.
 ====
 
-== `release_name`
+== `name`
 
 [horizontal]
 type:: string
@@ -48,7 +48,7 @@ FQDN should be overwritten on the cluster level.
 
 [horizontal]
 type:: string
-default:: `${keycloak:release_name}-admin-user`
+default:: `${keycloak:name}-admin-user`
 
 
 == `admin.username`
@@ -574,7 +574,7 @@ See xref:how-tos/change-passwords.adoc[Change passwords] to change the password 
 
 [horizontal]
 type:: string
-default:: `${keycloak:release_name}-postgresql`
+default:: `${keycloak:name}-postgresql`
 
 
 == `database.external.vendor`

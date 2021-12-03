@@ -25,7 +25,7 @@ parameters:
         input_paths:
           - keycloak/helmcharts/keycloak/${keycloak:charts:keycloak}/
         helm_params:
-          release_name: ${keycloak:release_name}
+          name: ${keycloak:name}
           namespace: "${keycloak:namespace}"
           # Tell Helm to generate networking.k8s.io/v1 Ingress objects
           # This specifies argument `-a networking.k8s.io/v1/Ingress` for
