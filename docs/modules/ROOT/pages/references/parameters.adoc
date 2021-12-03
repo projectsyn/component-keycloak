@@ -108,23 +108,11 @@ For Ingress-specific TLS configuration, see `ingress.tls`.
 type:: string
 default:: `certmanager`
 
-Defines how TLS certificates are provisioned:
-
-* `certmanager` for certificates issued via cert-manager.
-* `vault` for certificates stored in Vault.
-* `openshift` for https://docs.openshift.com/container-platform/4.9/security/certificates/service-serving-certificate.html[service serving certificates]
-
-
-=== `tls.provider`
-
-[horizontal]
-type:: string
-default:: `secret`
-
 Defines how TLS certificates for internal (ingress to pods) traffic are provisioned:
 
 * `certmanager` for certificates issued via cert-manager.
 * `vault` for certificates stored in Vault.
+* `openshift` for https://docs.openshift.com/container-platform/4.9/security/certificates/service-serving-certificate.html[service serving certificates]
 
 Also see: `ingress.tls.provider`
 
