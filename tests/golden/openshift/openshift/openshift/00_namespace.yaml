@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations: {}
+  labels:
+    SYNMonitoring: main
+    name: keycloak-dev
+  name: keycloak-dev

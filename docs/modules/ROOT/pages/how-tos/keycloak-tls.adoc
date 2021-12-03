@@ -1,5 +1,19 @@
 = Setup a TLS certificate for Keycloak
 
+[NOTE]
+.Use service serving certificates on OCP4
+====
+On OpenShift 4, use the "openshift" TLS provider instead, to get a certificate that works with the OpenShift router, is valid for 2 years and will be autorenewed:
+
+[source,yaml]
+----
+parameters:
+  keycloak:
+    tls:
+      provider: openshift
+----
+====
+
 This guide provides an example how to setup a TLS certificate for Keycloak.
 
 ====

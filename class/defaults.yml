@@ -8,7 +8,7 @@ parameters:
       external: false
     =_ingress_annotations:
       # This lookup table controls whether to set specific annotations depending on the value of `keycloak.ingress.controller`,
-      # `keycloak.tls.termination` and `keycloak.ingress.tls.provider`
+      # `keycloak.ingress.tls.termination` and `keycloak.ingress.tls.provider`
       nginx:
         passthrough:
           _passthrough: &passthrough
@@ -24,6 +24,13 @@ parameters:
             <<: *reencrypt
             cert-manager.io/cluster-issuer: ${keycloak:ingress:tls:certmanager:issuer}
           vault: *reencrypt
+
+    =_service_annotations:
+      # lookup table for service annotations based on `keycloak.tls.provider`:
+      certmanager: {}
+      openshift:
+        service.beta.openshift.io/serving-cert-secret-name: ${keycloak:tls:secretName}
+      vault: {}
 
     namespace: syn-${_instance}
     name: keycloak
@@ -227,6 +234,7 @@ parameters:
               matchLabels:
                 name: ${keycloak:ingress:controllerNamespace}
       service:
+        annotations: ${keycloak:_service_annotations:${keycloak:tls:provider}}
         # Workaround until https://github.com/codecentric/helm-charts/pull/432 is solved
         httpPort: 8080
         labels: ${keycloak:labels}
