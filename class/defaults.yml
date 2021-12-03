@@ -26,7 +26,7 @@ parameters:
           vault: *reencrypt
 
     namespace: syn-${_instance}
-    release_name: keycloak
+    name: keycloak
     charts:
       keycloak: "10.3.1"
     # FQDN should be overwritten on the cluster level
