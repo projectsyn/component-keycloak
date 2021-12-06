@@ -5,20 +5,23 @@ This guide describes how to install this component on OpenShift 4.
 == Parameters for Keycloak
 
 You need to disable some security context fields, as OpenShift sets those automatically.
+Also, the sample below configures end-to-end encryption to Keycloak with https://docs.openshift.com/container-platform/4.9/security/certificates/service-serving-certificate.html[OpenShift service serving certificate].
 
 [source,yaml,subs="attributes+"]
 ----
 parameters:
   keycloak:
+    tls:
+      provider: openshift
+    ingress:
+      tls:
+        termination: reencrypt
     helm_values:
-      ingress:
-        servicePort: http <1>
       podSecurityContext: null
       securityContext: null
       pgchecker:
         securityContext: null
 ----
-<1> It's not possible to use the `reencrypt` termination if using Ingress with a self-signed destination certificate.
 
 == Parameters for built-in Postgresql database
 
