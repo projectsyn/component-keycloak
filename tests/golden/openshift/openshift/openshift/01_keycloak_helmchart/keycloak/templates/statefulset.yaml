@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/instance: openshift
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: v11.0.0
+    app.kubernetes.io/version: 15.0.2
     helm.sh/chart: keycloak-10.3.1
   name: keycloak
 spec:
@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config-startup: 364a72f43635e8b1de86a1292b18f3710e733bd6aebf6d9751fbbe9390312aac
+        checksum/config-startup: c6c620d6f92a0e8dc6c4ec68299a0cdb580b97df3191044d4b4d9668994aba51
         checksum/secrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
       labels:
         app.kubernetes.io/instance: keycloak
@@ -76,7 +76,7 @@ spec:
             name: keycloak-admin-user
         - secretRef:
             name: keycloak-postgresql
-        image: quay.io/keycloak/keycloak:14.0.0
+        image: quay.io/keycloak/keycloak:15.0.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:

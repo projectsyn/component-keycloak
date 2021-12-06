@@ -13,8 +13,6 @@ parameters:
       securityContext: null
       pgchecker:
         securityContext: null
-      image:
-        tag: "14.0.0"
 
     database:
       database: keycloak_dev

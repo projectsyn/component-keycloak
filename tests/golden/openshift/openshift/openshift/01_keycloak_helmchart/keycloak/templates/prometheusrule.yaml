@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/instance: openshift
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: v11.0.0
+    app.kubernetes.io/version: 15.0.2
     helm.sh/chart: keycloak-10.3.1
   name: keycloak
 spec:

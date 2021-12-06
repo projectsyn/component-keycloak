@@ -31,6 +31,6 @@ metadata:
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 14.0.0
+    app.kubernetes.io/version: 15.0.2
     helm.sh/chart: keycloak-10.3.1
   name: keycloak-startup
