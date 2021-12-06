@@ -9,7 +9,6 @@ metadata:
     app.kubernetes.io/instance: builtin
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: v11.0.0
     helm.sh/chart: postgresql-9.1.1
   name: keycloak-postgresql
 spec:
