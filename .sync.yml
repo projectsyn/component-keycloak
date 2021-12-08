@@ -10,6 +10,7 @@
     entries:
       - builtin
       - external
+      - openshift
   makeTarget: gotest -e instance=${{ matrix.provider }}
   goldenTest_makeTarget: golden-diff -e instance=${{ matrix.provider }}
 
