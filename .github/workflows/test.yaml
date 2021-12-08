@@ -61,7 +61,6 @@ jobs:
         provider:
           - builtin
           - external
-          - openshift
     defaults:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
