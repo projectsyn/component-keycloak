@@ -253,6 +253,7 @@ parameters:
         # TODO: Rename master to primary when upgrading to Postgres 11 https://github.com/bitnami/charts/commit/7eabc85fd4fae43127228a22829c7ce3fe85c389
         master:
           podAnnotations:
+            # Annotations to support both K8up v1 and v2
             k8up.syn.tools/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
             k8up.syn.tools/file-extension: .sql
             k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
