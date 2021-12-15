@@ -29,7 +29,7 @@ Requirements
 +
 [source,bash]
 ----
-# The namspace containing the keycloak instance. Change if necessary.
+# The namspace containing the Keycloak instance. Change if necessary.
 export NAMESPACE=syn-keycloak
 
 export reposecret=$( \
@@ -80,6 +80,30 @@ export SNAPSHOT_ID=$(restic snapshots --json --latest 1 --path /$NAMESPACE-keycl
 ----
 ====
 
+. Disable ArgoCD auto sync
++
+[source,bash]
+----
+# The ArgoCD app of the Keycloak instance. Change if necessary.
+export ARGO_APP=keycloak
+
+kubectl -n syn patch apps root --type=json \
+  -p '[{"op":"replace", "path":"/spec/syncPolicy", "value": {}}]'
+kubectl -n syn patch apps ${ARGO_APP} --type=json \
+  -p '[{"op":"replace", "path":"/spec/syncPolicy", "value": {}}]'
+----
+
+. Scale down Keycloak
++
+[source,bash]
+----
+kubectl -n $NAMESPACE patch statefulset keycloak --type=json \
+  -p '[{"op":"replace", "path":"/spec/replicas", "value": 0}]'
+
+# Wait until statefulset has been scaled down
+kubectl -n $NAMESPACE get statefulset keycloak -w
+----
+
 . Load the backup and restore it
 +
 [source,bash]
@@ -89,6 +113,21 @@ export POD=keycloak-postgresql-0
 restic dump "${SNAPSHOT_ID}" /$NAMESPACE-keycloak-postgresql.sql \
   | kubectl -n $NAMESPACE exec -i $POD \
   -- sh -c 'PGPASSWORD="${POSTGRES_PASSWORD}" psql --set ON_ERROR_STOP=on -U "${POSTGRES_USER}" ${POSTGRES_DB}'
+----
+
+. Re-enable ArgoCD auto sync and scale up Keycloak
++
+[source,bash]
+----
+kubectl -n syn patch apps root --type=json \
+  -p '[{
+    "op":"replace",
+    "path":"/spec/syncPolicy",
+    "value": {"automated": {"prune": true, "selfHeal": true}}
+  }]'
+
+# Wait until Keycloak has started sucessfully
+kubectl -n $NAMESPACE get statefulset keycloak -w
 ----
 
 [NOTE]
