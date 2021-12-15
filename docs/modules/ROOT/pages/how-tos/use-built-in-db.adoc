@@ -62,7 +62,7 @@ keycloak:
 ----
 key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
 
-vault kv put -cas=0 "${key}" k8up-repo-password=$(pwgen -s 32 1)
+vault kv patch "${key}" k8up-repo-password=$(pwgen -s 32 1)
 ----
 
 . Get the access and secret key of your S3 provider and store them in Vault
@@ -73,12 +73,12 @@ s3_access_key=YOUR_ACCESS_KEY
 s3_secret_key=YOUR_SECRET_KEY
 key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
 
-vault kv put -cas=0 "${key}" k8up-s3-accesskey=${s3_access_key} k8up-s3-secretkey=${s3_secret_key}
+vault kv patch "${key}" k8up-s3-accesskey=${s3_access_key} k8up-s3-secretkey=${s3_secret_key} k8up-repo-password=$(pwgen -s 32 1)
 ----
 +
 [TIP]
 ====
-On most clusters you should be able to reuse the global backup credentials setup during cluster creation.
+On most clusters you should be able to reuse the global backup credentials set up during cluster creation.
 Just add a reference to the credentials in Vault to the K8up S3 configuration and you can skip this step.
 
 [source,yaml]

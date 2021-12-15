@@ -1,4 +1,4 @@
-= Restore Keycloak
+= Restore Keycloak from a Backup
 
 The following steps will guide you through restoring a backup of Keycloak.
 
@@ -17,10 +17,12 @@ Please refer to the xref:how-tos/use-built-in-db.adoc#_enable_backups[built-in d
 ====
 Requirements
 
-* `kubctl` With access to the cluster running Keycloak
+* `kubectl` With access to the cluster running Keycloak
 * `base64`
 * https://restic.net/[`restic`]
 * (optional) https://stedolan.github.io/jq/[`jq`]
+* `pwgen`
+* `vault`
 ====
 
 . Configure access to backups
@@ -86,7 +88,7 @@ export POD=keycloak-postgresql-0
 
 restic dump "${SNAPSHOT_ID}" /$NAMESPACE-keycloak-postgresql.sql \
   | kubectl -n $NAMESPACE exec -i $POD \
-  -- bash -c 'PGPASSWORD="${POSTGRES_PASSWORD}" psql --set ON_ERROR_STOP=on -U "${POSTGRES_USER}" ${POSTGRES_DB}'
+  -- sh -c 'PGPASSWORD="${POSTGRES_PASSWORD}" psql --set ON_ERROR_STOP=on -U "${POSTGRES_USER}" ${POSTGRES_DB}'
 ----
 
 [NOTE]
@@ -96,7 +98,7 @@ If the access is restricted to the Kubernetes cluster, you will need to adapt th
 You could:
 
 . Perform the commands in a container running on the cluster
-. Restore the database backup to a PVC and copy if over
+. Restore the database backup to a PVC and copy it over
 
 Consult the official https://k8up.io/k8up/2.1/how-tos/restore.html#_restore_from_s3_to_pvc[K8up documentation] on options for restoring backups.
 ====
