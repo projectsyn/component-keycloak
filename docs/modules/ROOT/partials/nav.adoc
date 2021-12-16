@@ -12,6 +12,7 @@
 * xref:how-tos/configure-ingress.adoc[Configure Keycloak ingress]
 * xref:how-tos/custom-theme.adoc[Configure custom theme]
 * xref:how-tos/change-passwords.adoc[Change passwords]
+* xref:how-tos/restore.adoc[Restore from a Backup]
 * xref:how-tos/upgrade-1.x-to-2.x.adoc[Upgrade 1.x to 2.x]
 * xref:how-tos/upgrade-2.x-to-3.x.adoc[Upgrade 2.x to 3.x]
 * xref:how-tos/upgrade-3.x-to-4.x.adoc[Upgrade 3.x to 4.x]

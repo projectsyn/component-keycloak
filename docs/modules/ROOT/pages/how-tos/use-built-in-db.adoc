@@ -36,3 +36,59 @@ vault kv put -cas=0 "${key}" admin-password=$(pwgen -s 32 1) db-password=$(pwgen
 ----
 
 . Compile and push the cluster catalog
+
+== Enable Backups
+
+The component supports backups for the built-in database through https://k8up.io/[K8up].
+The following steps show how to enable them.
+
+[NOTE]
+====
+To use this backup feature, the https://github.com/projectsyn/component-backup-k8up[component-backup-k8up] needs to be installed on the cluster.
+====
+
+. Enable backups in component parameters
++
+[source,yaml]
+----
+keycloak:
+  k8up:
+    enabled: true
+----
+
+. Generate and store repository secret in Vault
++
+[source,bash]
+----
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
+
+vault kv patch "${key}" k8up-repo-password=$(pwgen -s 32 1)
+----
+
+. Get the access and secret key of your S3 provider and store them in Vault
++
+[source,bash]
+----
+s3_access_key=YOUR_ACCESS_KEY
+s3_secret_key=YOUR_SECRET_KEY
+key="clusters/kv/${TENANT_ID}/${CLUSTER_ID}/keycloak"
+
+vault kv patch "${key}" k8up-s3-accesskey=${s3_access_key} k8up-s3-secretkey=${s3_secret_key} k8up-repo-password=$(pwgen -s 32 1)
+----
++
+[TIP]
+====
+On most clusters you should be able to reuse the global backup credentials set up during cluster creation.
+Just add a reference to the credentials in Vault to the K8up S3 configuration and you can skip this step.
+
+[source,yaml]
+----
+keycloak:
+  k8up:
+    enabled: true
+    s3:
+      accesskey: '?{vaultkv:${customer:name}/${cluster:name}/global-backup/access-key}'
+      secretkey: '?{vaultkv:${customer:name}/${cluster:name}/global-backup/secret-key}'
+----
+====
+
