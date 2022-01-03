@@ -16,6 +16,21 @@ When using multiple instances for this component, each instance needs its own na
 You can't deploy multiple instances into the same namespace.
 ====
 
+== `namespaceLabels`
+
+[horizontal]
+type:: dict
+default:: `{}`
+
+Additional labels to add to the component's namespace.
+Key value pairs in the dict are directly added to the generated namespace manifest.
+
+[IMPORTANT]
+====
+Users must ensure that the provided key value pairs are valid Kubernetes label keys and label values.
+In particular, make sure to quote boolean or string label values as otherwise the namespace may get created without any labels.
+====
+
 == `name`
 
 [horizontal]
