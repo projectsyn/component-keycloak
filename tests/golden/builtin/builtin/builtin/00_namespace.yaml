@@ -5,4 +5,5 @@ metadata:
   labels:
     SYNMonitoring: main
     name: syn-builtin
+    test: testing
   name: syn-builtin

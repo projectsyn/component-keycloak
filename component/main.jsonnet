@@ -1,5 +1,6 @@
 // main template for keycloak
 local k8up = import 'lib/backup-k8up.libjsonnet';
+local com = import 'lib/commodore.libjsonnet';
 local kap = import 'lib/kapitan.libjsonnet';
 local kube = import 'lib/kube.libjsonnet';
 local rl = import 'lib/resource-locker.libjsonnet';
@@ -11,7 +12,7 @@ local namespace = kube.Namespace(params.namespace) {
   metadata+: {
     labels+: {
       SYNMonitoring: 'main',
-    },
+    } + com.makeMergeable(params.namespaceLabels),
   },
 };
 

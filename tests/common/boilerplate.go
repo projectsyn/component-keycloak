@@ -29,6 +29,13 @@ func DecodeSecret(t *testing.T, path string) *corev1.Secret {
 	return DecodeWithSchema(t, path, subject, scheme).(*corev1.Secret)
 }
 
+func DecodeNamespace(t *testing.T, path string) *corev1.Namespace {
+	subject := &corev1.Namespace{}
+	scheme := NewSchemeWithDefault(t)
+	require.NoError(t, corev1.AddToScheme(scheme))
+	return DecodeWithSchema(t, path, subject, scheme).(*corev1.Namespace)
+}
+
 func DecodeWithSchema(t *testing.T, path string, into runtime.Object, schema *runtime.Scheme) runtime.Object {
 	data, err := ioutil.ReadFile(path)
 	require.NoError(t, err)

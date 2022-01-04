@@ -38,6 +38,8 @@ parameters:
       keycloak: "10.3.1"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
+    # Namespace labels
+    namespaceLabels: {}
     # Keycloak Admin
     admin:
       secretname: keycloak-admin-user
