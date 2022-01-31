@@ -155,7 +155,7 @@ parameters:
     helm_values:
       image:
         repository: quay.io/keycloak/keycloak
-        tag: '15.0.2'
+        tag: '16.1.1'
       replicas: ${keycloak:replicas}
       statefulsetLabels: ${keycloak:labels}
       resources: ${keycloak:resources}
