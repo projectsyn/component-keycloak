@@ -128,7 +128,7 @@ local ingress_tls_secret = kube.Secret(params.ingress.tls.secretName) {
 local create_keycloak_cert_secret =
   params.tls.provider != 'openshift' && params.ingress.enabled && !(params.ingress.tls.termination == 'passthrough' && params.tls.provider == 'certmanager');
 local create_ingress_cert_secret =
-  params.ingress.enabled && params.ingress.tls.termination == 'reencrypt' && params.tls.provider == 'vault';
+  params.ingress.enabled && params.ingress.tls.termination == 'reencrypt' && params.ingress.tls.provider == 'vault';
 local create_ingress_cert =
   params.ingress.enabled && params.ingress.tls.termination == 'passthrough' && params.tls.provider == 'certmanager';
 
