@@ -3,14 +3,14 @@
   githubUrl: https://github.com/projectsyn/component-keycloak
   feature_goUnitTests: true
   feature_goldenTests: true
-
-.github/workflows/test.yaml:
-  matrix:
+  testMatrix:
     key: provider
     entries:
       - builtin
       - external
       - openshift
+
+.github/workflows/test.yaml:
   makeTarget: gotest -e instance=${{ matrix.provider }}
   goldenTest_makeTarget: golden-diff -e instance=${{ matrix.provider }}
 
