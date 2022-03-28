@@ -1,0 +1,15 @@
+= Upgrade from v6 to v7
+
+This guide describes the steps to perform an upgrade of the component from version v6 to v7.
+
+== Changes
+
+Keycloak will be upgraded from v15.0.2 to v16.1.1 and if the built-in PostgreSQL database is used, PostgreSQL is going to be updated from 11.8.0-debian-10-r61 to 11.11.0-debian-10-r31.
+
+== Step-by-step guide
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. Take a backup of the built-in database!
+. Unchangable attributes in the postgres statefulset are going to be changed:
+  `kubectl -n syn-keycloak delete sts keycloak-postgresql`
