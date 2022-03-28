@@ -6,8 +6,9 @@ metadata:
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    helm.sh/chart: postgresql-9.1.1
+    helm.sh/chart: postgresql-10.3.13
   name: keycloak-postgresql
+  namespace: syn-builtin
 spec:
   ports:
     - name: tcp-postgresql
@@ -16,5 +17,5 @@ spec:
   selector:
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/name: postgresql
-    role: master
+    role: primary
   type: ClusterIP

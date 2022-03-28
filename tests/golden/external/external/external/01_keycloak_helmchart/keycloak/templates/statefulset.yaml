@@ -6,8 +6,8 @@ metadata:
     app.kubernetes.io/instance: external
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 15.0.2
-    helm.sh/chart: keycloak-10.3.1
+    app.kubernetes.io/version: 16.1.1
+    helm.sh/chart: keycloak-17.0.2
   name: keycloak
 spec:
   podManagementPolicy: Parallel
@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config-startup: c6c620d6f92a0e8dc6c4ec68299a0cdb580b97df3191044d4b4d9668994aba51
+        checksum/config-startup: dc1c28e62927de272accd01fe42a7044ec37f448b6a1ced1a94900338787ec95
         checksum/secrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
       labels:
         app.kubernetes.io/instance: keycloak
@@ -76,7 +76,7 @@ spec:
             name: keycloak-admin-user
         - secretRef:
             name: keycloak-postgresql
-        image: quay.io/keycloak/keycloak:15.0.2
+        image: quay.io/keycloak/keycloak:16.1.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
