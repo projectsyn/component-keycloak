@@ -25,7 +25,7 @@ When upgrading the component, the following actions are required if the built-in
   [NOTE]
   ====
   This step is necessary since the upgrade changes immutable properties in the Postgres StatefulSet if using the built-in database.
-  This won't delete the PVC `data-keycloak-postgresql-0`.  
+  This won't delete the PVC `data-keycloak-postgresql-0`.
   ====
 
 . Verify that ArgoCD can sync all resources.
