@@ -11,5 +11,7 @@ Keycloak will be upgraded from v15.0.2 to v16.1.1 and if the built-in PostgreSQL
 When upgrading the component, the following actions are required if the built-in database is used:
 
 . Take a backup of the built-in database!
-. Unchangable attributes in the postgres statefulset are going to be changed:
+. Unchangable attributes in the postgres statefulset are going to be changed.
+  If ArgoCD can't apply the statefulset, it needs to be deleted:
   `kubectl -n syn-keycloak delete sts keycloak-postgresql`
+  This don't touch the PVC `data-keycloak-postgresql-0`.
