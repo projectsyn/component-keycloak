@@ -10,6 +10,8 @@ This guide describes the steps to perform an upgrade of the component from versi
 * `helm_values.postgres.master` renamed to `helm_values.postgres.primary`.
 * If built-in database is used, PostgreSQL is going to be upgraded from `11.8.0-debian-10-r61` to `11.11.0-debian-10-r31`.
 
+If you've configured custom values for any of those parameters, make sure to adjust your configurations when upgrading from component version v6 to v7.
+
 == Step-by-step guide
 
 When upgrading the component, the following actions are required if the built-in database is used:
@@ -20,12 +22,17 @@ When upgrading the component, the following actions are required if the built-in
 
 . Compile and push the cluster catalog.
 
-. If ArgoCD can't apply the updated StatefulSet, it needs to be deleted: `kubectl -n syn-keycloak delete sts keycloak-postgresql`.
-  +
-  [NOTE]
-  ====
-  This step is necessary since the upgrade changes immutable properties in the Postgres StatefulSet if using the built-in database.
-  This won't delete the PVC `data-keycloak-postgresql-0`.
-  ====
+. If you use the built-in database, you need to delete its StatefulSet to allow ArgoCD to apply the new version.
++
+[source,bash]
+----
+kubectl -n syn-keycloak delete sts keycloak-postgresql
+----
++
+[NOTE]
+====
+This step is necessary since the upgrade changes immutable properties in the Postgres StatefulSet if using the built-in database.
+This won't delete the PVC `data-keycloak-postgresql-0`.
+====
 
 . Verify that ArgoCD can sync all resources.
