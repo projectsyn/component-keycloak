@@ -45,7 +45,7 @@ parameters:
     admin:
       secretname: keycloak-admin-user
       username: admin
-      password: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/admin-password}"
+      password: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/admin-password}"
     # Replica count
     replicas: 2
 
@@ -55,8 +55,8 @@ parameters:
       provider: certmanager
       secretName: keycloak-tls
       vault:
-        cert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert}"
-        certKey: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/keycloak-cert-key}"
+        cert: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/keycloak-cert}"
+        certKey: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/keycloak-cert-key}"
       certmanager:
         apiVersion: cert-manager.io/v1
         certName: ${keycloak:tls:secretName}
@@ -78,8 +78,8 @@ parameters:
         certmanager:
           issuer: letsencrypt-production
         vault:
-          cert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert}"
-          certKey: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/ingress-cert-key}"
+          cert: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/ingress-cert}"
+          certKey: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/ingress-cert-key}"
 
     route:
       enabled: false
@@ -123,7 +123,7 @@ parameters:
       provider: builtin
 
       secretname: keycloak-postgresql
-      password: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/db-password}"
+      password: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/db-password}"
       database: keycloak
       username: keycloak
       jdbcParams: sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt
@@ -132,8 +132,8 @@ parameters:
         enabled: true
         verification: selfsigned
         certSecretName: keycloak-postgresql-tls
-        serverCert: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert}"
-        serverCertKey: "?{vaultkv:${customer:name}/${cluster:name}/${_instance}/server-cert-key}"
+        serverCert: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/server-cert}"
+        serverCertKey: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/server-cert-key}"
 
       # Used when `provider=external`
       external:

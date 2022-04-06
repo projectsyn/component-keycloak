@@ -87,8 +87,8 @@ keycloak:
   k8up:
     enabled: true
     s3:
-      accesskey: '?{vaultkv:${customer:name}/${cluster:name}/global-backup/access-key}'
-      secretkey: '?{vaultkv:${customer:name}/${cluster:name}/global-backup/secret-key}'
+      accesskey: '?{vaultkv:${cluster:tenant}/${cluster:name}/global-backup/access-key}'
+      secretkey: '?{vaultkv:${cluster:tenant}/${cluster:name}/global-backup/secret-key}'
 ----
 ====
 
