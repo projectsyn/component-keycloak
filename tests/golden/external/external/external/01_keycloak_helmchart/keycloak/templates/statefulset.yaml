@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
     app.kubernetes.io/version: 16.1.1
-    helm.sh/chart: keycloak-17.0.2
+    helm.sh/chart: keycloak-17.0.3
   name: keycloak
 spec:
   podManagementPolicy: Parallel
@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config-startup: dc1c28e62927de272accd01fe42a7044ec37f448b6a1ced1a94900338787ec95
+        checksum/config-startup: 240f7e88b3f85cfd89f1a68abd09c347682fbb0d905ee60babf45f20f3ad7bc1
         checksum/secrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
       labels:
         app.kubernetes.io/instance: keycloak
