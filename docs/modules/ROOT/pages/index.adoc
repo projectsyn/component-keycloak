@@ -1,7 +1,7 @@
 = keycloak: A Commodore component to manage Keycloak
 
 This component provides a set of tuned defaults and a simplified interface to
-deploy the https://artifacthub.io/packages/helm/codecentric/keycloak/9.9.1[Keycloak helm
+deploy the https://artifacthub.io/packages/helm/codecentric/keycloak/17.0.2[Keycloak helm
 chart] on a Syn-enabled cluster.
 
 The component defaults to provisioning a Bitnami Postgres database via the

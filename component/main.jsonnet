@@ -28,6 +28,8 @@ local admin_secret = kube.Secret(params.admin.secretname) {
 
 local connection_secrets = {
   builtin: {
+    // PostgreSQL admin password
+    'postgresql-postgres-password': params.database.password,
     // this secret is shared between Keycloak and PostgreSQL
     'postgresql-password': params.database.password,
     [if params.database.jdbcParams != '' then 'JDBC_PARAMS']: params.database.jdbcParams,

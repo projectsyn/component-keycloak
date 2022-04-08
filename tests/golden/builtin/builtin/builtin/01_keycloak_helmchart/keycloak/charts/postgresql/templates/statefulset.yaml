@@ -7,15 +7,16 @@ metadata:
     app.kubernetes.io/instance: builtin
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    helm.sh/chart: postgresql-9.1.1
+    helm.sh/chart: postgresql-10.3.13
   name: keycloak-postgresql
+  namespace: syn-builtin
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/instance: keycloak
       app.kubernetes.io/name: postgresql
-      role: master
+      role: primary
   serviceName: keycloak-postgresql-headless
   template:
     metadata:
@@ -27,13 +28,29 @@ spec:
           PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
         k8up.syn.tools/file-extension: .sql
       labels:
+        app.kubernetes.io/component: primary
         app.kubernetes.io/instance: keycloak
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: postgresql
-        helm.sh/chart: postgresql-9.1.1
-        role: master
+        helm.sh/chart: postgresql-10.3.13
+        role: primary
       name: keycloak-postgresql
     spec:
+      affinity:
+        nodeAffinity: null
+        podAffinity: null
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: primary
+                    app.kubernetes.io/instance: keycloak
+                    app.kubernetes.io/name: postgresql
+                namespaces:
+                  - syn-builtin
+                topologyKey: kubernetes.io/hostname
+              weight: 1
       containers:
         - env:
             - name: BITNAMI_DEBUG
@@ -44,6 +61,11 @@ spec:
               value: /bitnami/postgresql
             - name: PGDATA
               value: /bitnami/postgresql/data
+            - name: POSTGRES_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: postgresql-postgres-password
+                  name: keycloak-postgresql
             - name: POSTGRES_USER
               value: keycloak
             - name: POSTGRES_PASSWORD
@@ -63,7 +85,19 @@ spec:
               value: /opt/bitnami/postgresql/certs/tls.crt
             - name: POSTGRESQL_TLS_KEY_FILE
               value: /opt/bitnami/postgresql/certs/tls.key
-          image: quay.io/bitnami/postgresql:11.8.0-debian-10-r61
+            - name: POSTGRESQL_LOG_HOSTNAME
+              value: 'false'
+            - name: POSTGRESQL_LOG_CONNECTIONS
+              value: 'false'
+            - name: POSTGRESQL_LOG_DISCONNECTIONS
+              value: 'false'
+            - name: POSTGRESQL_PGAUDIT_LOG_CATALOG
+              value: 'off'
+            - name: POSTGRESQL_CLIENT_MIN_MESSAGES
+              value: error
+            - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
+              value: pgaudit
+          image: quay.io/bitnami/postgresql:11.11.0-debian-10-r31
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
@@ -118,12 +152,13 @@ spec:
         - command:
             - /bin/sh
             - -cx
-            - "mkdir -p /bitnami/postgresql/data\nchmod 700 /bitnami/postgresql/data\n\
-              find /bitnami/postgresql -mindepth 1 -maxdepth 1 -not -name \"conf\"\
-              \ -not -name \".snapshot\" -not -name \"lost+found\" | \\\n  xargs chown\
-              \ -R 1001:1001\nchmod -R 777 /dev/shm\ncp /tmp/certs/* /opt/bitnami/postgresql/certs/\n\
-              chown -R 1001:1001 /opt/bitnami/postgresql/certs/\nchmod 600 /opt/bitnami/postgresql/certs/tls.key\n"
-          image: docker.io/bitnami/minideb:buster
+            - "chown 1001:1001 /bitnami/postgresql\nmkdir -p /bitnami/postgresql/data\n\
+              chmod 700 /bitnami/postgresql/data\nfind /bitnami/postgresql -mindepth\
+              \ 1 -maxdepth 1 -not -name \"conf\" -not -name \".snapshot\" -not -name\
+              \ \"lost+found\" | \\\n  xargs chown -R 1001:1001\nchmod -R 777 /dev/shm\n\
+              cp /tmp/certs/* /opt/bitnami/postgresql/certs/\nchown -R 1001:1001 /opt/bitnami/postgresql/certs/\n\
+              chmod 600 /opt/bitnami/postgresql/certs/tls.key\n"
+          image: docker.io/bitnami/bitnami-shell:10
           imagePullPolicy: Always
           name: init-chmod-data
           resources:

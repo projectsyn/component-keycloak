@@ -5,14 +5,13 @@ metadata:
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    helm.sh/chart: postgresql-9.1.1
+    helm.sh/chart: postgresql-10.3.13
   name: keycloak-postgresql
+  namespace: syn-builtin
 spec:
   ingress:
     - ports:
         - port: 5432
-    - ports:
-        - port: 9187
   podSelector:
     matchLabels:
       app.kubernetes.io/instance: keycloak

@@ -1,0 +1,46 @@
+= Upgrade from v6 to v7
+
+This guide describes the steps to perform an upgrade of the component from version v6 to v7.
+
+== Parameter changes
+
+* `charts.keycloak` changed from `10.3.1` to `17.0.2`, that includes the `bitnami/postgresql` chart update from `9.1.1` to `10.3.13`.
+* `helm_values.image.tag` version pin removed from the defaults, which means a Keycloak upgrade from `v15.0.2` to `v16.1.1`.
+* `helm_values.ingress.path[0]` changed from `/` (string array) to `{"path": "/", "pathType": "Prefix"}` (object array).
+* `helm_values.postgres.master` renamed to `helm_values.postgres.primary`.
+* If built-in database is used, PostgreSQL is going to be upgraded from `11.8.0-debian-10-r61` to `11.11.0-debian-10-r31`.
+
+If you've configured custom values for any of those parameters, make sure to adjust your configurations when upgrading from component version v6 to v7.
+
+== Step-by-step guide
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. Make a backup of the built-in database.
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti keycloak-postgresql-0 -c keycloak-postgresql -- sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.
+
+. If you use the built-in database, you need to delete its StatefulSet to allow ArgoCD to apply the new version.
++
+[source,bash]
+----
+kubectl -n syn-keycloak delete sts keycloak-postgresql
+----
++
+[NOTE]
+====
+This step is necessary since the upgrade changes immutable properties in the Postgres StatefulSet if using the built-in database.
+This won't delete the PVC `data-keycloak-postgresql-0`.
+====
+
+. Verify that ArgoCD can sync all resources.
