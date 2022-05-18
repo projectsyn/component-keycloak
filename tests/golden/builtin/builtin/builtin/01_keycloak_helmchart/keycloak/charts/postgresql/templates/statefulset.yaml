@@ -97,7 +97,7 @@ spec:
               value: error
             - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
               value: pgaudit
-          image: quay.io/bitnami/postgresql:11.11.0-debian-10-r31
+          image: docker.io/bitnami/postgresql:11.11.0-debian-10-r31
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
