@@ -36,7 +36,7 @@ parameters:
     namespace: syn-${_instance}
     name: keycloak
     charts:
-      keycloak: "17.0.3"
+      keycloak: "18.1.1"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Namespace labels

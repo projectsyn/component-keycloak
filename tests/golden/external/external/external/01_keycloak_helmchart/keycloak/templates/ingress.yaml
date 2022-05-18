@@ -9,8 +9,8 @@ metadata:
     app.kubernetes.io/instance: external
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 16.1.1
-    helm.sh/chart: keycloak-17.0.3
+    app.kubernetes.io/version: 17.0.1-legacy
+    helm.sh/chart: keycloak-18.1.1
   name: keycloak
 spec:
   rules:
