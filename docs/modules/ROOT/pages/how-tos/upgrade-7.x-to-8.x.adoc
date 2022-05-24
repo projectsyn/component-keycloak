@@ -1,0 +1,4 @@
+= Upgrade from v7 to v8
+
+There are no special steps required to upgrade from v7 to v8.
+However, note that this version upgrades Keycloak from v16 to v17, so once Keycloak executed the DB migrations, a downgrade won't be possible.
