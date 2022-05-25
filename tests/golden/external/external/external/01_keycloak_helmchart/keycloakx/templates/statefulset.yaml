@@ -1,0 +1,198 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: external
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/version: 17.0.1
+    helm.sh/chart: keycloakx-1.3.2
+  name: keycloakx
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: keycloakx
+      app.kubernetes.io/name: keycloakx
+  serviceName: keycloakx-headless
+  template:
+    metadata:
+      annotations:
+        checksum/config-startup: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/secrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+      labels:
+        app.kubernetes.io/instance: keycloakx
+        app.kubernetes.io/name: keycloakx
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: NotIn
+                  values:
+                  - test
+                matchLabels:
+                  app.kubernetes.io/instance: keycloakx
+                  app.kubernetes.io/name: keycloakx
+              topologyKey: topology.kubernetes.io/zone
+            weight: 100
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: NotIn
+                values:
+                - test
+              matchLabels:
+                app.kubernetes.io/instance: keycloakx
+                app.kubernetes.io/name: keycloakx
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - args:
+        - start
+        - --auto-build
+        - --http-enabled=true
+        command: []
+        env:
+        - name: JAVA_OPTS
+          value: -XX:+UseContainerSupport -XX:MaxRAMPercentage=50.0 -Djava.net.preferIPv4Stack=true
+            -Djava.awt.headless=true -Djgroups.dns.query=keycloakx-headless
+        - name: KC_CACHE
+          value: ispn
+        - name: KC_CACHE_STACK
+          value: kubernetes
+        - name: KC_DB
+          value: postgres
+        - name: KC_DB_URL_DATABASE
+          value: keycloak
+        - name: KC_DB_URL_HOST
+          value: keycloak-postgresql
+        - name: KC_DB_URL_PORT
+          value: '5432'
+        - name: KC_DB_USERNAME
+          value: keycloak
+        - name: KC_HOSTNAME
+          value: keycloak.example.com
+        - name: KC_HTTPS_CERTIFICATE_FILE
+          value: /etc/x509/https/tls.crt
+        - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+          value: /etc/x509/https/tls.key
+        - name: KC_HTTP_RELATIVE_PATH
+          value: /auth
+        - name: KC_METRICS_ENABLED
+          value: 'true'
+        - name: KC_PROXY
+          value: passthrough
+        envFrom:
+        - secretRef:
+            name: keycloak-admin-user
+        - secretRef:
+            name: keycloak-postgresql
+        image: quay.io/keycloak/keycloak:17.0.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /auth/
+            port: http
+          initialDelaySeconds: 0
+          timeoutSeconds: 5
+        name: keycloak
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /auth/realms/master
+            port: http
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+        startupProbe:
+          failureThreshold: 60
+          httpGet:
+            path: /auth/
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 1
+        volumeMounts:
+        - mountPath: /opt/jboss/certs
+          name: db-certs
+          readOnly: true
+        - mountPath: /etc/x509/https
+          name: keycloak-tls
+          readOnly: true
+        - mountPath: /themes/bar
+          name: themes
+          readOnly: true
+          subDir: bar
+        - mountPath: /themes/foo
+          name: themes
+          readOnly: true
+          subDir: foo
+        - mountPath: /themes/test
+          name: themes
+          readOnly: true
+          subDir: test
+      enableServiceLinks: true
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - "echo 'Waiting for Database to become ready...'\n\nuntil printf \".\" &&\
+          \ nc -z -w 2 keycloak-postgresql 5432; do\n    sleep 2;\ndone;\n\necho 'Database\
+          \ OK \u2713'\n"
+        image: docker.io/busybox:1.32
+        imagePullPolicy: IfNotPresent
+        name: dbchecker
+        resources:
+          limits:
+            cpu: 20m
+            memory: 32Mi
+          requests:
+            cpu: 20m
+            memory: 32Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 1000
+      serviceAccountName: keycloakx
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: db-certs
+        secret:
+          defaultMode: 256
+          items:
+          - key: tls.crt
+            path: tls.crt
+          secretName: keycloak-postgresql-tls
+      - name: keycloak-tls
+        secret:
+          defaultMode: 420
+          secretName: keycloak-tls
+      - emptyDir: {}
+        name: themes
+  updateStrategy:
+    type: RollingUpdate

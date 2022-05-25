@@ -6,7 +6,7 @@ parameters:
     extraEnv:
       FOO:
         value: "bar"
-      DB_ADDR:
+      KC_DB_URL_PORT:
         value: "patched"
     extraInitContainers:
       theme-provider:

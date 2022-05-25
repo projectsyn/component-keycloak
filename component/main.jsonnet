@@ -21,8 +21,8 @@ local admin_secret = kube.Secret(params.admin.secretname) {
     labels+: params.labels,
   },
   stringData: {
-    KEYCLOAK_USER: params.admin.username,
-    KEYCLOAK_PASSWORD: params.admin.password,
+    KEYCLOAK_ADMIN: params.admin.username,
+    KEYCLOAK_ADMIN_PASSWORD: params.admin.password,
   },
 };
 
@@ -32,15 +32,11 @@ local connection_secrets = {
     'postgresql-postgres-password': params.database.password,
     // this secret is shared between Keycloak and PostgreSQL
     'postgresql-password': params.database.password,
+    KC_DB_PASSWORD: params.database.password,
     [if params.database.jdbcParams != '' then 'JDBC_PARAMS']: params.database.jdbcParams,
   },
   external: {
-    DB_DATABASE: params.database.database,
-    DB_USER: params.database.username,
-    DB_PASSWORD: params.database.password,
-    DB_VENDOR: params.database.external.vendor,
-    DB_ADDR: params.database.external.host,
-    DB_PORT: std.toString(params.database.external.port),
+    KC_DB_PASSWORD: params.database.password,
     [if params.database.jdbcParams != '' then 'JDBC_PARAMS']: params.database.jdbcParams,
   },
 };
