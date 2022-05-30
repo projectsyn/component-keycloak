@@ -20,12 +20,14 @@
 * xref:how-tos/upgrade-5.x-to-6.x.adoc[Upgrade 5.x to 6.x]
 * xref:how-tos/upgrade-6.x-to-7.x.adoc[Upgrade 6.x to 7.x]
 * xref:how-tos/upgrade-7.x-to-8.x.adoc[Upgrade 7.x to 8.x]
+* xref:how-tos/upgrade-8.x-to-9.x.adoc[Upgrade 8.x to 9.x]
 * xref:how-tos/openshift-4.adoc[Install on OpenShift 4]
 * xref:how-tos/pin-versions.adoc[Pin versions]
 
 .Explanations
 * xref:explanations/default-features.adoc[Default features]
 * xref:explanations/backup.adoc[Backup]
+* xref:explanations/migration-to-quarkus.adoc[Migration to Quarkus]
 
 .Technical reference
 * xref:references/parameters.adoc[Parameters]

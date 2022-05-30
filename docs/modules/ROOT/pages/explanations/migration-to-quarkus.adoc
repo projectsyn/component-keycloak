@@ -1,0 +1,36 @@
+= Migration to Quarkus
+
+Keycloak v17 is https://www.keycloak.org/docs/17.0/upgrading/#default-distribution-is-now-powered-by-quarkus[changing their runtime] from https://www.wildfly.org[Wildfly] to https://quarkus.io[Quarkus].
+This brings a complete new way of how the Keycloak container has to be https://www.keycloak.org/server/containers[deployed] (https://github.com/keycloak/keycloak/tree/main/quarkus/container[Quarkus based Keycloak Image] vs the https://github.com/keycloak/keycloak-containers[Wildfly based image]) and https://www.keycloak.org/server/all-config[parameterized].
+While Wildfly was an application server for Java, Quarkus is just an "Kubernetes Native Java stack".
+
+The Keycloak default image requires a "build" before startup.
+This can be automatized using the `--auto-build`, which is the default in the component by now.
+This additional step can be removed by creating a https://www.keycloak.org/operator/customizing-keycloak[customized Keycloak image].
+
+== New variables
+
+* `KC_HOSTNAME` containing the FQDN of the keycloak service.
+  Verification can be turned off by using the parameters `--hostname-strict=false` and `--hostname-strict-https=false`.
+  However for production the hostname verification should be tuned on!
+* `KC_HTTP_RELATIVE_PATH` is `/` by Keycloak default.
+  However the Helm chart contains the default value of `/auth`, so for upgrades there is no breaking change.
+
+== Changed variables
+
+* The Wildfily container did automatically create a truststore file out of PEM files existing in `/etc/x509/https`. Now the public and private key file must be defined i.e. `KC_HTTPS_CERTIFICATE_FILE=/etc/x509/https/tls.crt` and `KC_HTTPS_CERTIFICATE_KEY_FILE=/etc/x509/https/tls.key`.
+* `KEYCLOAK_STATISTICS` is replaced by `KC_METRICS_ENABLED`.
+* `JGROUPS_DISCOVERY_PROTOCOL` and `JGROUPS_DISCOVERY_PROPERTIES` are replaced by `JAVA_OPTS=-Djgroups.dns.query=keycloakx-headless`.
+* `PROXY_ADDRESS_FORWARDING` see https://www.keycloak.org/server/reverseproxy[Using a reverse proxy] and `KC_PROXY` for more information.
+* `KEYCLOAK_USER` is now `KEYCLOAK_ADMIN`
+* `KEYCLOAK_PASSWORD` is now `KEYCLOAK_ADMIN_PASSWORD`
+* `DB_DATABASE` is now `KC_DB_URL_DATABASE`
+* `DB_USER` is now `KC_DB_USERNAME`
+* `DB_PASSWORD` is now `KC_DB_PASSWORD`
+* `DB_VENDOR` is now `KC_DB`
+* `DB_ADDR` is now `KC_DB_URL_HOST`
+* `DB_PORT` is now `KC_DB_URL_PORT`
+
+== Removed variables
+
+* `CACHE_OWNERS_COUNT` and `CACHE_OWNERS_AUTH_SESSIONS_COUNT`

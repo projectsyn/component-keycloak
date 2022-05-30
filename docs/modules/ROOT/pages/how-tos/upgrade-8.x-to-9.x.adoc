@@ -1,0 +1,44 @@
+= Upgrade from v8 to v9
+
+This guide describes the steps to perform an upgrade of the component from version v8 to v9.
+
+The major component upgrade focus on the Wildfly to Quarkus migration enforced by the Keycloak team as Wildfly will be no longer supported.
+This upgrade contains just the required changes to run Keycloak in the same matter, the former installation does.
+All other changes and refactorings have been postponed to the next major component version.
+No Keycloak DB migration / schema change is going to happen as the application version doesn't change.
+
+The component has been based on the https://artifacthub.io/packages/helm/codecentric/keycloak[Keycloak Helm chart] and will use the https://artifacthub.io/packages/helm/codecentric/keycloakx[Keycloakx Helm chart].
+The Keycloakx Helm chart no longer contains the builtin `bitnami/postgresql` database.
+To establish the same behavior, the component is paralell parsing the former `bitnami/postgresql` Helm chart.
+
+If you want to know more about, what has changed internaly, check out the explanation xref:explanations/migration-to-quarkus.adoc[Migration to Quarkus].
+
+== Parameter changes
+
+* `charts.keycloak` has been removed, as superseeded by `charts.keycloakx`.
+* `charts.keycloakx` has been added in version `1.3.2`.
+* `charts.postgresql` has been added in the same `bitnami/postgresql` version `10.3.13` the former keycloak helm chart dependency has been.
+* `monitoring.statistics` and `monitoring.rules` still exist, but no longer have an impact as the equivalent.
+* `helm_values.postgresql` has been moved to `postgresql_helm_values` reflecting the two independent Helm charts.
+
+If you've configured custom values for any of those parameters, make sure to adjust your configurations when upgrading from component version v8 to v9.
+
+== Step-by-step guide
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. Do a backup of the built-in database.
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti keycloak-postgresql-0 -c keycloak-postgresql -- sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.
+
+. Verify that ArgoCD can sync all resources.
