@@ -376,26 +376,6 @@ default:: ``
 
 The extraJavaOpts can add instance specific configurations to Keycloak.
 
-Example to add a truststore configuration:
-[source,yaml]
-----
-parameters:
-  keycloak:
-    extraJavaOpts: >-
-      -Djavax.net.ssl.trustStore=/opt/jboss/keycloak/standalone/configuration/test/truststore.jks
-      -Djavax.net.ssl.trustStorePassword=trustStorePass
-      -Djavax.net.ssl.trustStoreType=jks
-----
-
-Example to increase the log level:
-[source,yaml]
-----
-parameters:
-  keycloak:
-    extraJavaOpts: >-
-      -Djavax.net.debug=all
-----
-
 
 == `extraEnv`
 
@@ -460,7 +440,7 @@ parameters:
       theme-vshn:
         name: theme
         readOnly: true
-        mountPath: /opt/jboss/keycloak/themes/vshn
+        mountPath: /opt/keycloak/themes/vshn
 ----
 
 == `extraInitContainers`

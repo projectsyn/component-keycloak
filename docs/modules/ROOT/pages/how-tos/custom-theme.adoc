@@ -11,7 +11,7 @@ A theme can provide one or more types to customize different aspects of Keycloak
 A theme consists of: HTML templates, images, message bundles, stylesheets, scripts and theme properties.
 
 
-Follow xref:how-tos/keycloak-tls.adoc[the official guide] on how to create a custom theme
+Follow https://www.keycloak.org/docs/17.0/server_development/index.html#_themes[the official guide] on how to create a custom theme
 
 Once you have created your custom theme, you'll need to package it into a container image.
 
@@ -60,30 +60,27 @@ parameters:
     extraVolumeMounts:
       theme-company:
         name: themes
-        mountPath: /opt/jboss/keycloak/themes/company
+        mountPath: /opt/keycloak/themes/company
         subPath: company
         readOnly: true
       theme-other:
         name: themes
         readOnly: true
-        mountPath: /opt/jboss/keycloak/themes/other-theme
+        mountPath: /opt/keycloak/themes/other-theme
         subPath: other-theme
         readOnly: true
 
-    # Change the theme for the welcome page or default theme with extraEnvs (see also https://hub.docker.com/r/jboss/keycloak/)
+    # Change the theme for the welcome page or default theme with extraEnvs
     # Theme name is the same as the folder in mountPath
     extraEnv:
-      KEYCLOAK_WELCOME_THEME:
+      KC_SPI_THEME_WELCOME_THEME:
         value: 'company'
-      KEYCLOAK_DEFAULT_THEME:
-        value: 'company'
-
 
 ----
 
-Note that simply mounting the "themes" volume to `+/opt/jboss/keycloak/themes+` will overwrite the default Keycloak themes.
+Note that simply mounting the "themes" volume to `+/opt/keycloak/themes+` will overwrite the default Keycloak themes.
 
 [TIP]
 ====
-See xref:how-tos/keycloak-tls.adoc[the official deploy guide] for a more detailed look into deploying themes.
+See https://www.keycloak.org/docs/17.0/server_development/index.html#_themes[the official deploy guide] for a more detailed look into deploying themes.
 ====

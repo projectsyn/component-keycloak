@@ -20,7 +20,7 @@ This additional step can be removed by creating a https://www.keycloak.org/opera
 
 * The Wildfily container did automatically create a truststore file out of PEM files existing in `/etc/x509/https`. Now the public and private key file must be defined in example `KC_HTTPS_CERTIFICATE_FILE=/etc/x509/https/tls.crt` and `KC_HTTPS_CERTIFICATE_KEY_FILE=/etc/x509/https/tls.key`.
 * `KEYCLOAK_STATISTICS` is replaced by `KC_METRICS_ENABLED`.
-* `JGROUPS_DISCOVERY_PROTOCOL` and `JGROUPS_DISCOVERY_PROPERTIES` are replaced by `JAVA_OPTS=-Djgroups.dns.query=keycloakx-headless`.
+* `JGROUPS_DISCOVERY_PROTOCOL` and `JGROUPS_DISCOVERY_PROPERTIES` are replaced by `JAVA_OPTS=-Djgroups.dns.query=keycloakx-headless` (vgl. https://artifacthub.io/packages/helm/codecentric/keycloakx#dns_ping-service-discovery[Helm chart documentation]).
 * `PROXY_ADDRESS_FORWARDING` see https://www.keycloak.org/server/reverseproxy[Using a reverse proxy] and `KC_PROXY` for more information.
 * `KEYCLOAK_USER` is now `KEYCLOAK_ADMIN`
 * `KEYCLOAK_PASSWORD` is now `KEYCLOAK_ADMIN_PASSWORD`
@@ -30,6 +30,8 @@ This additional step can be removed by creating a https://www.keycloak.org/opera
 * `DB_VENDOR` is now `KC_DB`
 * `DB_ADDR` is now `KC_DB_URL_HOST`
 * `DB_PORT` is now `KC_DB_URL_PORT`
+* Theme path has changed from `/opt/jboss/keycloak/themes/` to `/opt/keycloak/themes/`.
+* `KEYCLOAK_WELCOME_THEME` is now `KC_SPI_THEME_WELCOME_THEME`
 
 == Removed variables
 

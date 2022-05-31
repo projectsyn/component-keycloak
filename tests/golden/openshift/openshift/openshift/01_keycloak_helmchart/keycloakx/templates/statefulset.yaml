@@ -138,25 +138,25 @@ spec:
         - mountPath: /etc/x509/https
           name: keycloak-tls
           readOnly: true
-        - mountPath: /opt/jboss/keycloak/themes/app1
+        - mountPath: /opt/keycloak/themes/app1
           name: themes
           subPath: app1
-        - mountPath: /opt/jboss/keycloak/themes/app2
+        - mountPath: /opt/keycloak/themes/app2
           name: themes
           subPath: app2
-        - mountPath: /opt/jboss/keycloak/themes/customer
+        - mountPath: /opt/keycloak/themes/customer
           name: themes
           subPath: customer
-        - mountPath: /opt/jboss/keycloak/themes/dev-app1
+        - mountPath: /opt/keycloak/themes/dev-app1
           name: themes
           subPath: dev-app1
-        - mountPath: /opt/jboss/keycloak/themes/dev-app2
+        - mountPath: /opt/keycloak/themes/dev-app2
           name: themes
           subPath: dev-app2
-        - mountPath: /opt/jboss/keycloak/themes/int-app1
+        - mountPath: /opt/keycloak/themes/int-app1
           name: themes
           subPath: int-app1
-        - mountPath: /opt/jboss/keycloak/themes/int-app2
+        - mountPath: /opt/keycloak/themes/int-app2
           name: themes
           subPath: int-app2
       enableServiceLinks: true
