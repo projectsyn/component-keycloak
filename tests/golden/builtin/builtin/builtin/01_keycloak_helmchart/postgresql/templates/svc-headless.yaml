@@ -12,9 +12,9 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - name: tcp-postgresql
-      port: 5432
-      targetPort: tcp-postgresql
+  - name: tcp-postgresql
+    port: 5432
+    targetPort: tcp-postgresql
   publishNotReadyAddresses: true
   selector:
     app.kubernetes.io/instance: keycloak

@@ -10,8 +10,8 @@ metadata:
   namespace: syn-builtin
 spec:
   ingress:
-    - ports:
-        - port: 5432
+  - ports:
+    - port: 5432
   podSelector:
     matchLabels:
       app.kubernetes.io/instance: keycloak

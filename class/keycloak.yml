@@ -52,3 +52,6 @@ parameters:
         - type: jsonnet
           filter: postprocess/extra-env.jsonnet
           path: ${_instance}/01_keycloak_helmchart/keycloakx/templates
+        - type: jsonnet
+          filter: postprocess/postgresql.jsonnet
+          path: ${_instance}/01_keycloak_helmchart/postgresql/templates

@@ -11,9 +11,9 @@ metadata:
   namespace: syn-builtin
 spec:
   ports:
-    - name: tcp-postgresql
-      port: 5432
-      targetPort: tcp-postgresql
+  - name: tcp-postgresql
+    port: 5432
+    targetPort: tcp-postgresql
   selector:
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/name: postgresql
