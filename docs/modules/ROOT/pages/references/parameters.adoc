@@ -483,13 +483,6 @@ default:: `true`
 Enable ServiceMonitor, PrometheusRule, and all Keycloak statistics on the metrics endpoint by default.
 
 
-== `monitoring.statistics`
-
-[horizontal]
-type:: string
-default:: `all`
-
-
 == `monitoring.rules`
 
 [horizontal]

@@ -117,8 +117,7 @@ parameters:
     # the metrics endpoint by default.
     monitoring:
       enabled: true
-      statistics: all # No longer in use with Quarkus
-      rules: [] # No longer in use with Quarkus
+      rules: []
     # Use Bitnami Postgres installed by the Keycloak chart by default
     database:
       provider: builtin
@@ -261,7 +260,7 @@ parameters:
         # TODO: Check X-Forward with passthrough
 
       metrics:
-        enabled: ${keycloak:monitoring:statistics}
+        enabled: ${keycloak:monitoring:enabled}
       database:
         vendor: ${keycloak:database:external:vendor}
         hostname: keycloak-postgresql
