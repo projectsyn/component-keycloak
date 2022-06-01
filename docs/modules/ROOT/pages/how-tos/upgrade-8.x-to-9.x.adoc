@@ -45,7 +45,7 @@ parameters:
   <keycloak instance>:
     extraVolumeMounts:
       theme:
-        mountPath: /opt/jboss/keycloak/themes/<mytheme>
+        mountPath: /opt/jboss/keycloak/themes/company
     extraEnv:
       KEYCLOAK_WELCOME_THEME:
         value: 'company'
@@ -59,7 +59,7 @@ parameters:
   <keycloak instance>:
     extraVolumeMounts:
       theme:
-        mountPath: /opt/keycloak/themes/<mytheme>
+        mountPath: /opt/keycloak/themes/company
     extraEnv:
       KC_SPI_THEME_WELCOME_THEME:
         value: 'company'
