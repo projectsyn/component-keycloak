@@ -2,22 +2,22 @@
 
 This guide describes the steps to perform an upgrade of the component from version v8 to v9.
 
-The major component upgrade focus on the Wildfly to Quarkus migration enforced by the Keycloak team as Wildfly will be no longer supported.
-This upgrade contains just the required changes to run Keycloak in the same matter, the former installation does.
+The major component upgrade focuses on the Wildfly to Quarkus migration enforced by the Keycloak team as Wildfly will be no longer supported.
+This upgrade contains just the required changes to run Keycloak in the same manner as the former installation does.
 All other changes and refactorings have been postponed to the next major component version.
-No Keycloak DB migration / schema change is going to happen as the application version doesn't change.
+No Keycloak DB migration or schema change is expected to happen as the application version doesn't change.
 
-The component has been based on the https://artifacthub.io/packages/helm/codecentric/keycloak[Keycloak Helm chart] and will use the https://artifacthub.io/packages/helm/codecentric/keycloakx[Keycloakx Helm chart].
+The component was previously based on the https://artifacthub.io/packages/helm/codecentric/keycloak[Keycloak Helm chart] and from now on will use the https://artifacthub.io/packages/helm/codecentric/keycloakx[Keycloakx Helm chart].
 The Keycloakx Helm chart no longer contains the builtin `bitnami/postgresql` database.
-To establish the same behavior, the component is paralell parsing the former `bitnami/postgresql` Helm chart.
+To establish the same behavior, the component continues to support the `bitnami/postgresql` Helm chart to install the built-in database.
 
-If you want to know more about, what has changed internaly, check out the explanation xref:explanations/migration-to-quarkus.adoc[Migration to Quarkus].
+If you want to know more about what has changed internally, check out xref:explanations/migration-to-quarkus.adoc[Migration to Quarkus].
 
 == Parameter changes
 
-* `charts.keycloak` has been removed, as superseeded by `charts.keycloakx`.
-* `charts.keycloakx` has been added in version `1.3.2`.
-* `charts.postgresql` has been added in the same `bitnami/postgresql` version `10.3.13` the former keycloak helm chart dependency has been.
+* `charts.keycloak` has been replaced with `charts.keycloakx`.
+* `charts.keycloakx` has been added with version defaulting to `1.3.2`.
+* `charts.postgresql` has been added with the same `bitnami/postgresql` version `10.3.13` as the former Keycloak Helm chart dependency has been.
 * `monitoring.statistics` and `monitoring.rules` still exist, but no longer have an impact as the equivalent.
 * `helm_values.postgresql` has been moved to `postgresql_helm_values` reflecting the two independent Helm charts.
 
