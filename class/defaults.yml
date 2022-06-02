@@ -257,7 +257,6 @@ parameters:
       proxy:
         enabled: 'true'
         mode: ${keycloak:ingress:tls:termination}
-        # TODO: Check X-Forward with passthrough
 
       metrics:
         enabled: ${keycloak:monitoring:enabled}

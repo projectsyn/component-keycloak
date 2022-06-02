@@ -22,7 +22,8 @@ This additional step can be removed by creating a https://www.keycloak.org/opera
   Now the public and private key file must be defined in variables, for example `KC_HTTPS_CERTIFICATE_FILE=/etc/x509/https/tls.crt` and `KC_HTTPS_CERTIFICATE_KEY_FILE=/etc/x509/https/tls.key`.
 * `KEYCLOAK_STATISTICS` is replaced by `KC_METRICS_ENABLED`.
 * `JGROUPS_DISCOVERY_PROTOCOL` and `JGROUPS_DISCOVERY_PROPERTIES` are replaced by `JAVA_OPTS=-Djgroups.dns.query=keycloakx-headless` (see https://artifacthub.io/packages/helm/codecentric/keycloakx#dns_ping-service-discovery[Helm chart documentation]).
-* `PROXY_ADDRESS_FORWARDING` removed, see https://www.keycloak.org/server/reverseproxy[Using a reverse proxy] and `KC_PROXY` for more information.
+* `PROXY_ADDRESS_FORWARDING` removed, see https://www.keycloak.org/server/reverseproxy#_proxy_modes[Using a reverse proxy] and `KC_PROXY` for more information.
+  If `KC_PROXY` is set to a value of `edge`, `reencyrpt` or `passthrough` the `X-Forwarded-For`, `X-Forwarded-Proto` and `X-Forwarded-Host` HTTP headers are used by Keycloak (see https://github.com/keycloak/keycloak/blob/17.0.1/quarkus/runtime/src/main/java/org/keycloak/quarkus/runtime/configuration/mappers/ProxyPropertyMappers.java#L35[Source Code]).
 * `KEYCLOAK_USER` renamed to `KEYCLOAK_ADMIN`
 * `KEYCLOAK_PASSWORD` renamed to `KEYCLOAK_ADMIN_PASSWORD`
 * `DB_DATABASE` renamed to `KC_DB_URL_DATABASE`
