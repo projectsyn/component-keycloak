@@ -250,6 +250,9 @@ Defines the termination mode:
 * `reencrypt` TLS termination happens at the ingress or route, the traffic is re-encrypted.
 * `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic.
 
+The changes the mode of the ingress annotations and the https://www.keycloak.org/server/reverseproxy#_proxy_modes[Keycloak proxy mode].
+
+
 === `ingress.tls.provider`
 
 [horizontal]
