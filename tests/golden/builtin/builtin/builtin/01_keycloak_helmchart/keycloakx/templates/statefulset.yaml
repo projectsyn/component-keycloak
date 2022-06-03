@@ -89,7 +89,7 @@ spec:
         - name: KC_METRICS_ENABLED
           value: 'true'
         - name: KC_PROXY
-          value: passthrough
+          value: reencrypt
         envFrom:
         - secretRef:
             name: keycloak-admin-user
