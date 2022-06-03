@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/instance: builtin
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    helm.sh/chart: postgresql-10.3.13
+    helm.sh/chart: postgresql-10.16.2
   name: keycloak-postgresql
   namespace: syn-builtin
 spec:
@@ -32,7 +32,7 @@ spec:
         app.kubernetes.io/instance: keycloak
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: postgresql
-        helm.sh/chart: postgresql-10.3.13
+        helm.sh/chart: postgresql-10.16.2
         role: primary
       name: keycloak-postgresql
     spec:
@@ -51,6 +51,7 @@ spec:
               - syn-builtin
               topologyKey: kubernetes.io/hostname
             weight: 1
+      automountServiceAccountToken: false
       containers:
       - env:
         - name: BITNAMI_DEBUG
@@ -97,7 +98,7 @@ spec:
           value: error
         - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
           value: pgaudit
-        image: docker.io/bitnami/postgresql:11.11.0-debian-10-r31
+        image: docker.io/bitnami/postgresql:11.14.0-debian-10-r28
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -121,7 +122,7 @@ spec:
             - -c
             - -e
             - |
-              exec pg_isready -U "keycloak" -d "dbname=keycloak" -h 127.0.0.1 -p 5432
+              exec pg_isready -U "keycloak" -d "dbname=keycloak sslcert=/opt/bitnami/postgresql/certs/tls.crt sslkey=/opt/bitnami/postgresql/certs/tls.key" -h 127.0.0.1 -p 5432
               [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
           failureThreshold: 6
           initialDelaySeconds: 5
@@ -157,8 +158,8 @@ spec:
           cp /tmp/certs/* /opt/bitnami/postgresql/certs/
           chown -R 1001:1001 /opt/bitnami/postgresql/certs/
           chmod 600 /opt/bitnami/postgresql/certs/tls.key
-        image: docker.io/bitnami/bitnami-shell:10
-        imagePullPolicy: Always
+        image: docker.io/bitnami/bitnami-shell:10-debian-10-r305
+        imagePullPolicy: IfNotPresent
         name: init-chmod-data
         resources:
           requests:
@@ -186,7 +187,6 @@ spec:
         name: postgresql-certificates
       - emptyDir:
           medium: Memory
-          sizeLimit: 1Gi
         name: dshm
   updateStrategy:
     type: RollingUpdate
