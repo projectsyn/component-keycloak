@@ -169,7 +169,6 @@ parameters:
 
       # extraEnv *MUST* be a string, as it's fed through a templating
       # function.
-      # TODO: Check CACHE_OWNERS_COUNT and CACHE_OWNERS_AUTH_SESSIONS_COUNT ${keycloak:helm_values:replicas} for Quarkus
       extraEnv: |
         - name: JAVA_OPTS
           value: >-
