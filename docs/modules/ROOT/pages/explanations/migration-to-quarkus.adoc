@@ -41,4 +41,4 @@ This additional step can be removed by creating a https://www.keycloak.org/opera
   A cache replica/owner number of `>= 2` is required to preserve the Infinispan cache over single Keycloak pod restarts.
   The https://github.com/keycloak/keycloak-containers/blob/main/server/tools/cli/infinispan/cache-owners.cli[Wildfly default value] of those variables has been `1` and defined the amount of replicas/owners for a specific cache.
   Now the default in the Quarkus Setup is https://www.keycloak.org/server/caching#_cache_types_and_defaults["Each distributed cache has two owners per default, which means that two nodes have a copy of the specific cache entries"].
-  A custom Infinispan configuration file can be configured using the environment variable `KC_CACHE_CONFIG_FILE` to override the default.
+  A https://www.keycloak.org/server/caching#_specify_your_own_cache_configuration_file[custom Infinispan configuration file] can be configured using the environment variable `KC_CACHE_CONFIG_FILE` to override the default.
