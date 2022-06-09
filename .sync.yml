@@ -17,10 +17,6 @@
 LICENSE:
   year: 2020
 
-docs/antora.yml:
-  name: keycloak
-  title: keycloak
-
 .gitignore:
   additionalEntries:
     - jsonnetfile.json
