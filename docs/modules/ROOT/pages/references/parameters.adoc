@@ -40,11 +40,20 @@ default:: `${_instance}`
 Usually there is just one deployment and therefore no change is required.
 
 
-== `charts.keycloak`
+== `charts.keycloakx`
 
 [horizontal]
 type:: helm chart version
-default:: `18.1.1`
+default:: `1.3.2`
+
+A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
+
+
+== `charts.postgresql`
+
+[horizontal]
+type:: helm chart version
+default:: `10.16.2`
 
 A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
 
