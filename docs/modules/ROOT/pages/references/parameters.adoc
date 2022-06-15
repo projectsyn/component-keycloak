@@ -59,6 +59,20 @@ Defines the FQDN the keycloak ingress or route object is configured.
 FQDN should be overwritten on the cluster level.
 
 
+== `hostnameStrict`
+
+[horizontal]
+type:: bool
+default:: `see description`
+
+Disables dynamically resolving the hostname from request headers.
+
+Default depending on the ingress termination mode:
+
+* `reencrypt` Is `false` because the internal TLS certificate isn't equal to the Keycloak FQDN.
+* `passthrough` Is `true` because the certificate is equal to the Keycloak FQDN.
+
+
 == `admin.secretname`
 
 [horizontal]

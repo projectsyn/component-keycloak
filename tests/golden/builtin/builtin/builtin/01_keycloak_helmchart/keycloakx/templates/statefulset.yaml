@@ -80,6 +80,8 @@ spec:
           value: keycloak
         - name: KC_HOSTNAME
           value: keycloak.example.com
+        - name: KC_HOSTNAME_STRICT
+          value: 'false'
         - name: KC_HTTPS_CERTIFICATE_FILE
           value: /etc/x509/https/tls.crt
         - name: KC_HTTPS_CERTIFICATE_KEY_FILE

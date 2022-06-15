@@ -67,6 +67,88 @@ parameters:
 
 . Remove the parameter `monitoring.statistics` from the cluster configuration if it has been defined.
 
+=== Specific to OpenShift
+
+. Change the security context dbchecker parameter from
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    helm_values:
+      pgchecker:
+        securityContext: null
+----
++
+to
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    helm_values:
+      dbchecker:
+        securityContext: null
+----
+
+. Add an emptydir for `/opt/keycloak/data`:
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    extraVolumes:
+      data:
+        emptyDir: {}
+    extraVolumeMounts:
+      # Required as the OpenShift user can not create the data directory in the keycloak directory UID 1000/GID 0
+      data:
+        mountPath: /opt/keycloak/data
+----
+
+
+=== Specific to OpenShift + Builtin DB
+
+. Change the security context for the builtin database from
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    helm_values:
+      postgresql:
+        securityContext:
+          enabled: false
+        volumePermissions:
+          securityContext:
+            runAsUser: auto
+            shmVolume:
+              chmod:
+                enabled: false
+----
++
+to
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    postgresql_helm_values:
+      securityContext:
+        enabled: false
+      containerSecurityContext:
+        enabled: false
+      volumePermissions:
+        securityContext:
+          runAsUser: auto
+          shmVolume:
+            chmod:
+              enabled: false
+----
+
+
+=== Apply the deployment
+
 . Apply the parameter changes.
 
 . Compile and push the cluster catalog.

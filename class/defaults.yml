@@ -7,6 +7,10 @@ parameters:
       # This lookup table controls whether to enable the chart depending on the value of `keycloak.database.provider`
       builtin: true
       external: false
+    =_hostname_strict:
+      # This lookup table controls whether to enable KC_HOSTNAME_STRICT depending on the value of `keycloak.ingress.tls.termination`
+      passthrough: 'true'
+      reencrypt: 'false'
     =_ingress_annotations:
       # This lookup table controls whether to set specific annotations depending on the value of `keycloak.ingress.controller`,
       # `keycloak.ingress.tls.termination` and `keycloak.ingress.tls.provider`
@@ -40,6 +44,8 @@ parameters:
       postgresql: "10.16.2"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
+    # Disables dynamically resolving the hostname from request headers.
+    hostnameStrict: ${keycloak:_hostname_strict:${keycloak:ingress:tls:termination}}
     # Namespace labels
     namespaceLabels: {}
     # Keycloak Admin
@@ -180,6 +186,8 @@ parameters:
                     ${keycloak:extraJavaOpts}
         - name: KC_HOSTNAME
           value: ${keycloak:fqdn}
+        - name: KC_HOSTNAME_STRICT
+          value: '${keycloak:hostnameStrict}'
         - name: KC_HTTPS_CERTIFICATE_FILE
           value: /etc/x509/https/tls.crt
         - name: KC_HTTPS_CERTIFICATE_KEY_FILE
