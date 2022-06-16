@@ -22,7 +22,8 @@ func Test_Database_Secret_DefaultParameters(t *testing.T) {
 
 	data := subject.StringData
 	expected := "t-silent-test-1234/c-green-test-1234/builtin/db-password"
-	assert.Len(t, data, 3)
+	assert.Len(t, data, 4)
+	assert.Equal(t, expected, data["KC_DB_PASSWORD"])
 	assert.Equal(t, expected, data["postgresql-password"])
 	assert.Equal(t, expected, data["postgresql-postgres-password"])
 }

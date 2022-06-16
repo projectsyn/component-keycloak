@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/instance: keycloak
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: postgresql
+    helm.sh/chart: postgresql-10.16.2
+  name: keycloak-postgresql
+  namespace: syn-builtin
+spec:
+  ingress:
+  - ports:
+    - port: 5432
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: keycloak
+      app.kubernetes.io/name: postgresql

@@ -7,6 +7,10 @@ parameters:
       # This lookup table controls whether to enable the chart depending on the value of `keycloak.database.provider`
       builtin: true
       external: false
+    =_hostname_strict:
+      # This lookup table controls whether to enable KC_HOSTNAME_STRICT depending on the value of `keycloak.ingress.tls.termination`
+      passthrough: 'true'
+      reencrypt: 'false'
     =_ingress_annotations:
       # This lookup table controls whether to set specific annotations depending on the value of `keycloak.ingress.controller`,
       # `keycloak.ingress.tls.termination` and `keycloak.ingress.tls.provider`
@@ -36,9 +40,12 @@ parameters:
     namespace: syn-${_instance}
     name: keycloak
     charts:
-      keycloak: "18.1.1"
+      keycloakx: "1.3.2"
+      postgresql: "10.16.2"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
+    # Disables dynamically resolving the hostname from request headers.
+    hostnameStrict: ${keycloak:_hostname_strict:${keycloak:ingress:tls:termination}}
     # Namespace labels
     namespaceLabels: {}
     # Keycloak Admin
@@ -116,7 +123,6 @@ parameters:
     # the metrics endpoint by default.
     monitoring:
       enabled: true
-      statistics: all
       rules: []
     # Use Bitnami Postgres installed by the Keycloak chart by default
     database:
@@ -159,6 +165,14 @@ parameters:
       replicas: ${keycloak:replicas}
       statefulsetLabels: ${keycloak:labels}
       resources: ${keycloak:resources}
+
+      # See https://www.keycloak.org/server/configuration
+      # See https://www.keycloak.org/server/all-config
+      args:
+        - start
+        - --auto-build
+        - --http-enabled=true # Helm chart requires it currently
+
       # extraEnv *MUST* be a string, as it's fed through a templating
       # function.
       extraEnv: |
@@ -167,21 +181,17 @@ parameters:
                     -XX:+UseContainerSupport
                     -XX:MaxRAMPercentage=50.0
                     -Djava.net.preferIPv4Stack=true
-                    -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS
                     -Djava.awt.headless=true
+                    -Djgroups.dns.query={{ include "keycloak.fullname" . }}-headless
                     ${keycloak:extraJavaOpts}
-        - name: KEYCLOAK_STATISTICS
-          value: ${keycloak:monitoring:statistics}
-        - name: JGROUPS_DISCOVERY_PROTOCOL
-          value: dns.DNS_PING
-        - name: JGROUPS_DISCOVERY_PROPERTIES
-          value: 'dns_query={{ include "keycloak.serviceDnsName" . }}'
-        - name: CACHE_OWNERS_COUNT
-          value: "${keycloak:helm_values:replicas}"
-        - name: CACHE_OWNERS_AUTH_SESSIONS_COUNT
-          value: "${keycloak:helm_values:replicas}"
-        - name: PROXY_ADDRESS_FORWARDING
-          value: "true"
+        - name: KC_HOSTNAME
+          value: ${keycloak:fqdn}
+        - name: KC_HOSTNAME_STRICT
+          value: '${keycloak:hostnameStrict}'
+        - name: KC_HTTPS_CERTIFICATE_FILE
+          value: /etc/x509/https/tls.crt
+        - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+          value: /etc/x509/https/tls.key
       extraEnvFrom: |
         - secretRef:
             name: ${keycloak:admin:secretname}
@@ -249,23 +259,40 @@ parameters:
         enabled: ${keycloak:monitoring:enabled}
         labels: ${keycloak:labels}
         rules: ${keycloak:monitoring:rules}
-      postgresql:
-        enabled: ${keycloak:_enable_pg_chart:${keycloak:database:provider}}
-        existingSecret: ${keycloak:database:secretname}
-        primary:
-          podAnnotations:
-            # Annotations to support both K8up v1 and v2
-            k8up.syn.tools/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
-            k8up.syn.tools/file-extension: .sql
-            k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
-            k8up.io/file-extension: .sql
-          labels: ${keycloak:labels}
-        volumePermissions:
-          enabled: ${keycloak:database:tls:enabled}
-        tls:
-          enabled: ${keycloak:database:tls:enabled}
-          certificatesSecret: ${keycloak:database:tls:certSecretName}
-          certFilename: tls.crt
-          certKeyFilename: tls.key
-        networkPolicy:
-          enabled: true
+      dbchecker:
+        enabled: 'true'
+      proxy:
+        enabled: 'true'
+        mode: ${keycloak:ingress:tls:termination}
+
+      metrics:
+        enabled: ${keycloak:monitoring:enabled}
+      database:
+        vendor: ${keycloak:database:external:vendor}
+        hostname: keycloak-postgresql
+        port: ${keycloak:database:external:port}
+        database: ${keycloak:database:database}
+        username: ${keycloak:database:username}
+
+    postgresql_helm_values:
+      enabled: ${keycloak:_enable_pg_chart:${keycloak:database:provider}}
+      postgresqlDatabase: ${keycloak:database:database}
+      postgresqlUsername: ${keycloak:database:username}
+      existingSecret: ${keycloak:database:secretname}
+      primary:
+        podAnnotations:
+          # Annotations to support both K8up v1 and v2
+          k8up.syn.tools/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
+          k8up.syn.tools/file-extension: .sql
+          k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
+          k8up.io/file-extension: .sql
+        labels: ${keycloak:labels}
+      volumePermissions:
+        enabled: ${keycloak:database:tls:enabled}
+      tls:
+        enabled: ${keycloak:database:tls:enabled}
+        certificatesSecret: ${keycloak:database:tls:certSecretName}
+        certFilename: tls.crt
+        certKeyFilename: tls.key
+      networkPolicy:
+        enabled: true

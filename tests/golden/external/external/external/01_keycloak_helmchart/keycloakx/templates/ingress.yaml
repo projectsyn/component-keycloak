@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
+    route.openshift.io/termination: passthrough
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: external
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/version: 17.0.1
+    helm.sh/chart: keycloakx-1.3.2
+  name: keycloakx
+spec:
+  rules:
+    - host: keycloak.example.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: keycloakx-http
+                port:
+                  name: https
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - keycloak.example.com
+      secretName: ingress-tls

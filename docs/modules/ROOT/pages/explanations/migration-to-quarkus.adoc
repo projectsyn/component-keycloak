@@ -1,0 +1,44 @@
+= Migration to Quarkus
+
+Keycloak v17 is https://www.keycloak.org/docs/17.0/upgrading/#default-distribution-is-now-powered-by-quarkus[changing their runtime] from https://www.wildfly.org[Wildfly] to https://quarkus.io[Quarkus].
+This brings a complete new way of how the Keycloak container has to be https://www.keycloak.org/server/containers[deployed] (https://github.com/keycloak/keycloak/tree/main/quarkus/container[Quarkus based Keycloak Image] vs the https://github.com/keycloak/keycloak-containers[Wildfly based image]) and https://www.keycloak.org/server/all-config[parameterized].
+While Wildfly is a full-fledged application server for Java, Quarkus is a Kubernetes Native Java stack.
+
+The Keycloak default image requires a "build" before startup.
+This can be automatized using the `--auto-build`, which is the default in the component.
+This additional step can be removed by creating a https://www.keycloak.org/operator/customizing-keycloak[customized Keycloak image].
+
+== New variables
+
+* `KC_HOSTNAME` containing the FQDN of the Keycloak service.
+  Verification can be turned off by using the parameters `--hostname-strict=false` and `--hostname-strict-https=false`.
+  However, for production the hostname verification should be turned on!
+* `KC_HTTP_RELATIVE_PATH` in Keycloak is `/` by default.
+  However, the Helm chart contains the default value of `/auth`, so for upgrades there is no breaking change.
+
+== Changed variables
+
+* The Wildfily container did automatically create a truststore file out of PEM files existing in `/etc/x509/https`.
+  Now the public and private key file must be defined in variables, for example `KC_HTTPS_CERTIFICATE_FILE=/etc/x509/https/tls.crt` and `KC_HTTPS_CERTIFICATE_KEY_FILE=/etc/x509/https/tls.key`.
+* `KEYCLOAK_STATISTICS` is replaced by `KC_METRICS_ENABLED`.
+* `JGROUPS_DISCOVERY_PROTOCOL` and `JGROUPS_DISCOVERY_PROPERTIES` are replaced by `JAVA_OPTS=-Djgroups.dns.query=keycloakx-headless` (see https://artifacthub.io/packages/helm/codecentric/keycloakx#dns_ping-service-discovery[Helm chart documentation]).
+* `PROXY_ADDRESS_FORWARDING` removed, see https://www.keycloak.org/server/reverseproxy#_proxy_modes[Using a reverse proxy] and `KC_PROXY` for more information.
+  If `KC_PROXY` is set to a value of `edge`, `reencyrpt` or `passthrough` the `X-Forwarded-For`, `X-Forwarded-Proto` and `X-Forwarded-Host` HTTP headers are used by Keycloak (see https://github.com/keycloak/keycloak/blob/17.0.1/quarkus/runtime/src/main/java/org/keycloak/quarkus/runtime/configuration/mappers/ProxyPropertyMappers.java#L35[Source Code]).
+* `KEYCLOAK_USER` renamed to `KEYCLOAK_ADMIN`
+* `KEYCLOAK_PASSWORD` renamed to `KEYCLOAK_ADMIN_PASSWORD`
+* `DB_DATABASE` renamed to `KC_DB_URL_DATABASE`
+* `DB_USER` renamed to `KC_DB_USERNAME`
+* `DB_PASSWORD` renamed to `KC_DB_PASSWORD`
+* `DB_VENDOR` renamed to `KC_DB`
+* `DB_ADDR` renamed to `KC_DB_URL_HOST`
+* `DB_PORT` renamed to `KC_DB_URL_PORT`
+* Theme path has changed from `/opt/jboss/keycloak/themes/` to `/opt/keycloak/themes/`.
+* `KEYCLOAK_WELCOME_THEME` renamed to `KC_SPI_THEME_WELCOME_THEME`
+
+== Removed variables
+
+* `CACHE_OWNERS_AUTH_SESSIONS_COUNT` and `CACHE_OWNERS_COUNT` have no direct equivalent in the Quarkus setup.
+  A cache replica/owner number of `>= 2` is required to preserve the Infinispan cache over single Keycloak pod restarts.
+  The https://github.com/keycloak/keycloak-containers/blob/main/server/tools/cli/infinispan/cache-owners.cli[Wildfly default value] of those variables has been `1` and defined the amount of replicas/owners for a specific cache.
+  Now the default in the Quarkus Setup is https://www.keycloak.org/server/caching#_cache_types_and_defaults["Each distributed cache has two owners per default, which means that two nodes have a copy of the specific cache entries"].
+  A https://www.keycloak.org/server/caching#_specify_your_own_cache_configuration_file[custom Infinispan configuration file] can be configured using the environment variable `KC_CACHE_CONFIG_FILE` to override the default.

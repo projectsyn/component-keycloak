@@ -1,0 +1,156 @@
+= Upgrade from v8 to v9
+
+This guide describes the steps to perform an upgrade of the component from version v8 to v9.
+
+The major component upgrade focuses on the Wildfly to Quarkus migration enforced by the Keycloak team as Wildfly will be no longer supported.
+This upgrade contains just the required changes to run Keycloak in the same manner as the former installation does.
+All other changes and refactorings have been postponed to the next major component version.
+No Keycloak DB migration or schema change is expected to happen as the application version doesn't change.
+
+The component was previously based on the https://artifacthub.io/packages/helm/codecentric/keycloak[Keycloak Helm chart] and from now on will use the https://artifacthub.io/packages/helm/codecentric/keycloakx[Keycloakx Helm chart].
+The Keycloakx Helm chart no longer contains the builtin `bitnami/postgresql` database.
+To establish the same behavior, the component continues to support the `bitnami/postgresql` Helm chart to install the built-in database.
+
+If you want to know more about what has changed internally, check out xref:explanations/migration-to-quarkus.adoc[Migration to Quarkus].
+
+== Parameter changes
+
+* `charts.keycloak` has been replaced with `charts.keycloakx`.
+* `charts.keycloakx` has been added with version defaulting to `1.3.2`.
+* `charts.postgresql` has been added with the same `bitnami/postgresql` major version `10.16.2` as the former Keycloak Helm chart dependency `10.3.13` has been.
+* `monitoring.statistics` has been removed as Keycloak based on Quarkus always expose all statistics via the metrics endpoint.
+* `helm_values.postgresql` has been moved to `postgresql_helm_values` reflecting the two independent Helm charts.
+
+If you've configured custom values for any of those parameters, make sure to adjust your configurations when upgrading from component version v8 to v9.
+
+== Step-by-step guide
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. Do a backup of the built-in database.
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti keycloak-postgresql-0 -c keycloak-postgresql -- sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. If a Keycloak theme is used the path needs to be changed from
++
+[source,bash]
+----
+parameters:
+  <keycloak instance>:
+    extraVolumeMounts:
+      theme:
+        mountPath: /opt/jboss/keycloak/themes/company
+    extraEnv:
+      KEYCLOAK_WELCOME_THEME:
+        value: 'company'
+----
++
+to
++
+[source,bash]
+----
+parameters:
+  <keycloak instance>:
+    extraVolumeMounts:
+      theme:
+        mountPath: /opt/keycloak/themes/company
+    extraEnv:
+      KC_SPI_THEME_WELCOME_THEME:
+        value: 'company'
+----
+
+. Remove the parameter `monitoring.statistics` from the cluster configuration if it has been defined.
+
+=== Specific to OpenShift
+
+. Change the security context dbchecker parameter from
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    helm_values:
+      pgchecker:
+        securityContext: null
+----
++
+to
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    helm_values:
+      dbchecker:
+        securityContext: null
+----
+
+. Add an emptydir for `/opt/keycloak/data`:
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    extraVolumes:
+      data:
+        emptyDir: {}
+    extraVolumeMounts:
+      # Required as the OpenShift user can not create the data directory in the keycloak directory UID 1000/GID 0
+      data:
+        mountPath: /opt/keycloak/data
+----
+
+
+=== Specific to OpenShift + Builtin DB
+
+. Change the security context for the builtin database from
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    helm_values:
+      postgresql:
+        securityContext:
+          enabled: false
+        volumePermissions:
+          securityContext:
+            runAsUser: auto
+            shmVolume:
+              chmod:
+                enabled: false
+----
++
+to
++
+[source,yaml]
+----
+parameters:
+  <keycloak instance>:
+    postgresql_helm_values:
+      securityContext:
+        enabled: false
+      containerSecurityContext:
+        enabled: false
+      volumePermissions:
+        securityContext:
+          runAsUser: auto
+          shmVolume:
+            chmod:
+              enabled: false
+----
+
+
+=== Apply the deployment
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.
+
+. Verify that ArgoCD can sync all resources.

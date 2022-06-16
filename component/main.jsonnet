@@ -16,13 +16,43 @@ local namespace = kube.Namespace(params.namespace) {
   },
 };
 
+local networkpolicy_infinispan_labels = {
+  'app.kubernetes.io/instance': 'keycloakx',
+  'app.kubernetes.io/name': 'keycloakx',
+};
+
+// https://infinispan.org/docs/stable/titles/security/security.html#jgroups-ports_network
+local networkpolicy_infinispan = kube.NetworkPolicy('keycloakx-infinispan') {
+  metadata+: {
+    labels+: params.labels,
+  },
+  spec+: {
+    ingress: [ {
+      from: [ {
+        podSelector: {
+          matchLabels: networkpolicy_infinispan_labels,
+        },
+      } ],
+      ports: [
+        {
+          port: 7800,
+          protocol: 'TCP',
+        },
+      ],
+    } ],
+    podSelector: {
+      matchLabels: networkpolicy_infinispan_labels,
+    },
+  },
+};
+
 local admin_secret = kube.Secret(params.admin.secretname) {
   metadata+: {
     labels+: params.labels,
   },
   stringData: {
-    KEYCLOAK_USER: params.admin.username,
-    KEYCLOAK_PASSWORD: params.admin.password,
+    KEYCLOAK_ADMIN: params.admin.username,
+    KEYCLOAK_ADMIN_PASSWORD: params.admin.password,
   },
 };
 
@@ -32,15 +62,11 @@ local connection_secrets = {
     'postgresql-postgres-password': params.database.password,
     // this secret is shared between Keycloak and PostgreSQL
     'postgresql-password': params.database.password,
+    KC_DB_PASSWORD: params.database.password,
     [if params.database.jdbcParams != '' then 'JDBC_PARAMS']: params.database.jdbcParams,
   },
   external: {
-    DB_DATABASE: params.database.database,
-    DB_USER: params.database.username,
-    DB_PASSWORD: params.database.password,
-    DB_VENDOR: params.database.external.vendor,
-    DB_ADDR: params.database.external.host,
-    DB_PORT: std.toString(params.database.external.port),
+    KC_DB_PASSWORD: params.database.password,
     [if params.database.jdbcParams != '' then 'JDBC_PARAMS']: params.database.jdbcParams,
   },
 };
@@ -176,6 +202,7 @@ local k8up_schedule =
 // Define outputs below
 {
   '00_namespace': namespace,
+  [if params.replicas >= 2 then '01_networkpolicy_infinispan']: networkpolicy_infinispan,
   [if params.ingress.enabled && params.helm_values.networkPolicy.enabled then '01_ingress_controller_ns_patch']: ns_patch,
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,

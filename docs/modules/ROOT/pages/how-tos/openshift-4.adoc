@@ -16,10 +16,17 @@ parameters:
     ingress:
       tls:
         termination: reencrypt
+    extraVolumes:
+      data:
+        emptyDir: {}
+    extraVolumeMounts:
+      # Required as the OpenShift user can not create the data directory in the keycloak directory UID 1000/GID 0
+      data:
+        mountPath: /opt/keycloak/data
     helm_values:
       podSecurityContext: null
       securityContext: null
-      pgchecker:
+      dbchecker:
         securityContext: null
 ----
 
@@ -31,13 +38,14 @@ If you are using the built-in database provider (by default unless `keycloak.dat
 ----
 parameters:
   keycloak:
-    helm_values:
-      postgresql:
+    postgresql_helm_values:
+      securityContext:
+        enabled: false
+      containerSecurityContext:
+        enabled: false
+      volumePermissions:
         securityContext:
-          enabled: false
-        volumePermissions:
-          securityContext:
-            runAsUser: auto
+          runAsUser: auto
           shmVolume:
             chmod:
               enabled: false

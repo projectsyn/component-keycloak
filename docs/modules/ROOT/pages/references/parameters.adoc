@@ -40,11 +40,20 @@ default:: `${_instance}`
 Usually there is just one deployment and therefore no change is required.
 
 
-== `charts.keycloak`
+== `charts.keycloakx`
 
 [horizontal]
 type:: helm chart version
-default:: `18.1.1`
+default:: `1.3.2`
+
+A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
+
+
+== `charts.postgresql`
+
+[horizontal]
+type:: helm chart version
+default:: `10.16.2`
 
 A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
 
@@ -57,6 +66,20 @@ default:: `keycloak.example.com`
 
 Defines the FQDN the keycloak ingress or route object is configured.
 FQDN should be overwritten on the cluster level.
+
+
+== `hostnameStrict`
+
+[horizontal]
+type:: bool
+default:: `see description`
+
+Disables dynamically resolving the hostname from request headers.
+
+Default depending on the ingress termination mode:
+
+* `reencrypt` Is `false` because the internal TLS certificate isn't equal to the Keycloak FQDN.
+* `passthrough` Is `true` because the certificate is equal to the Keycloak FQDN.
 
 
 == `admin.secretname`
@@ -250,6 +273,9 @@ Defines the termination mode:
 * `reencrypt` TLS termination happens at the ingress or route, the traffic is re-encrypted.
 * `passthrough` TLS termination happens at Keycloak itself, ingress or route passes the traffic.
 
+This changes the mode of the ingress annotations and the https://www.keycloak.org/server/reverseproxy#_proxy_modes[Keycloak proxy mode].
+
+
 === `ingress.tls.provider`
 
 [horizontal]
@@ -376,26 +402,6 @@ default:: ``
 
 The extraJavaOpts can add instance specific configurations to Keycloak.
 
-Example to add a truststore configuration:
-[source,yaml]
-----
-parameters:
-  keycloak:
-    extraJavaOpts: >-
-      -Djavax.net.ssl.trustStore=/opt/jboss/keycloak/standalone/configuration/test/truststore.jks
-      -Djavax.net.ssl.trustStorePassword=trustStorePass
-      -Djavax.net.ssl.trustStoreType=jks
-----
-
-Example to increase the log level:
-[source,yaml]
-----
-parameters:
-  keycloak:
-    extraJavaOpts: >-
-      -Djavax.net.debug=all
-----
-
 
 == `extraEnv`
 
@@ -460,7 +466,7 @@ parameters:
       theme-vshn:
         name: theme
         readOnly: true
-        mountPath: /opt/jboss/keycloak/themes/vshn
+        mountPath: /opt/keycloak/themes/vshn
 ----
 
 == `extraInitContainers`
@@ -501,13 +507,6 @@ type:: bool
 default:: `true`
 
 Enable ServiceMonitor, PrometheusRule, and all Keycloak statistics on the metrics endpoint by default.
-
-
-== `monitoring.statistics`
-
-[horizontal]
-type:: string
-default:: `all`
 
 
 == `monitoring.rules`

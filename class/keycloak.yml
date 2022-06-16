@@ -2,10 +2,15 @@ parameters:
   kapitan:
     dependencies:
       - type: helm
-        chart_name: keycloak
-        version: ${keycloak:charts:keycloak}
+        chart_name: keycloakx
+        version: ${keycloak:charts:keycloakx}
         source: https://codecentric.github.io/helm-charts
-        output_path: dependencies/keycloak/helmcharts/keycloak/${keycloak:charts:keycloak}/
+        output_path: dependencies/keycloak/helmcharts/keycloakx/${keycloak:charts:keycloakx}/
+      - type: helm
+        chart_name: postgresql
+        version: ${keycloak:charts:postgresql}
+        source: https://charts.bitnami.com/bitnami
+        output_path: dependencies/keycloak/helmcharts/postgresql/${keycloak:charts:postgresql}/
     compile:
       - input_paths:
           - keycloak/component/app.jsonnet
@@ -23,18 +28,30 @@ parameters:
         input_type: helm
         output_type: yaml
         input_paths:
-          - keycloak/helmcharts/keycloak/${keycloak:charts:keycloak}/
+          - keycloak/helmcharts/keycloakx/${keycloak:charts:keycloakx}/
         helm_params:
-          name: ${keycloak:name}
+          name: keycloakx
           namespace: "${keycloak:namespace}"
           # Tell Helm to generate networking.k8s.io/v1 Ingress objects
           # This specifies argument `-a networking.k8s.io/v1/Ingress` for
           # `helm template`.
           api_versions: networking.k8s.io/v1/Ingress
         helm_values: ${keycloak:helm_values}
+      - output_path: ${_instance}/01_keycloak_helmchart
+        input_type: helm
+        output_type: yaml
+        input_paths:
+          - keycloak/helmcharts/postgresql/${keycloak:charts:postgresql}/
+        helm_params:
+          name: keycloak
+          namespace: "${keycloak:namespace}"
+        helm_values: ${keycloak:postgresql_helm_values}
   commodore:
     postprocess:
       filters:
         - type: jsonnet
           filter: postprocess/extra-env.jsonnet
-          path: ${_instance}/01_keycloak_helmchart/keycloak/templates
+          path: ${_instance}/01_keycloak_helmchart/keycloakx/templates
+        - type: jsonnet
+          filter: postprocess/postgresql.jsonnet
+          path: ${_instance}/01_keycloak_helmchart/postgresql/templates

@@ -50,29 +50,29 @@ parameters:
     extraVolumeMounts:
       theme-customer:
         name: themes
-        mountPath: /opt/jboss/keycloak/themes/customer
+        mountPath: /opt/keycloak/themes/customer
         subPath: customer
       theme-app1:
         name: themes
-        mountPath: /opt/jboss/keycloak/themes/app1
+        mountPath: /opt/keycloak/themes/app1
         subPath: app1
       theme-app2:
         name: themes
-        mountPath: /opt/jboss/keycloak/themes/app2
+        mountPath: /opt/keycloak/themes/app2
         subPath: app2
       theme-int-app1:
         name: themes
-        mountPath: /opt/jboss/keycloak/themes/int-app1
+        mountPath: /opt/keycloak/themes/int-app1
         subPath: int-app1
       theme-int-app2:
         name: themes
-        mountPath: /opt/jboss/keycloak/themes/int-app2
+        mountPath: /opt/keycloak/themes/int-app2
         subPath: int-app2
       theme-dev-app1:
         name: themes
-        mountPath: /opt/jboss/keycloak/themes/dev-app1
+        mountPath: /opt/keycloak/themes/dev-app1
         subPath: dev-app1
       theme-dev-app2:
         name: themes
-        mountPath: /opt/jboss/keycloak/themes/dev-app2
+        mountPath: /opt/keycloak/themes/dev-app2
         subPath: dev-app2
