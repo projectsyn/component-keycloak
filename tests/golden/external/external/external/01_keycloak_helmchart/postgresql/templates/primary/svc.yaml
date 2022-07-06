@@ -3,19 +3,22 @@ kind: Service
 metadata:
   annotations: null
   labels:
+    app.kubernetes.io/component: primary
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    helm.sh/chart: postgresql-10.16.2
+    helm.sh/chart: postgresql-11.6.15
   name: keycloak-postgresql
-  namespace: syn-builtin
+  namespace: syn-external
 spec:
   ports:
-  - name: tcp-postgresql
-    port: 5432
-    targetPort: tcp-postgresql
+    - name: tcp-postgresql
+      nodePort: null
+      port: 5432
+      targetPort: tcp-postgresql
   selector:
+    app.kubernetes.io/component: primary
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/name: postgresql
-    role: primary
+  sessionAffinity: None
   type: ClusterIP
