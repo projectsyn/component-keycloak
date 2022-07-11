@@ -278,7 +278,8 @@ parameters:
       enabled: ${keycloak:_enable_pg_chart:${keycloak:database:provider}}
       postgresqlDatabase: ${keycloak:database:database}
       postgresqlUsername: ${keycloak:database:username}
-      existingSecret: ${keycloak:database:secretname}
+      auth:
+        existingSecret: ${keycloak:database:secretname}
       primary:
         podAnnotations:
           # Annotations to support both K8up v1 and v2
@@ -296,3 +297,11 @@ parameters:
         certKeyFilename: tls.key
       networkPolicy:
         enabled: true
+        ingressRules:
+          primaryAccessOnlyFrom:
+            enabled: true
+            podSelector:
+              app.kubernetes.io/instance: keycloakx
+              app.kubernetes.io/name: keycloakx
+      image:
+        tag: 11.14.0-debian-10-r28

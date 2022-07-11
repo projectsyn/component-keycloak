@@ -16,7 +16,7 @@ func FileSize(t *testing.T, path string) int64 {
 }
 
 func Test_Postgresql_Helmchart_Not_Rendered(t *testing.T) {
-	subChartDir := testPath + "/01_keycloak_helmchart/postgresql/templates"
+	subChartDir := testPath + "/01_keycloak_helmchart/postgresql/templates/primary"
 
 	StatefulSetFileSize := FileSize(t, subChartDir+"/statefulset.yaml")
 	assert.Equal(t, StatefulSetFileSize, int64(0))
