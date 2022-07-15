@@ -144,7 +144,7 @@ parameters:
       # Used when `provider=external`
       external:
         vendor: postgres
-        host: postgres.example.com
+        host: keycloak-postgresql  # Default for database provider builtin. If external use the FQDN postgres.example.com.
         port: 5432
 
     k8up:
@@ -269,7 +269,7 @@ parameters:
         enabled: ${keycloak:monitoring:enabled}
       database:
         vendor: ${keycloak:database:external:vendor}
-        hostname: keycloak-postgresql
+        hostname: ${keycloak:database:external:host}
         port: ${keycloak:database:external:port}
         database: ${keycloak:database:database}
         username: ${keycloak:database:username}

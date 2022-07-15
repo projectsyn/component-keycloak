@@ -71,7 +71,7 @@ spec:
         - name: KC_DB_URL_DATABASE
           value: keycloak
         - name: KC_DB_URL_HOST
-          value: keycloak-postgresql
+          value: postgres.example.com
         - name: KC_DB_URL_PORT
           value: '5432'
         - name: KC_DB_USERNAME
@@ -160,8 +160,8 @@ spec:
         - sh
         - -c
         - "echo 'Waiting for Database to become ready...'\n\nuntil printf \".\" &&\
-          \ nc -z -w 2 keycloak-postgresql 5432; do\n    sleep 2;\ndone;\n\necho 'Database\
-          \ OK \u2713'\n"
+          \ nc -z -w 2 postgres.example.com 5432; do\n    sleep 2;\ndone;\n\necho\
+          \ 'Database OK \u2713'\n"
         image: docker.io/busybox:1.32
         imagePullPolicy: IfNotPresent
         name: dbchecker
