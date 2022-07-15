@@ -5,6 +5,8 @@ parameters:
       jdbcParams: sslmode=verify-ca&sslrootcert=/etc/ssl/certs/ca-bundle.crt
       tls:
         verification: verify
+      external:
+        host: postgres.example.com
     tls:
       provider: vault
     ingress:

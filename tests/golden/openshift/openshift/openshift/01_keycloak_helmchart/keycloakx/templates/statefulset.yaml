@@ -71,7 +71,7 @@ spec:
         - name: KC_DB_URL_DATABASE
           value: keycloak_dev
         - name: KC_DB_URL_HOST
-          value: keycloak-postgresql
+          value: maxscale-masteronly
         - name: KC_DB_URL_PORT
           value: '3306'
         - name: KC_DB_USERNAME
@@ -167,7 +167,7 @@ spec:
         - sh
         - -c
         - "echo 'Waiting for Database to become ready...'\n\nuntil printf \".\" &&\
-          \ nc -z -w 2 keycloak-postgresql 3306; do\n    sleep 2;\ndone;\n\necho 'Database\
+          \ nc -z -w 2 maxscale-masteronly 3306; do\n    sleep 2;\ndone;\n\necho 'Database\
           \ OK \u2713'\n"
         image: docker.io/busybox:1.32
         imagePullPolicy: IfNotPresent
