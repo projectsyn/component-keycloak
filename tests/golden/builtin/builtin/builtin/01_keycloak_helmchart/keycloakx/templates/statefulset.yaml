@@ -138,7 +138,7 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 1
         volumeMounts:
-        - mountPath: /opt/jboss/certs
+        - mountPath: /opt/keycloak/db-certs
           name: db-certs
           readOnly: true
         - mountPath: /etc/x509/https
