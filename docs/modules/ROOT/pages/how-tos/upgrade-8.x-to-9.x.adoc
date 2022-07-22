@@ -162,7 +162,7 @@ kubectl -n syn-keycloak scale statefulset keycloak --replicas=0
 +
 [source,bash]
 ----
-kubectl -n syn-keycloak-prod delete ingress keycloak
+kubectl -n syn-keycloak delete ingress keycloak
 ----
 
 . Apply the parameter changes.
