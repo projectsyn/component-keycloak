@@ -541,10 +541,10 @@ default:: `keycloak`
 
 [horizontal]
 type:: string
-default:: `sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt`
+default:: `sslmode=verify-ca&sslrootcert=/opt/keycloak/db-certs/tls.crt`
 
 Please note that if you need to customize JDBC parameters, copy and append them to the default with `&`, otherwise TLS will be disabled.
-For example: `sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt&mycustomparameter=somevalue`
+For example: `sslmode=verify-ca&sslrootcert=/opt/keycloak/db-certs/tls.crt&mycustomparameter=somevalue`
 
 
 == `database.password`

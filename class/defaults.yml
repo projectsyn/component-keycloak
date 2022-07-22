@@ -132,7 +132,7 @@ parameters:
       password: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/db-password}"
       database: keycloak
       username: keycloak
-      jdbcParams: sslmode=verify-ca&sslrootcert=/opt/jboss/certs/tls.crt
+      jdbcParams: sslmode=verify-ca&sslrootcert=/opt/keycloak/db-certs/tls.crt
 
       tls:
         enabled: true
@@ -212,7 +212,7 @@ parameters:
       extraVolumeMounts: |
         - name: db-certs
           readOnly: true
-          mountPath: /opt/jboss/certs
+          mountPath: /opt/keycloak/db-certs
         - name: keycloak-tls
           readOnly: true
           mountPath: /etc/x509/https
