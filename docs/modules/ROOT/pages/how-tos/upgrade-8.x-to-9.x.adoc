@@ -151,7 +151,7 @@ parameters:
 
 . Disable the automated sync policy for the keycloak instance
 
-. Scale down the existing keycloak to prevent the Wildfly based instance can write to the same database:
+. Scale down the existing keycloak to prevent the Wildfly based instance writing to the same database:
 +
 [source,bash]
 ----
