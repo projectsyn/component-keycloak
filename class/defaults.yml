@@ -276,9 +276,9 @@ parameters:
 
     postgresql_helm_values:
       enabled: ${keycloak:_enable_pg_chart:${keycloak:database:provider}}
-      postgresqlDatabase: ${keycloak:database:database}
-      postgresqlUsername: ${keycloak:database:username}
       auth:
+        database: ${keycloak:database:database}
+        username: ${keycloak:database:username}
         existingSecret: ${keycloak:database:secretname}
       primary:
         podAnnotations:

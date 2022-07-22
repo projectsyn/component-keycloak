@@ -60,11 +60,20 @@ spec:
           value: /bitnami/postgresql
         - name: PGDATA
           value: /bitnami/postgresql/data
-        - name: POSTGRES_PASSWORD
+        - name: POSTGRES_USER
+          value: keycloak
+        - name: POSTGRES_POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               key: postgres-password
               name: keycloak-postgresql
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: keycloak-postgresql
+        - name: POSTGRES_DB
+          value: keycloak
         - name: POSTGRESQL_ENABLE_LDAP
           value: 'no'
         - name: POSTGRESQL_ENABLE_TLS
@@ -94,7 +103,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+            - exec pg_isready -U "keycloak" -d "dbname=keycloak" -h 127.0.0.1 -p 5432
           failureThreshold: 6
           initialDelaySeconds: 30
           periodSeconds: 10
@@ -111,7 +120,7 @@ spec:
             - -c
             - -e
             - |
-              exec pg_isready -U "postgres" -d "sslcert=/opt/bitnami/postgresql/certs/tls.crt sslkey=/opt/bitnami/postgresql/certs/tls.key" -h 127.0.0.1 -p 5432
+              exec pg_isready -U "keycloak" -d "dbname=keycloak sslcert=/opt/bitnami/postgresql/certs/tls.crt sslkey=/opt/bitnami/postgresql/certs/tls.key" -h 127.0.0.1 -p 5432
               [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
           failureThreshold: 6
           initialDelaySeconds: 5
