@@ -149,8 +149,26 @@ parameters:
 
 === Apply the deployment
 
+. Disable the automated sync policy for the keycloak instance
+
+. Scale down the existing keycloak to prevent the Wildfly based instance can write to the same database:
++
+[source,bash]
+----
+kubectl -n syn-keycloak scale statefulset keycloak --replicas=0
+----
+
+. Delete the ingress object to prevent duplicate hostname issues seen on the OpenShift router:
++
+[source,bash]
+----
+kubectl -n syn-keycloak-prod delete ingress keycloak
+----
+
 . Apply the parameter changes.
 
 . Compile and push the cluster catalog.
+
+. Enable the automated sync policy for the keycloak instance
 
 . Verify that ArgoCD can sync all resources.
