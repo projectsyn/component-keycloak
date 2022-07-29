@@ -6,9 +6,10 @@ metadata:
     app.kubernetes.io/instance: builtin
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 17.0.1
-    helm.sh/chart: keycloakx-1.3.2
+    app.kubernetes.io/version: 18.0.0
+    helm.sh/chart: keycloakx-1.5.0
   name: keycloakx
+  namespace: syn-builtin
 spec:
   podManagementPolicy: OrderedReady
   replicas: 2
@@ -57,7 +58,6 @@ spec:
         - start
         - --auto-build
         - --http-enabled=true
-        command: []
         env:
         - name: FOO
           value: bar
@@ -78,6 +78,8 @@ spec:
           value: patched
         - name: KC_DB_USERNAME
           value: keycloak
+        - name: KC_HEALTH_ENABLED
+          value: 'true'
         - name: KC_HOSTNAME
           value: keycloak.example.com
         - name: KC_HOSTNAME_STRICT
@@ -97,7 +99,7 @@ spec:
             name: keycloak-admin-user
         - secretRef:
             name: keycloak-postgresql
-        image: quay.io/keycloak/keycloak:17.0.1
+        image: quay.io/keycloak/keycloak:18.0.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
