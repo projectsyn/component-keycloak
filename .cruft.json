@@ -1,0 +1,21 @@
+{
+  "template": "https://github.com/projectsyn/commodore-component-template.git",
+  "commit": "e6c4fd69190db1ad12e941d578b9423d0e2f993c",
+  "checkout": "main",
+  "context": {
+    "cookiecutter": {
+      "name": "keycloak",
+      "slug": "keycloak",
+      "parameter_key": "keycloak",
+      "test_cases": "builtin external openshift",
+      "add_golden": "y",
+      "add_matrix": "y",
+      "add_go_unit": "y",
+      "github_owner": "projectsyn",
+      "github_name": "component-keycloak",
+      "github_url": "https://github.com/projectsyn/component-keycloak",
+      "_template": "https://github.com/projectsyn/commodore-component-template.git"
+    }
+  },
+  "directory": null
+}
