@@ -14,7 +14,11 @@
       "github_owner": "projectsyn",
       "github_name": "component-keycloak",
       "github_url": "https://github.com/projectsyn/component-keycloak",
-      "_template": "https://github.com/projectsyn/commodore-component-template.git"
+      "_template": "https://github.com/projectsyn/commodore-component-template.git",
+      "add_lib": "n",
+      "add_pp": "y",
+      "copyright_holder": "VSHN AG <info@vshn.ch>",
+      "copyright_year": "2020"
     }
   },
   "directory": null
