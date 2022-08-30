@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/projectsyn/commodore-component-template.git",
-  "commit": "e6c4fd69190db1ad12e941d578b9423d0e2f993c",
+  "commit": "3c0aa35683ac2951a08e2eb6057229741d7d160a",
   "checkout": "main",
   "context": {
     "cookiecutter": {
@@ -8,9 +8,13 @@
       "slug": "keycloak",
       "parameter_key": "keycloak",
       "test_cases": "builtin external openshift",
+      "add_lib": "n",
+      "add_pp": "y",
       "add_golden": "y",
       "add_matrix": "y",
       "add_go_unit": "y",
+      "copyright_holder": "VSHN AG <info@vshn.ch>",
+      "copyright_year": "2020",
       "github_owner": "projectsyn",
       "github_name": "component-keycloak",
       "github_url": "https://github.com/projectsyn/component-keycloak",
