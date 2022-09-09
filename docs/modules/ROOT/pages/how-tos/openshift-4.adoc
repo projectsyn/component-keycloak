@@ -46,7 +46,7 @@ parameters:
       volumePermissions:
         securityContext:
           runAsUser: auto
-          shmVolume:
-            chmod:
-              enabled: false
+      shmVolume:
+        chmod:
+          enabled: false
 ----
