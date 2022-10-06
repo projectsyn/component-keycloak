@@ -97,11 +97,11 @@ kubectl -n syn patch apps ${ARGO_APP} --type=json \
 +
 [source,bash]
 ----
-kubectl -n $NAMESPACE patch statefulset keycloak --type=json \
+kubectl -n $NAMESPACE patch statefulset keycloakx --type=json \
   -p '[{"op":"replace", "path":"/spec/replicas", "value": 0}]'
 
 # Wait until statefulset has been scaled down
-kubectl -n $NAMESPACE get statefulset keycloak -w
+kubectl -n $NAMESPACE get statefulset keycloakx -w
 ----
 
 . Load the backup and restore it
@@ -127,7 +127,7 @@ kubectl -n syn patch apps root --type=json \
   }]'
 
 # Wait until Keycloak has started sucessfully
-kubectl -n $NAMESPACE get statefulset keycloak -w
+kubectl -n $NAMESPACE get statefulset keycloakx -w
 ----
 
 [NOTE]

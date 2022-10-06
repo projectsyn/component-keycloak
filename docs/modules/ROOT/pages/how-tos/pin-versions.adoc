@@ -4,7 +4,7 @@ This tutorial explains how to pin Keycloak to specific version.
 
 == Pin Helm chart version
 
-The Keycloak deployment is mainly generated through https://github.com/codecentric/helm-charts/tree/master/charts/keycloak[codecentric's Keycloak Helm chart].
+The Keycloak deployment is mainly generated through https://github.com/codecentric/helm-charts/tree/master/charts/keycloakx[codecentric's Keycloak Helm chart].
 New versions are released in the https://github.com/codecentric/helm-charts/releases[Releases page].
 
 Normally the component tries to stay up-to-date with the latest Helm chart version.
@@ -15,7 +15,7 @@ If you need to override the chart version, you can pin it in the parameters:
 parameters:
   keycloak:
     charts:
-      keycloak: '<version>'
+      keycloakx: '<version>'
 ----
 
 == Pin container image tag
