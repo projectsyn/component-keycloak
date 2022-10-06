@@ -1,0 +1,44 @@
+= Upgrade from v9 to v10
+
+This guide describes the steps to perform an upgrade of the component from version v9 to v10.
+
+== Parameter changes
+
+* `charts.keycloakx` changed from `1.3.2` to `1.6.0`, the Keycloak image is updated from `17.0.2` to `18.0.2`.
+* `charts.postgresql` changed from `10.16.2` to `11.6.15`, the Postgresql version remains the same version `11.14.0-debian-10-r28`.
+* `postgresql_helm_values` authentication parameters have been moved to `postgresql_helm_values.auth` reflecting the https://docs.bitnami.com/kubernetes/infrastructure/postgresql/administration/upgrade/#to-1100[Helm chart upgrade] to 11.
+
+If you've configured custom values for any of those parameters, make sure to adjust your configurations when upgrading from component version v9 to v10.
+
+== Step-by-step guide
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. Do a backup of the built-in database.
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti keycloak-postgresql-0 -c keycloak-postgresql -- sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.
+
+. If you use the built-in database, you need to delete its StatefulSet to allow ArgoCD to apply the new version.
++
+[source,bash]
+----
+kubectl -n syn-keycloak delete sts keycloak-postgresql
+----
++
+[NOTE]
+====
+This step is necessary since the upgrade changes immutable properties in the Postgres StatefulSet if using the built-in database.
+This won't delete the PVC `data-keycloak-postgresql-0`.
+====
+
+. Verify that ArgoCD can sync all resources.
