@@ -50,4 +50,4 @@ parameters:
           path: ${_instance}/01_keycloak_helmchart/keycloakx/templates
         - type: jsonnet
           filter: postprocess/postgresql.jsonnet
-          path: ${_instance}/01_keycloak_helmchart/postgresql/templates
+          path: ${_instance}/01_keycloak_helmchart/postgresql/templates/primary

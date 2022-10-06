@@ -2,12 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/component: primary
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    helm.sh/chart: postgresql-10.16.2
+    helm.sh/chart: postgresql-11.6.15
     service.alpha.kubernetes.io/tolerate-unready-endpoints: 'true'
-  name: keycloak-postgresql-headless
+  name: keycloak-postgresql-hl
   namespace: syn-builtin
 spec:
   clusterIP: None
@@ -17,6 +18,7 @@ spec:
     targetPort: tcp-postgresql
   publishNotReadyAddresses: true
   selector:
+    app.kubernetes.io/component: primary
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/name: postgresql
   type: ClusterIP

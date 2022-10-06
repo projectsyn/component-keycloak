@@ -7,17 +7,17 @@ metadata:
     app.kubernetes.io/instance: builtin
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    helm.sh/chart: postgresql-10.16.2
+    helm.sh/chart: postgresql-11.6.15
   name: keycloak-postgresql
   namespace: syn-builtin
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app.kubernetes.io/component: primary
       app.kubernetes.io/instance: keycloak
       app.kubernetes.io/name: postgresql
-      role: primary
-  serviceName: keycloak-postgresql-headless
+  serviceName: keycloak-postgresql-hl
   template:
     metadata:
       annotations:
@@ -32,8 +32,7 @@ spec:
         app.kubernetes.io/instance: keycloak
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: postgresql
-        helm.sh/chart: postgresql-10.16.2
-        role: primary
+        helm.sh/chart: postgresql-11.6.15
       name: keycloak-postgresql
     spec:
       affinity:
@@ -51,7 +50,6 @@ spec:
               - syn-builtin
               topologyKey: kubernetes.io/hostname
             weight: 1
-      automountServiceAccountToken: false
       containers:
       - env:
         - name: BITNAMI_DEBUG
@@ -62,17 +60,17 @@ spec:
           value: /bitnami/postgresql
         - name: PGDATA
           value: /bitnami/postgresql/data
+        - name: POSTGRES_USER
+          value: keycloak
         - name: POSTGRES_POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: postgresql-postgres-password
+              key: postgres-password
               name: keycloak-postgresql
-        - name: POSTGRES_USER
-          value: keycloak
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: postgresql-password
+              key: password
               name: keycloak-postgresql
         - name: POSTGRES_DB
           value: keycloak
@@ -111,7 +109,7 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 5
-        name: keycloak-postgresql
+        name: postgresql
         ports:
         - containerPort: 5432
           name: tcp-postgresql
@@ -130,6 +128,7 @@ spec:
           successThreshold: 1
           timeoutSeconds: 5
         resources:
+          limits: {}
           requests:
             cpu: 250m
             memory: 256Mi
@@ -143,34 +142,33 @@ spec:
           name: dshm
         - mountPath: /bitnami/postgresql
           name: data
-          subPath: null
+      hostIPC: false
+      hostNetwork: false
       initContainers:
       - command:
         - /bin/sh
-        - -cx
+        - -ec
         - |
           chown 1001:1001 /bitnami/postgresql
           mkdir -p /bitnami/postgresql/data
           chmod 700 /bitnami/postgresql/data
           find /bitnami/postgresql -mindepth 1 -maxdepth 1 -not -name "conf" -not -name ".snapshot" -not -name "lost+found" | \
-            xargs chown -R 1001:1001
+            xargs -r chown -R 1001:1001
           chmod -R 777 /dev/shm
           cp /tmp/certs/* /opt/bitnami/postgresql/certs/
           chown -R 1001:1001 /opt/bitnami/postgresql/certs/
           chmod 600 /opt/bitnami/postgresql/certs/tls.key
-        image: docker.io/bitnami/bitnami-shell:10-debian-10-r305
+        image: docker.io/bitnami/bitnami-shell:11-debian-11-r12
         imagePullPolicy: IfNotPresent
         name: init-chmod-data
         resources:
-          requests:
-            cpu: 250m
-            memory: 256Mi
+          limits: {}
+          requests: {}
         securityContext:
           runAsUser: 0
         volumeMounts:
         - mountPath: /bitnami/postgresql
           name: data
-          subPath: null
         - mountPath: /dev/shm
           name: dshm
         - mountPath: /tmp/certs
@@ -179,6 +177,7 @@ spec:
           name: postgresql-certificates
       securityContext:
         fsGroup: 1001
+      serviceAccountName: default
       volumes:
       - name: raw-certificates
         secret:
@@ -189,6 +188,7 @@ spec:
           medium: Memory
         name: dshm
   updateStrategy:
+    rollingUpdate: {}
     type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
