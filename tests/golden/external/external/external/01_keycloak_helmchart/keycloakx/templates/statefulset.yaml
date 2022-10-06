@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/instance: external
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 18.0.2
+    app.kubernetes.io/version: 19.0.2
     helm.sh/chart: keycloakx-1.6.0
   name: keycloakx
   namespace: syn-external
@@ -97,7 +97,7 @@ spec:
             name: keycloak-admin-user
         - secretRef:
             name: keycloak-postgresql
-        image: quay.io/keycloak/keycloak:18.0.2
+        image: quay.io/keycloak/keycloak:19.0.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
