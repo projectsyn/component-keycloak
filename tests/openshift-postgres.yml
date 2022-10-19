@@ -1,0 +1,13 @@
+---
+parameters:
+  keycloak:
+    postgresql_helm_values:
+      primary:
+        podSecurityContext:
+          enabled: false
+        containerSecurityContext:
+          enabled: false
+      volumePermissions:
+        enabled: false
+      shmVolume:
+        enabled: false

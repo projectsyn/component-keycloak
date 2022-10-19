@@ -7,6 +7,10 @@ This guide describes the steps to perform an upgrade of the component from versi
 * `charts.keycloakx` changed from `1.3.2` to `1.6.0`, the Keycloak image is updated from `17.0.2` to `18.0.2`.
 * `charts.postgresql` changed from `10.16.2` to `11.6.15`, the Postgresql version remains the same version `11.14.0-debian-10-r28`.
 * `postgresql_helm_values` authentication parameters have been moved to `postgresql_helm_values.auth` reflecting the https://docs.bitnami.com/kubernetes/infrastructure/postgresql/administration/upgrade/#to-1100[Helm chart upgrade] to 11.
+* `postgresql_helm_values.securityContext.enabled` changed to `postgresql_helm_values.primary.securityContext.enabled`.
+* `postgresql_helm_values.containerSecurityContext.enabled` changed to `postgresql_helm_values.primary.containerSecurityContext.enabled`.
+* `postgresql_helm_values.volumePermissions.securityContext.runAsUser` has no direct equivalent and therefore the volume permissions setup has to be disabled entirly `postgresql_helm_values.volumePermissions.enabled`.
+* `postgresql_helm_values.shmVolume.chmod.enabled` has no direct equivalent and therefore the shared volume setup has to be disabled entirly `postgresql_helm_values.shmVolume.enabled`.
 
 If you've configured custom values for any of those parameters, make sure to adjust your configurations when upgrading from component version v9 to v10.
 

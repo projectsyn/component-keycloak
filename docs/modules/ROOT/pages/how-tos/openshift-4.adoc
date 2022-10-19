@@ -39,14 +39,13 @@ If you are using the built-in database provider (by default unless `keycloak.dat
 parameters:
   keycloak:
     postgresql_helm_values:
-      securityContext:
-        enabled: false
-      containerSecurityContext:
-        enabled: false
-      volumePermissions:
-        securityContext:
-          runAsUser: auto
-      shmVolume:
-        chmod:
+      primary:
+        podSecurityContext:
           enabled: false
+        containerSecurityContext:
+          enabled: false
+      volumePermissions:
+        enabled: false
+      shmVolume:
+        enabled: false
 ----

@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: openshift-postgres
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/version: 18.0.2
+    helm.sh/chart: keycloakx-1.6.0
+  name: keycloakx
+  namespace: syn-openshift-postgres
+spec:
+  groups:
+    - name: keycloakx
+      rules: []

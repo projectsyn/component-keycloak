@@ -1,0 +1,17 @@
+apiVersion: v1
+data: {}
+kind: Secret
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: openshift-postgres
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    name: keycloak-tls
+  name: keycloak-tls
+stringData:
+  ca.crt: t-silent-test-1234/c-green-test-1234/openshift-postgres/keycloak-cert
+  tls.crt: t-silent-test-1234/c-green-test-1234/openshift-postgres/keycloak-cert
+  tls.key: t-silent-test-1234/c-green-test-1234/openshift-postgres/keycloak-cert-key
+type: Opaque

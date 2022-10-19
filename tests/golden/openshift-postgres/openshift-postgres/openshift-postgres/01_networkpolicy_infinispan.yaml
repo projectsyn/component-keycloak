@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: openshift-postgres
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    name: keycloakx-infinispan
+  name: keycloakx-infinispan
+spec:
+  egress: []
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: keycloakx
+              app.kubernetes.io/name: keycloakx
+      ports:
+        - port: 7800
+          protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: keycloakx
+      app.kubernetes.io/name: keycloakx
+  policyTypes:
+    - Ingress
