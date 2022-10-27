@@ -57,5 +57,5 @@ KUBENT_ARGS     ?= -c=false --helm2=false --helm3=false -e
 KUBENT_IMAGE    ?= docker.io/projectsyn/kubent:latest
 KUBENT_DOCKER   ?= $(DOCKER_CMD) $(DOCKER_ARGS) $(root_volume) --entrypoint=/app/kubent $(KUBENT_IMAGE)
 
-instance ?= defaults
+instance ?= builtin
 test_instances = tests/builtin.yml tests/external.yml tests/openshift.yml
