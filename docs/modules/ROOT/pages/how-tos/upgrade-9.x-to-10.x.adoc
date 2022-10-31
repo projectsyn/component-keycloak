@@ -9,8 +9,8 @@ This guide describes the steps to perform an upgrade of the component from versi
 * `postgresql_helm_values` authentication parameters have been moved to `postgresql_helm_values.auth` reflecting the https://docs.bitnami.com/kubernetes/infrastructure/postgresql/administration/upgrade/#to-1100[Helm chart upgrade] to 11.
 * `postgresql_helm_values.securityContext.enabled` changed to `postgresql_helm_values.primary.securityContext.enabled`.
 * `postgresql_helm_values.containerSecurityContext.enabled` changed to `postgresql_helm_values.primary.containerSecurityContext.enabled`.
-* `postgresql_helm_values.volumePermissions.securityContext.runAsUser` has no direct equivalent and therefore the volume permissions setup has to be disabled entirely in `postgresql_helm_values.volumePermissions.enabled`.
-* `postgresql_helm_values.shmVolume.chmod.enabled` has no direct equivalent and therefore the shared volume setup has to be disabled entirely in `postgresql_helm_values.shmVolume.enabled`.
+* `postgresql_helm_values.volumePermissions.securityContext.runAsUser` has no direct equivalent and therefore the volume permissions setup has to be disabled entirely by setting `postgresql_helm_values.volumePermissions.enabled` to `false`.
+* `postgresql_helm_values.shmVolume.chmod.enabled` has no direct equivalent and therefore the shared volume setup has to be disabled entirely by setting `postgresql_helm_values.shmVolume.enabled` to `false`.
 
 If you've configured custom values for any of those parameters, make sure to adjust your configurations when upgrading from component version v9 to v10.
 
