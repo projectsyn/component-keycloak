@@ -162,7 +162,7 @@ parameters:
     helm_values:
       image:
         repository: quay.io/keycloak/keycloak
-        tag: "18.0.2"
+        tag: "20.0.0"
       replicas: ${keycloak:replicas}
       statefulsetLabels: ${keycloak:labels}
       resources: ${keycloak:resources}
