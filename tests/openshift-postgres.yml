@@ -4,9 +4,20 @@ parameters:
     postgresql_helm_values:
       primary:
         podSecurityContext:
-          enabled: false
+          enabled: true
+          fsGroup: null
+          seccompProfile:
+            type: RuntimeDefault
         containerSecurityContext:
-          enabled: false
+          enabled: true
+          runAsUser: null
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+              - ALL
       volumePermissions:
         enabled: false
       shmVolume:
