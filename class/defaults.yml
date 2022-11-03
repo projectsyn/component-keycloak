@@ -40,7 +40,7 @@ parameters:
     namespace: syn-${_instance}
     name: keycloak
     charts:
-      keycloakx: "1.6.1"
+      keycloakx: "1.6.2"
       postgresql: "12.0.0"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
@@ -162,7 +162,6 @@ parameters:
     helm_values:
       image:
         repository: quay.io/keycloak/keycloak
-        tag: "18.0.2"
       replicas: ${keycloak:replicas}
       statefulsetLabels: ${keycloak:labels}
       resources: ${keycloak:resources}
@@ -171,7 +170,6 @@ parameters:
       # See https://www.keycloak.org/server/all-config
       args:
         - start
-        - --auto-build
         - --http-enabled=true # Helm chart requires it currently
 
       # extraEnv *MUST* be a string, as it's fed through a templating

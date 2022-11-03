@@ -8,8 +8,8 @@ metadata:
     app.kubernetes.io/instance: openshift
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 18.0.2
-    helm.sh/chart: keycloakx-1.6.1
+    app.kubernetes.io/version: 19.0.3
+    helm.sh/chart: keycloakx-1.6.2
   name: keycloakx-http
   namespace: keycloak-dev
 spec:
