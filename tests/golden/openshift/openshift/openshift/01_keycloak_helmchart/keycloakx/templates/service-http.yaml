@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
     app.kubernetes.io/version: 18.0.2
-    helm.sh/chart: keycloakx-1.6.0
+    helm.sh/chart: keycloakx-1.6.1
   name: keycloakx-http
   namespace: keycloak-dev
 spec:

@@ -40,7 +40,7 @@ parameters:
     namespace: syn-${_instance}
     name: keycloak
     charts:
-      keycloakx: "1.6.0"
+      keycloakx: "1.6.1"
       postgresql: "12.0.0"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
