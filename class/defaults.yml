@@ -304,4 +304,4 @@ parameters:
               app.kubernetes.io/instance: keycloakx
               app.kubernetes.io/name: keycloakx
       image:
-        tag: 11.14.0-debian-10-r28
+        tag: 11.17.0-debian-11-r37
