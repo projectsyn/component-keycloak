@@ -250,7 +250,6 @@ parameters:
                 name: ${keycloak:ingress:controllerNamespace}
       service:
         annotations: ${keycloak:_service_annotations:${keycloak:tls:provider}}
-        # Workaround until https://github.com/codecentric/helm-charts/pull/432 is solved
         httpPort: 8080
         labels: ${keycloak:labels}
       serviceMonitor:
