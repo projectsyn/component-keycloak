@@ -103,7 +103,8 @@ spec:
           livenessProbe:
             httpGet:
               path: /auth/health/live
-              port: http
+              port: https
+              scheme: HTTPS
             initialDelaySeconds: 0
             timeoutSeconds: 5
           name: keycloak
@@ -117,7 +118,8 @@ spec:
           readinessProbe:
             httpGet:
               path: /auth/health/ready
-              port: http
+              port: https
+              scheme: HTTPS
             initialDelaySeconds: 10
             timeoutSeconds: 1
           resources:
@@ -134,7 +136,8 @@ spec:
             failureThreshold: 60
             httpGet:
               path: /auth/health
-              port: http
+              port: https
+              scheme: HTTPS
             initialDelaySeconds: 15
             periodSeconds: 5
             timeoutSeconds: 1

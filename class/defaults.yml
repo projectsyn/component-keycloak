@@ -272,6 +272,29 @@ parameters:
         annotations: ${keycloak:_service_annotations:${keycloak:tls:provider}}
         httpPort: 8080
         labels: ${keycloak:labels}
+      livenessProbe: |
+        httpGet:
+          path: '{{ tpl .Values.http.relativePath $ | trimSuffix "/" }}/health/live'
+          port: https
+          scheme: HTTPS
+        initialDelaySeconds: 0
+        timeoutSeconds: 5
+      readinessProbe: |
+        httpGet:
+          path: '{{ tpl .Values.http.relativePath $ | trimSuffix "/" }}/health/ready'
+          port: https
+          scheme: HTTPS
+        initialDelaySeconds: 10
+        timeoutSeconds: 1
+      startupProbe: |
+        httpGet:
+          path: '{{ tpl .Values.http.relativePath $ | trimSuffix "/" }}/health'
+          port: https
+          scheme: HTTPS
+        initialDelaySeconds: 15
+        timeoutSeconds: 1
+        failureThreshold: 60
+        periodSeconds: 5
       serviceMonitor:
         enabled: ${keycloak:monitoring:enabled}
         labels: ${keycloak:labels}
