@@ -11,13 +11,13 @@ metadata:
   namespace: syn-openshift-postgres
 spec:
   ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/instance: keycloakx
-          app.kubernetes.io/name: keycloakx
-    ports:
-    - port: 5432
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: keycloakx
+              app.kubernetes.io/name: keycloakx
+      ports:
+        - port: 5432
   podSelector:
     matchLabels:
       app.kubernetes.io/component: primary
