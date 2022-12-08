@@ -202,7 +202,7 @@ local k8up_schedule =
 // Define outputs below
 {
   '00_namespace': namespace,
-  [if params.replicas >= 2 then '01_networkpolicy_infinispan']: networkpolicy_infinispan,
+  [if params.helm_values.networkPolicy.enabled && params.replicas >= 2 then '01_networkpolicy_infinispan']: networkpolicy_infinispan,
   [if params.ingress.enabled && params.helm_values.networkPolicy.enabled then '01_ingress_controller_ns_patch']: ns_patch,
   '10_admin_secret': admin_secret,
   '11_db_secret': db_secret,
