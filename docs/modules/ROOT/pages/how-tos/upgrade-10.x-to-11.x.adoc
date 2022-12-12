@@ -4,13 +4,13 @@ This guide describes the steps to perform an upgrade of the component from versi
 
 == Changes
 
-* The component requires Kubernetes  v1.21 or newer.
+* The component requires Kubernetes v1.21 or newer.
 * K8up v1 support has been removed.
 
 == Parameter changes
 
-* `charts.keycloakx` changed from `1.6.0` to `1.6.2`, the Keycloak image is updated from `18.0.2` to `19.0.3`.
-* `charts.postgresql` changed from `11.6.15` to `12.1.0`, the Postgresql version changes from version `11.14.0-debian-10-r28` to `postgresql:11.17.0-debian-11-r37`.
+* `charts.keycloakx` changed from `1.6.1` to `1.6.2`, the Keycloak image is updated from `18.0.2` to `19.0.3`.
+* `charts.postgresql` changed from `12.0.0` to `12.1.0`, the Postgresql version changes from version `11.14.0-debian-10-r28` to `postgresql:11.17.0-debian-11-r37`.
 
 If you've configured custom values for any of those parameters, make sure to adjust your configurations when upgrading from component version v9 to v10.
 
