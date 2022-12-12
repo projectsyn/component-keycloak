@@ -7,5 +7,5 @@ The component defaults to provisioning a Bitnami Postgres database, but this beh
 [NOTE]
 ====
 This component doesn't support Kubernetes versions older than 1.21 anymore.
-This is because it assumes `Namespace` resources with auto labels `kubernetes.io/metadata.name: <namespace>`.
+This is because it assumes `Namespace` resources have an auto label `kubernetes.io/metadata.name: <namespace>`.
 ====
