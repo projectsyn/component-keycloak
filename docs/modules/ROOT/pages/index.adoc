@@ -1,13 +1,11 @@
 = keycloak: A Commodore component to manage Keycloak
 
-This component provides a set of tuned defaults and a simplified interface to deploy the https://artifacthub.io/packages/helm/codecentric/keycloak/18.1.1[Keycloak helm chart] on a Syn-enabled cluster.
+This component provides a set of tuned defaults and a simplified interface to deploy the https://artifacthub.io/packages/helm/codecentric/keycloakx[Keycloak helm chart] on a Syn-enabled cluster.
 
-The component defaults to provisioning a Bitnami Postgres database via the
-Keycloak helm chart, but this behavior can be overridden using the
-`keycloak.postgres` parameters exposed by the component.
+The component defaults to provisioning a Bitnami Postgres database, but this behavior can be overridden using the `keycloak.provider` parameter exposed by the component.
 
 [NOTE]
 ====
-This component doesn't support Kubernetes versions older than 1.14 anymore.
-This is because it generates `Ingress` resources with `apiVersion: networking.k8s.io/v1`.
+This component doesn't support Kubernetes versions older than 1.21 anymore.
+This is because it assumes `Namespace` resources with auto labels `kubernetes.io/metadata.name: <namespace>`.
 ====
