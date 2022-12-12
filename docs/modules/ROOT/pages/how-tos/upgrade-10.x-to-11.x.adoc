@@ -4,8 +4,8 @@ This guide describes the steps to perform an upgrade of the component from versi
 
 == Changes
 
-* The component requires at least a Kubernetes version of v1.21.
-* K8up v1 support dropped.
+* The component requires Kubernetes  v1.21 or newer.
+* K8up v1 support has been removed.
 
 == Parameter changes
 
