@@ -35,6 +35,7 @@ jobs:
           - builtin
           - external
           - openshift
+          - openshift-postgres
     defaults:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
@@ -63,6 +64,7 @@ jobs:
           - builtin
           - external
           - openshift
+          - openshift-postgres
     defaults:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
