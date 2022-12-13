@@ -1,0 +1,33 @@
+= Upgrade from v10 to v11
+
+This guide describes the steps to perform an upgrade of the component from version v9 to v10.
+
+== Changes
+
+* The component requires Kubernetes v1.21 or newer.
+* K8up v1 support has been removed.
+
+== Parameter changes
+
+* `charts.keycloakx` changed from `1.6.1` to `1.7.0`, the Keycloak image is updated from `18.0.2` to `19.0.3`.
+* `charts.postgresql` changed from `12.0.0` to `12.1.3`, the Postgresql version changes from version `11.14.0-debian-10-r28` to `postgresql:11.17.0-debian-11-r37`.
+
+If you've configured custom values for any of those parameters, make sure to adjust your configurations when upgrading from component version v9 to v10.
+
+== Step-by-step guide
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. Do a backup of the built-in database.
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti keycloak-postgresql-0 -c postgresql -- sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.
