@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/instance: openshift-postgres
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    helm.sh/chart: postgresql-12.0.0
+    helm.sh/chart: postgresql-12.1.3
   name: keycloak-postgresql
   namespace: syn-openshift-postgres
 spec:
@@ -29,7 +29,7 @@ spec:
         app.kubernetes.io/instance: keycloak
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: postgresql
-        helm.sh/chart: postgresql-12.0.0
+        helm.sh/chart: postgresql-12.1.3
       name: keycloak-postgresql
     spec:
       affinity:
@@ -43,8 +43,6 @@ spec:
                     app.kubernetes.io/component: primary
                     app.kubernetes.io/instance: keycloak
                     app.kubernetes.io/name: postgresql
-                namespaces:
-                  - syn-openshift-postgres
                 topologyKey: kubernetes.io/hostname
               weight: 1
       containers:
@@ -153,7 +151,7 @@ spec:
             - |
               cp /tmp/certs/* /opt/bitnami/postgresql/certs/
               chmod 600 /opt/bitnami/postgresql/certs/tls.key
-          image: docker.io/bitnami/bitnami-shell:11-debian-11-r46
+          image: docker.io/bitnami/bitnami-shell:11-debian-11-r57
           imagePullPolicy: IfNotPresent
           name: copy-certs
           resources:

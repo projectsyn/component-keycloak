@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: keycloakx
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: keycloakx
-    app.kubernetes.io/version: 18.0.2
-    helm.sh/chart: keycloakx-1.6.1
+    app.kubernetes.io/version: 19.0.3
+    helm.sh/chart: keycloakx-1.6.2
   name: keycloakx
   namespace: syn-builtin
 spec:
