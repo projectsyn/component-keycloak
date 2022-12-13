@@ -30,3 +30,6 @@ parameters:
         name: theme
         readOnly: true
         mountPath: /opt/test
+    helm_values:
+      networkPolicy:
+        enabled: true
