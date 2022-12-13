@@ -244,10 +244,10 @@ parameters:
         extraFrom:
           - podSelector:
               matchLabels:
-                app: ingress-nginx
+                app.kubernetes.io/name: ingress-nginx
             namespaceSelector:
               matchLabels:
-                name: ${keycloak:ingress:controllerNamespace}
+                kubernetes.io/metadata.name: ${keycloak:ingress:controllerNamespace}
       service:
         annotations: ${keycloak:_service_annotations:${keycloak:tls:provider}}
         httpPort: 8080
