@@ -40,8 +40,8 @@ parameters:
     namespace: syn-${_instance}
     name: keycloak
     charts:
-      keycloakx: "1.6.2"
-      postgresql: "12.0.0"
+      keycloakx: "1.7.0"
+      postgresql: "12.1.3"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Disables dynamically resolving the hostname from request headers.
