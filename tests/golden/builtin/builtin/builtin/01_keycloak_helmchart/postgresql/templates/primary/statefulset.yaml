@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/instance: builtin
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    helm.sh/chart: postgresql-12.1.3
+    helm.sh/chart: postgresql-12.1.11
   name: keycloak-postgresql
   namespace: syn-builtin
 spec:
@@ -29,7 +29,7 @@ spec:
         app.kubernetes.io/instance: keycloak
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: postgresql
-        helm.sh/chart: postgresql-12.1.3
+        helm.sh/chart: postgresql-12.1.11
       name: keycloak-postgresql
     spec:
       affinity:
@@ -154,7 +154,7 @@ spec:
               cp /tmp/certs/* /opt/bitnami/postgresql/certs/
               chown -R 1001:1001 /opt/bitnami/postgresql/certs/
               chmod 600 /opt/bitnami/postgresql/certs/tls.key
-          image: docker.io/bitnami/bitnami-shell:11-debian-11-r57
+          image: docker.io/bitnami/bitnami-shell:11-debian-11-r76
           imagePullPolicy: IfNotPresent
           name: init-chmod-data
           resources:
