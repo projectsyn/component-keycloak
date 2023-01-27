@@ -39,6 +39,23 @@ parameters:
 
     namespace: syn-${_instance}
     name: keycloak
+    images:
+      keycloak:
+        registry: quay.io
+        repository: keycloak/keycloak
+        tag: 19.0.3
+      busybox:
+        registry: docker.io
+        repository: busybox
+        tag: 1.32
+      postgresql:
+        registry: docker.io
+        repository: bitnami/postgresql
+        tag: 11.17.0-debian-11-r37
+      bitnamishell:
+        registry: docker.io
+        repository: bitnami/bitnami-shell
+        tag: 11-debian-11-r76
     charts:
       keycloakx: "1.7.0"
       postgresql: "12.1.11"
@@ -161,7 +178,8 @@ parameters:
 
     helm_values:
       image:
-        repository: quay.io/keycloak/keycloak
+        repository: ${keycloak:images:keycloak:registry}/${keycloak:images:keycloak:repository}
+        tag: ${keycloak:images:keycloak:tag}
       replicas: ${keycloak:replicas}
       statefulsetLabels: ${keycloak:labels}
       resources: ${keycloak:resources}
@@ -259,6 +277,9 @@ parameters:
         rules: ${keycloak:monitoring:rules}
       dbchecker:
         enabled: 'true'
+        image:
+          repository: ${keycloak:images:busybox:registry}/${keycloak:images:busybox:repository}
+          tag: ${keycloak:images:busybox:tag}
       proxy:
         enabled: 'true'
         mode: ${keycloak:ingress:tls:termination}
@@ -285,6 +306,10 @@ parameters:
         labels: ${keycloak:labels}
       volumePermissions:
         enabled: ${keycloak:database:tls:enabled}
+        image:
+          registry: ${keycloak:images:bitnamishell:registry}
+          repository: ${keycloak:images:bitnamishell:repository}
+          tag: ${keycloak:images:bitnamishell:tag}
       tls:
         enabled: ${keycloak:database:tls:enabled}
         certificatesSecret: ${keycloak:database:tls:certSecretName}
@@ -299,4 +324,6 @@ parameters:
               app.kubernetes.io/instance: keycloakx
               app.kubernetes.io/name: keycloakx
       image:
-        tag: 11.17.0-debian-11-r37
+        registry: ${keycloak:images:postgresql:registry}
+        repository: ${keycloak:images:postgresql:repository}
+        tag: ${keycloak:images:postgresql:tag}
