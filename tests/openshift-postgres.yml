@@ -1,6 +1,7 @@
 ---
 parameters:
   keycloak:
+    namespace: syn-openshift-postgres
     postgresql_helm_values:
       primary:
         podSecurityContext:
