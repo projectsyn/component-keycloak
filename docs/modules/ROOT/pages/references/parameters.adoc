@@ -40,6 +40,33 @@ default:: `${_instance}`
 Usually there is just one deployment and therefore no change is required.
 
 
+== `images.(keycloak|busybox|postgresql|bitnamishell).registry`
+
+[horizontal]
+type:: string
+default:: `see class/defaults.yml`
+
+The image registry used for the container image path.
+
+
+== `images.(keycloak|busybox|postgresql|bitnamishell).repository`
+
+[horizontal]
+type:: string
+default:: `see class/defaults.yml`
+
+The image repository used for the container image path.
+
+
+== `images.(keycloak|busybox|postgresql|bitnamishell).repository`
+
+[horizontal]
+type:: string
+default:: `see class/defaults.yml`
+
+The image tag used for the container image path.
+
+
 == `charts.keycloakx`
 
 [horizontal]
