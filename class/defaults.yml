@@ -58,7 +58,7 @@ parameters:
         tag: 11-debian-11-r76
     charts:
       keycloakx: "1.7.0"
-      postgresql: "12.1.11"
+      postgresql: "12.1.14"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Disables dynamically resolving the hostname from request headers.
