@@ -57,7 +57,7 @@ parameters:
         repository: bitnami/bitnami-shell
         tag: 11-debian-11-r76
     charts:
-      keycloakx: "1.7.0"
+      keycloakx: "2.1.1"
       postgresql: "12.1.14"
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
