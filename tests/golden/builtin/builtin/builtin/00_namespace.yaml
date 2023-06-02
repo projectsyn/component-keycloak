@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   annotations: {}
   labels:
-    SYNMonitoring: main
+    monitoring.syn.tools/monitoring: 'true'
     name: syn-builtin
     test: testing
   name: syn-builtin

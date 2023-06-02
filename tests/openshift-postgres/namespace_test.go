@@ -10,7 +10,7 @@ import (
 
 var (
 	expectedNsLabels = map[string]string{
-		"SYNMonitoring": "main",
+		"openshift.io/cluster-monitoring": "true",
 		"name":          "syn-openshift-postgres",
 	}
 	testPath = "../../compiled/openshift-postgres/openshift-postgres"

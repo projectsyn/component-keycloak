@@ -3,6 +3,6 @@ kind: Namespace
 metadata:
   annotations: {}
   labels:
-    SYNMonitoring: main
+    monitoring.syn.tools/monitoring: 'true'
     name: syn-external
   name: syn-external

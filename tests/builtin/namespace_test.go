@@ -10,7 +10,7 @@ import (
 
 var (
 	expectedNsLabels = map[string]string{
-		"SYNMonitoring": "main",
+		"monitoring.syn.tools/monitoring": "true",
 		"name":          "syn-builtin",
 		"test":          "testing",
 	}

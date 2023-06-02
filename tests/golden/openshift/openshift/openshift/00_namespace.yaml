@@ -3,6 +3,6 @@ kind: Namespace
 metadata:
   annotations: {}
   labels:
-    SYNMonitoring: main
     name: keycloak-dev
+    openshift.io/cluster-monitoring: 'true'
   name: keycloak-dev
