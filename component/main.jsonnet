@@ -3,16 +3,26 @@ local k8up = import 'lib/backup-k8up.libjsonnet';
 local com = import 'lib/commodore.libjsonnet';
 local kap = import 'lib/kapitan.libjsonnet';
 local kube = import 'lib/kube.libjsonnet';
+local prometheus = import 'lib/prometheus.libjsonnet';
 local inv = kap.inventory();
 // The hiera parameters for the component
 local params = inv.parameters.keycloak;
 
-local namespace = kube.Namespace(params.namespace) {
-  metadata+: {
-    labels+: {
-      SYNMonitoring: 'main',
-    } + com.makeMergeable(params.namespaceLabels),
-  },
+local namespace = (
+  if params.monitoring.enabled && std.member(inv.applications, 'prometheus') then
+    prometheus.RegisterNamespace(kube.Namespace(params.namespace))
+  else if params.monitoring.enabled && inv.parameters.facts.distribution == 'openshift4' then
+    kube.Namespace(params.namespace) {
+      metadata+: {
+        labels+: { 'openshift.io/cluster-monitoring': 'true' },
+      },
+    }
+  else
+    kube.Namespace(params.namespace)
+) {
+    metadata+: {
+      labels+: com.makeMergeable(params.namespaceLabels),
+    },
 };
 
 local networkpolicy_infinispan_labels = {
