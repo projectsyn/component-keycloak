@@ -3,6 +3,6 @@ kind: Namespace
 metadata:
   annotations: {}
   labels:
-    SYNMonitoring: main
     name: syn-openshift-postgres
+    openshift.io/cluster-monitoring: 'true'
   name: syn-openshift-postgres

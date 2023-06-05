@@ -10,7 +10,7 @@ import (
 
 var (
 	expectedNsLabels = map[string]string{
-		"SYNMonitoring": "main",
+		"openshift.io/cluster-monitoring": "true",
 		"name":          "keycloak-dev",
 	}
 	testPath = "../../compiled/openshift/openshift"

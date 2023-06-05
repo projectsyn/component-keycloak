@@ -1,5 +1,8 @@
 ---
 parameters:
+  facts:
+    distribution: openshift4
+
   keycloak:
     namespace: syn-openshift-postgres
     postgresql_helm_values:
