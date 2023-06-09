@@ -4,14 +4,11 @@ local inv = kap.inventory();
 local params = inv.parameters.keycloak;
 
 local prometheus_namespace =
-  if std.objectHas(inv.parameters, 'rancher_monitoring') then
-    inv.parameters.rancher_monitoring.namespace
-  else
-    'syn-synsights';
+  'syn-infra-monitoring';
 local prometheus_name = 'prometheus';
 
 local keycloak_namespace = params.namespace;
-local keycloak_name = params.name;
+local keycloak_name = 'keycloakx';
 
 local name = prometheus_name + '-' + prometheus_namespace + '-to-' + keycloak_name;
 
@@ -32,14 +29,14 @@ local netpol =
               },
               podSelector: {
                 matchLabels: {
-                  app: prometheus_name,
+                  'app.kubernetes.io/component': prometheus_name,
                 },
               },
             },
           ],
           ports: [
             {
-              port: 9990,
+              port: 8080,
               protocol: 'TCP',
             },
           ],

@@ -3,8 +3,8 @@ kind: NetworkPolicy
 metadata:
   annotations: {}
   labels:
-    name: prometheus-syn-synsights-to-keycloak
-  name: prometheus-syn-synsights-to-keycloak
+    name: prometheus-syn-infra-monitoring-to-keycloakx
+  name: prometheus-syn-infra-monitoring-to-keycloakx
   namespace: syn-builtin
 spec:
   egress: []
@@ -12,16 +12,16 @@ spec:
     - from:
         - namespaceSelector:
             matchLabels:
-              name: syn-synsights
+              name: syn-infra-monitoring
           podSelector:
             matchLabels:
-              app: prometheus
+              app.kubernetes.io/component: prometheus
       ports:
-        - port: 9990
+        - port: 8080
           protocol: TCP
   podSelector:
     matchLabels:
-      app.kubernetes.io/instance: keycloak
-      app.kubernetes.io/name: keycloak
+      app.kubernetes.io/instance: keycloakx
+      app.kubernetes.io/name: keycloakx
   policyTypes:
     - Ingress
