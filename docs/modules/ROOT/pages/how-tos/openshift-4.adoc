@@ -43,13 +43,13 @@ parameters:
         podSecurityContext:
           enabled: true
           fsGroup: null
+          runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault
         containerSecurityContext:
           enabled: true
           runAsUser: null
           allowPrivilegeEscalation: false
-          runAsNonRoot: true
           seccompProfile:
             type: RuntimeDefault
           capabilities:
