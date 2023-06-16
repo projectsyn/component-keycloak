@@ -145,6 +145,7 @@ local ingress_tls_secret = kube.Secret(params.ingress.tls.secretName) {
     'tls.key': params.ingress.tls.vault.certKey,
     'tls.crt': params.ingress.tls.vault.cert,
   },
+  type: 'kubernetes.io/tls',
 };
 
 local create_keycloak_cert_secret =
