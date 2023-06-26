@@ -23,6 +23,61 @@ parameters:
       # Required as the OpenShift user can not create the data directory in the keycloak directory UID 1000/GID 0
       data:
         mountPath: /opt/keycloak/data
+----
+
+== Parameters for OpenShift 4.11 and higher
+
+OpenShift 4.11 introduces https://docs.openshift.com/container-platform/4.11/release_notes/ocp-4-11-release-notes.html#ocp-4-11-auth-pod-security-admission[Pod Security Admission] globally.
+
+`runAsUser` and `runAsGroup` must be unset.
+
+The pod security context can be configured like:
+[source,yaml,subs="attributes+"]
+----
+parameters:
+  keycloak:
+    helm_values:
+      podSecurityContext:
+        fsGroup: null
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+        runAsUser: null
+      dbchecker:
+        securityContext:
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: null
+          runAsUser: null
+----
+
+You may enforce the Pod Security Admission on a namespace level:
+[source,yaml,subs="attributes+"]
+----
+parameters:
+  keycloak:
+    namespaceLabels:
+      pod-security.kubernetes.io/audit: restricted
+      pod-security.kubernetes.io/enforce: restricted
+      pod-security.kubernetes.io/warn: restricted
+      security.openshift.io/scc.podSecurityLabelSync: "false"
+----
+
+== Parameters for up to OpenShift 4.10
+
+OpenShift 4.10 and below do no support pod security admission.
+`runAsUser` and `runAsGroup` must be unset.
+
+[source,yaml,subs="attributes+"]
+----
+parameters:
+  keycloak:
     helm_values:
       podSecurityContext: null
       securityContext: null

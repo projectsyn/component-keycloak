@@ -52,6 +52,13 @@ parameters:
         volumeMounts:
           - name: themes
             mountPath: /target
+        ## Hardening
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        ## Hardening end
 
     extraVolumes:
       themes:
