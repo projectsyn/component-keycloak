@@ -67,22 +67,43 @@ default:: `see class/defaults.yml`
 The image tag used for the container image path.
 
 
-== `charts.keycloakx`
+== `charts.keycloakx.source`
+
+[horizontal]
+type:: helm chart source
+default:: `https://codecentric.github.io/helm-charts`
+
+A specific helm chart source.
+See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
+
+
+== `charts.keycloakx.version`
 
 [horizontal]
 type:: helm chart version
-default:: `1.6.1`
+default:: See `class/defaults.yml`
 
-A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
+A specific helm chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
 
 
-== `charts.postgresql`
+== `charts.postgresql.source`
+
+[horizontal]
+type:: helm chart source
+default:: `https://charts.bitnami.com/bitnami`
+
+A specific helm chart source.
+See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
+
+
+== `charts.postgresql.version`
 
 [horizontal]
 type:: helm chart version
-default:: `11.6.15`
+default:: See `class/defaults.yml`
 
-A specific chart version. See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
+A specific chart version.
+See the https://kapitan.dev/external_dependencies/#helm-type[kapitan documentation] for more information.
 
 
 == `fqdn`
