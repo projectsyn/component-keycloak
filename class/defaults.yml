@@ -57,8 +57,12 @@ parameters:
         repository: bitnami/bitnami-shell
         tag: 11-debian-11-r76
     charts:
-      keycloakx: "2.2.1"
-      postgresql: "12.5.6"
+      keycloakx:
+        source: https://codecentric.github.io/helm-charts
+        version: v2.2.1
+      postgresql:
+        source: https://charts.bitnami.com/bitnami
+        version: v12.5.6
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Disables dynamically resolving the hostname from request headers.

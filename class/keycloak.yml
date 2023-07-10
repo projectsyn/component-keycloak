@@ -2,15 +2,15 @@ parameters:
   kapitan:
     dependencies:
       - type: helm
+        source: ${keycloak:charts:keycloakx:source}
         chart_name: keycloakx
-        version: ${keycloak:charts:keycloakx}
-        source: https://codecentric.github.io/helm-charts
-        output_path: dependencies/keycloak/helmcharts/keycloakx/${keycloak:charts:keycloakx}/
+        version: ${keycloak:charts:keycloakx:version}
+        output_path: dependencies/keycloak/helmcharts/keycloakx/${keycloak:charts:keycloakx:version}
       - type: helm
+        source: ${keycloak:charts:postgresql:source}
         chart_name: postgresql
-        version: ${keycloak:charts:postgresql}
-        source: https://charts.bitnami.com/bitnami
-        output_path: dependencies/keycloak/helmcharts/postgresql/${keycloak:charts:postgresql}/
+        version: ${keycloak:charts:postgresql:version}
+        output_path: dependencies/keycloak/helmcharts/postgresql/${keycloak:charts:postgresql:version}
     compile:
       - input_paths:
           - keycloak/component/app.jsonnet
@@ -28,7 +28,7 @@ parameters:
         input_type: helm
         output_type: yaml
         input_paths:
-          - keycloak/helmcharts/keycloakx/${keycloak:charts:keycloakx}/
+          - keycloak/helmcharts/keycloakx/${keycloak:charts:keycloakx:version}
         helm_params:
           name: keycloakx
           namespace: "${keycloak:namespace}"
@@ -37,7 +37,7 @@ parameters:
         input_type: helm
         output_type: yaml
         input_paths:
-          - keycloak/helmcharts/postgresql/${keycloak:charts:postgresql}/
+          - keycloak/helmcharts/postgresql/${keycloak:charts:postgresql:version}
         helm_params:
           name: keycloak
           namespace: "${keycloak:namespace}"
