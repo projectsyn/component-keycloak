@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/instance: keycloakx
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: keycloakx
-    app.kubernetes.io/version: 20.0.3
+    app.kubernetes.io/version: 20.0.5
     helm.sh/chart: keycloakx-2.2.1
   name: keycloakx-headless
   namespace: keycloak-dev

@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: external
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 20.0.3
+    app.kubernetes.io/version: 20.0.5
     helm.sh/chart: keycloakx-2.2.1
   name: keycloakx
   namespace: syn-external
