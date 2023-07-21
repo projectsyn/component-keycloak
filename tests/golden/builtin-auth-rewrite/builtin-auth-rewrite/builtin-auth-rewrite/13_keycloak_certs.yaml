@@ -1,0 +1,17 @@
+apiVersion: v1
+data: {}
+kind: Secret
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: builtin-auth-rewrite
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    name: keycloak-tls
+  name: keycloak-tls
+stringData:
+  ca.crt: t-silent-test-1234/c-green-test-1234/builtin-auth-rewrite/keycloak-cert
+  tls.crt: t-silent-test-1234/c-green-test-1234/builtin-auth-rewrite/keycloak-cert
+  tls.key: t-silent-test-1234/c-green-test-1234/builtin-auth-rewrite/keycloak-cert-key
+type: Opaque

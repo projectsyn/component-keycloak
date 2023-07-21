@@ -1,0 +1,52 @@
+---
+applications:
+  - prometheus
+
+parameters:
+  kapitan:
+    dependencies:
+      - type: https
+        source: https://raw.githubusercontent.com/projectsyn/component-prometheus/master/lib/prometheus.libsonnet
+        output_path: vendor/lib/prometheus.libsonnet
+
+  prometheus:
+    defaultInstance: monitoring
+
+  keycloak:
+    namespaceLabels:
+      test: testing
+    extraEnv:
+      FOO:
+        value: "bar"
+      KC_DB_URL_PORT:
+        value: "patched"
+    extraInitContainers:
+      theme-provider:
+        image: company/keycloak-theme:v1.0.0
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+        args:
+          - -c
+          - |
+            echo "Copying theme..."
+            cp -R /theme/* /company-theme
+        volumeMounts:
+          - name: theme
+            mountPath: /company-theme
+    extraVolumes:
+      theme:
+        emptyDir: {}
+    extraVolumeMounts:
+      test:
+        name: theme
+        readOnly: true
+        mountPath: /opt/test
+    ingressAuthRewrite:
+      enabled: true
+    helm_values:
+      networkPolicy:
+        enabled: true
+      http:
+        # Default for Keycloak Quarkus
+        relativePath: "/"

@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    haproxy.router.openshift.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 16k
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    route.openshift.io/termination: reencrypt
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: openshift-auth-rewrite
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+  name: keycloakx-auth-rewrite
+spec:
+  rules:
+    - host: keycloak.example.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: keycloakx-http
+                port:
+                  name: https
+            path: /auth
+            pathType: Prefix
+  tls:
+    - hosts:
+        - keycloak.example.com
+      secretName: ingress-tls

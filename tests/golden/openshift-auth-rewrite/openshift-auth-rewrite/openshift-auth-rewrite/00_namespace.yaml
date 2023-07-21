@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations: {}
+  labels:
+    name: keycloak-dev
+    openshift.io/cluster-monitoring: 'true'
+  name: keycloak-dev
