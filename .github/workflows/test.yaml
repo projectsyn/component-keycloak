@@ -17,13 +17,13 @@ jobs:
           - lint_yaml
           - lint_adoc
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run ${{ matrix.command }}
         run: make ${{ matrix.command }}
   editorconfig:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: snow-actions/eclint@v1.0.1
         with:
           args: 'check'
@@ -40,7 +40,7 @@ jobs:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: ${{ env.COMPONENT_NAME }}
       - name: Determine Go version from go.mod
@@ -69,7 +69,7 @@ jobs:
       run:
         working-directory: ${{ env.COMPONENT_NAME }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: ${{ env.COMPONENT_NAME }}
       - name: Golden diff
