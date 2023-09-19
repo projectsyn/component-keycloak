@@ -2,6 +2,13 @@
 
 This guide describes the steps to perform an upgrade of the component from version v12 to v13.
 
+[NOTE]
+====
+It's higly recommended to scale the Keycloak statefulset to 1 during the upgrade.
+The Infinispan cluster can't handle the upgrade to v21.1.2 properly and fails with the error message `ERROR [org.jgroups.protocols.TCP] failed handling incoming message: java.lang.IllegalArgumentException: invalid magic number 256; needs to be in range [0..100]`.
+After the upgrade the Infinispan cluster works properly again.
+====
+
 == Changes
 
 * The component requires Kubernetes v1.23 or newer.
