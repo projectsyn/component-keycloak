@@ -51,7 +51,7 @@ parameters:
       postgresql:
         registry: docker.io
         repository: bitnami/postgresql
-        tag: 11.17.0-debian-11-r37
+        tag: 11.21.0-debian-11-r37
       bitnamishell:
         registry: docker.io
         repository: bitnami/bitnami-shell
