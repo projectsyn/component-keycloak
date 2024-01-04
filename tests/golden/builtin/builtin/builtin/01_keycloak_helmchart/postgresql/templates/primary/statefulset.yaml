@@ -153,7 +153,7 @@ spec:
               cp /tmp/certs/* /opt/bitnami/postgresql/certs/
               chown -R 1001:1001 /opt/bitnami/postgresql/certs/
               chmod 600 /opt/bitnami/postgresql/certs/tls.key
-          image: docker.io/bitnami/bitnami-shell:11-debian-11-r76
+          image: docker.io/bitnami/os-shell:11-debian-11-r93
           imagePullPolicy: IfNotPresent
           name: init-chmod-data
           resources:
