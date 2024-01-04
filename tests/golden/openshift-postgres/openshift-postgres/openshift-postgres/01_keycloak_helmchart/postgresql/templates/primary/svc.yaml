@@ -6,7 +6,8 @@ metadata:
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    helm.sh/chart: postgresql-12.5.9
+    app.kubernetes.io/version: 16.1.0
+    helm.sh/chart: postgresql-13.2.27
   name: keycloak-postgresql
   namespace: syn-openshift-postgres
 spec:
