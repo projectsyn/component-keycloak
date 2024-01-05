@@ -2,11 +2,12 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/component: primary
     app.kubernetes.io/instance: openshift-postgres
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    helm.sh/chart: postgresql-12.7.0
+    app.kubernetes.io/version: 15.4.0
+    helm.sh/chart: postgresql-12.12.10
   name: keycloak-postgresql
   namespace: syn-openshift-postgres
 spec:
@@ -28,7 +29,8 @@ spec:
         app.kubernetes.io/instance: keycloak
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: postgresql
-        helm.sh/chart: postgresql-12.7.0
+        app.kubernetes.io/version: 15.4.0
+        helm.sh/chart: postgresql-12.12.10
       name: keycloak-postgresql
     spec:
       affinity:
