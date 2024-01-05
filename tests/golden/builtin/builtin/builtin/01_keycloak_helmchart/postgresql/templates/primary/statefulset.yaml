@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/instance: builtin
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    helm.sh/chart: postgresql-12.7.0
+    helm.sh/chart: postgresql-12.7.3
   name: keycloak-postgresql
   namespace: syn-builtin
 spec:
@@ -28,7 +28,7 @@ spec:
         app.kubernetes.io/instance: keycloak
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: postgresql
-        helm.sh/chart: postgresql-12.7.0
+        helm.sh/chart: postgresql-12.7.3
       name: keycloak-postgresql
     spec:
       affinity:

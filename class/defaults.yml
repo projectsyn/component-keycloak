@@ -62,7 +62,7 @@ parameters:
         version: v2.3.0
       postgresql:
         source: https://charts.bitnami.com/bitnami
-        version: 12.7.0
+        version: 12.7.3
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Disables dynamically resolving the hostname from request headers.
