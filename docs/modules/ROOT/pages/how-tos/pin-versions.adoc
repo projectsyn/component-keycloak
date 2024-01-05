@@ -15,7 +15,10 @@ If you need to override the chart version, you can pin it in the parameters:
 parameters:
   keycloak:
     charts:
-      keycloakx: '<version>'
+      keycloakx:
+        version: '<version>'
+      postgresql:
+        version: '<version>'
 ----
 
 == Pin container image tag
@@ -30,7 +33,21 @@ If you need to override the Keycloak version, you can pin it in the parameters:
 ----
 parameters:
   keycloak:
-    helm_values:
-      image:
-        tag: '<tag>'
+    images:
+      keycloak:
+        registry: '<registry>'
+        repository: '<repository>'
+        tag: '<version>'
+      busybox:
+        registry: '<registry>'
+        repository: '<repository>'
+        tag: '<version>'
+      postgresql:
+        registry: '<registry>'
+        repository: '<repository>'
+        tag: '<version>'
+      bitnamishell:
+        registry: '<registry>'
+        repository: '<repository>'
+        tag: '<version>'
 ----
