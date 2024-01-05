@@ -85,6 +85,30 @@ parameters:
         securityContext: null
 ----
 
+== Parameters for built-in Postgresql database on OpenShift 4.11 and higher and the Bitnami Postgres Helm Chart 12.7.0 and higher
+
+If you are using the built-in database provider (by default unless `keycloak.database.provider` is overridden) you also need to adjust the following parameters.
+
+[source,yaml,subs="attributes+"]
+----
+parameters:
+  keycloak:
+    postgresql_helm_values:
+      primary:
+        podSecurityContext:
+          enabled: true
+          fsGroup: null
+          runAsNonRoot: true
+        containerSecurityContext:
+          enabled: true
+          runAsUser: null
+          runAsGroup: null
+      volumePermissions:
+        enabled: false
+      shmVolume:
+        enabled: false
+----
+
 == Parameters for built-in Postgresql database on OpenShift 4.11 and higher
 
 If you are using the built-in database provider (by default unless `keycloak.database.provider` is overridden) you also need to adjust the following parameters.

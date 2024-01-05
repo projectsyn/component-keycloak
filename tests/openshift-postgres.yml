@@ -15,13 +15,7 @@ parameters:
         containerSecurityContext:
           enabled: true
           runAsUser: null
-          allowPrivilegeEscalation: false
           runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
-          capabilities:
-            drop:
-              - ALL
       volumePermissions:
         enabled: false
       shmVolume:

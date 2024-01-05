@@ -62,7 +62,7 @@ parameters:
         version: v2.3.0
       postgresql:
         source: https://charts.bitnami.com/bitnami
-        version: 12.6.9
+        version: 12.7.0
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Disables dynamically resolving the hostname from request headers.
@@ -308,6 +308,10 @@ parameters:
           k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
           k8up.io/file-extension: .sql
         labels: ${keycloak:labels}
+        containerSecurityContext:
+          # runAsGroup: Uses runtime default if unset for K8s and OpenShift must not have set it
+          # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#podsecuritycontext-v1-core
+          runAsGroup: null
       volumePermissions:
         enabled: ${keycloak:database:tls:enabled}
         image:
