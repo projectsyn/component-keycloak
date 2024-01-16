@@ -199,7 +199,6 @@ parameters:
       extraEnv: |
         - name: JAVA_OPTS
           value: >-
-                    -XX:MaxRAMPercentage=50.0
                     -Djava.net.preferIPv4Stack=true
                     -Djava.awt.headless=true
                     -Djgroups.dns.query={{ include "keycloak.fullname" . }}-headless
