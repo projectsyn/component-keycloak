@@ -59,8 +59,7 @@ spec:
             - --http-enabled=true
           env:
             - name: JAVA_OPTS
-              value: -XX:MaxRAMPercentage=50.0 -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true
-                -Djgroups.dns.query=keycloakx-headless
+              value: -XX:MaxRAMPercentage=50.0 -Djava.net.preferIPv4Stack=true -Djgroups.dns.query=keycloakx-headless
             - name: KC_CACHE
               value: ispn
             - name: KC_CACHE_STACK
