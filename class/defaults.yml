@@ -200,7 +200,6 @@ parameters:
         - name: JAVA_OPTS
           value: >-
                     -XX:MaxRAMPercentage=50.0
-                    -Djava.net.preferIPv4Stack=true
                     -Djgroups.dns.query={{ include "keycloak.fullname" . }}-headless
                     ${keycloak:extraJavaOpts}
         - name: KC_HOSTNAME
