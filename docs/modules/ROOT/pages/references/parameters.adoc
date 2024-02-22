@@ -116,6 +116,17 @@ Defines the FQDN the keycloak ingress or route object is configured.
 FQDN should be overwritten on the cluster level.
 
 
+== `relativePath`
+
+[horizontal]
+type:: string
+default:: `/`
+
+Defines the relative path of Keycloak.
+The default realtiv path of Keycloak has changed from `/auth` to `/` with the https://www.keycloak.org/migration/migrating-to-quarkus[migration to Quarkus].
+To preserve the legacy behavior of Wildfly set the relativePath to `/auth`.
+
+
 == `hostnameStrict`
 
 [horizontal]

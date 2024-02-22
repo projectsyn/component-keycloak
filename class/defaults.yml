@@ -65,6 +65,9 @@ parameters:
         version: 12.12.10
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
+    # Default path since Quarkus is "/" rather than "/auth"
+    # https://www.keycloak.org/migration/migrating-to-quarkus
+    relativePath: /
     # Disables dynamically resolving the hostname from request headers.
     hostnameStrict: ${keycloak:_hostname_strict:${keycloak:ingress:tls:termination}}
     # Namespace labels
@@ -184,6 +187,8 @@ parameters:
       image:
         repository: ${keycloak:images:keycloak:registry}/${keycloak:images:keycloak:repository}
         tag: ${keycloak:images:keycloak:tag}
+      http:
+        relativePath: ${keycloak:relativePath}
       replicas: ${keycloak:replicas}
       statefulsetLabels: ${keycloak:labels}
       resources: ${keycloak:resources}
