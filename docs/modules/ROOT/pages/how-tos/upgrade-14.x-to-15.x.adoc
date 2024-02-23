@@ -1,0 +1,215 @@
+= Upgrade from v14 to v15
+
+This guide describes the steps to perform an upgrade of the component from version v14 to v15.
+
+== Breaking Changes
+
+* The Postgres Database will be upgraded from v11 to v15!
+
+== Changes
+
+* The component requires Kubernetes v1.24 or newer.
+* Keycloak version is v22.0.5 by default.
+
+== Parameter changes
+
+* `images.postgresql.tag` changed from `11.22.0-debian-11-r4` to `15.6.0-debian-12-r5`.
+
+== Step-by-step guide
+
+The guide helps you to create a database backup, a fresh database and a database restore.
+If you want to try an Postgres in-place upgrade consult this https://medium.com/@andrea.berlingieri42/upgrading-a-postgresql-bitnami-helm-release-11-to-15-2ca447b4580d[blog article].
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. Export your realms within Keycloak.
+
+. Disable ArgoCD sync for the Keycloak instance.
++
+[source,bash]
+----
+# The ArgoCD app of the Keycloak instance. Change if necessary.
+export ARGO_APP=keycloak
+
+kubectl -n syn patch applications.argoproj.io root --type=json \
+  -p '[{"op":"replace", "path":"/spec/syncPolicy", "value": {}}]'
+kubectl -n syn patch applications.argoproj.io ${ARGO_APP} --type=json \
+  -p '[{"op":"replace", "path":"/spec/syncPolicy", "value": {}}]'
+----
+
+. Set the environment variables.
++
+[source,bash]
+----
+# The namspace containing the Keycloak instance. Change if necessary.
+export NAMESPACE=syn-keycloak
+----
+
+. Scale down the Keycloak instance.
++
+[source,bash]
+----
+kubectl -n $NAMESPACE scale statefulset keycloakx --replicas=0
+
+# Wait until statefulset has been scaled down
+kubectl -n $NAMESPACE get statefulset keycloakx -w
+----
+
+. Do a backup of the built-in database.
++
+[source,bash]
+----
+kubectl -n "${NAMESPACE}" exec -ti keycloak-postgresql-0 -c postgresql -- sh -c 'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. Scale down the Postgres database
++
+[source,bash]
+----
+kubectl -n $NAMESPACE scale statefulset keycloak-postgresql --replicas=0
+
+# Wait until statefulset has been scaled down
+kubectl -n $NAMESPACE get statefulset keycloak-postgresql -w
+----
+
+. Delete the Postgres database production database persistentvolumeclaim.
++
+[WARNING]
+====
+BEFORE GOING AHEAD ENSURE THE TAKEN BACKUP IS COMPLETE!
+YOU ARE GOING TO DELETE THE COMPLETE DATABASE! YOU WILL LOOSE DATA IF YOU TAKE THIS NOT CAREFULLY!
+
+THE ONLY CHANCE YOU ARE NOT LOOSING ANY DATA IS YOUR BACKUP HAS BEEN COMPLETED!
+
+REALLY! DO NOT PROCEED HERE WITHOUT HAVING DONE A BACKUP AND ENSURED THE DUMP CONTAINS ALL REQUIRED DATA!
+====
++
+[source,bash]
+----
+kubectl -n $NAMESPACE delete persistentvolumeclaim data-keycloak-postgresql-0
+
+# Wait until persistent volume claim has been deleted
+kubectl -n $NAMESPACE get persistentvolumeclaim data-keycloak-postgresql-0 -w
+----
+
+. Patch the Postgres statefulset to v15.
++
+[source,bash]
+----
+kubectl n $NAMESPACE patch sts keycloak-postgresql -p '{"spec": {"template": {"spec": {"containers": [{"name": "postgresql", "image": "docker.io/bitnami/postgresql:15.6.0-debian-12-r5"}]}}}}'
+----
+
+. Scale up the Postgres database.
++
+[source,bash]
+----
+kubectl -n $NAMESPACE scale statefulset keycloak-postgresql --replicas=1
+
+# Wait until statefulset has been scaled up
+kubectl -n $NAMESPACE get statefulset keycloak-postgresql -w
+----
+
+. Verify the Postgres database is on v15.6.
++
+[source,bash]
+----
+kubectl -n syn-keycloak-test logs keycloak-postgresql-0 | grep "PostgreSQL 15.6"
+----
+
+. Import the SQL dump into the Postgres v15 database.
++
+[source,bash]
+----
+# export NAMESPACE=
+export POD=keycloak-postgresql-0
+export DUMPFILE=keycloak-postgresql-2024-02-23-13-04-21.sql
+
+cat "$DUMPFILE" \
+  | kubectl -n $NAMESPACE exec -i $POD \
+  -- sh -c 'PGPASSWORD="${POSTGRES_PASSWORD}" psql -U "${POSTGRES_USER}" ${POSTGRES_DATABASE}'
+----
+
+. Do a after-import backup of the built-in database.
++
+[source,bash]
+----
+kubectl -n "${NAMESPACE}" exec -ti keycloak-postgresql-0 -c postgresql -- sh -c 'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. Compare the two files
++
+[source,bash]
+----
+diff keycloak-postgresql-2024-02-23-13-04-21.sql keycloak-postgresql-2024-02-23-13-04-35.sql
+----
++
+Should be similar to:
++
+[source]
+----
+5,6c5,6
+< -- Dumped from database version 11.22
+< -- Dumped by pg_dump version 11.22
+---
+> -- Dumped from database version 15.6
+> -- Dumped by pg_dump version 15.6
+372a373,382
+> -- *not* dropping schema, since initdb creates it
+> --
+> -- Name: public; Type: SCHEMA; Schema: -; Owner: keycloak
+> --
+>
+> -- *not* creating schema, since initdb creates it
+>
+>
+> ALTER SCHEMA public OWNER TO keycloak;
+>
+375c385
+< SET default_with_oids = false;
+---
+> SET default_table_access_method = heap;
+----
+
+. Scale up Keycloak
++
+[source,bash]
+----
+kubectl -n $NAMESPACE scale sts keycloakx --replicas=2
+----
+
+. Update the component version.
++
+[source,bash]
+----
+parameters:
+  components:
+    keycloak:
+      version: v15.0.0
+----
+
+. (Optional) define the Postgres database container image.
++
+[source,bash]
+----
+parameters:
+  keycloak:
+    images:
+      postgresql:
+        tag: 15.6.0-debian-12-r5
+----
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.
+
+. Re-enable ArgoCD auto sync
++
+[source,bash]
+----
+kubectl -n syn patch applications.argoproj.io root  --type=json \
+  -p '[{
+    "op":"replace",
+    "path":"/spec/syncPolicy",
+    "value": {"automated": {"prune": true, "selfHeal": true}}
+  }]'
+----
