@@ -112,7 +112,7 @@ export POD=keycloak-postgresql-0
 
 restic dump "${SNAPSHOT_ID}" /$NAMESPACE-keycloak-postgresql.sql \
   | kubectl -n $NAMESPACE exec -i $POD \
-  -- sh -c 'PGPASSWORD="${POSTGRES_PASSWORD}" psql --set ON_ERROR_STOP=on -U "${POSTGRES_USER}" ${POSTGRES_DB}'
+  -- sh -c 'PGPASSWORD="${POSTGRES_PASSWORD}" psql --set ON_ERROR_STOP=on -U "${POSTGRES_USER}" ${POSTGRES_DATABASE}'
 ----
 
 . Re-enable ArgoCD auto sync and scale up Keycloak

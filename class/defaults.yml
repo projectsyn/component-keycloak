@@ -303,7 +303,7 @@ parameters:
         existingSecret: ${keycloak:database:secretname}
       primary:
         podAnnotations:
-          k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
+          k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
           k8up.io/file-extension: .sql
         labels: ${keycloak:labels}
         containerSecurityContext:

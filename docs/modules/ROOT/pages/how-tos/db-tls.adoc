@@ -87,7 +87,7 @@ parameters:
 ----
 namespace=syn-keycloak
 kubectl exec -it -n ${namespace} keycloak-postgresql-0 -c keycloak-postgresql -- sh -c \
-'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" '\
+'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" '\
 'psql -c "SELECT datname, usename, ssl, client_addr FROM pg_stat_ssl JOIN pg_stat_activity ON pg_stat_ssl.pid = pg_stat_activity.pid;"'
 ----
 +
