@@ -85,7 +85,7 @@ spec:
             - name: KC_HTTPS_CERTIFICATE_KEY_FILE
               value: /etc/x509/https/tls.key
             - name: KC_HTTP_RELATIVE_PATH
-              value: /auth
+              value: /
             - name: KC_METRICS_ENABLED
               value: 'true'
             - name: KC_PROXY
@@ -99,7 +99,7 @@ spec:
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
-              path: /auth/health/live
+              path: /health/live
               port: http
             initialDelaySeconds: 0
             timeoutSeconds: 5
@@ -113,7 +113,7 @@ spec:
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: /auth/health/ready
+              path: /health/ready
               port: http
             initialDelaySeconds: 10
             timeoutSeconds: 1
@@ -130,7 +130,7 @@ spec:
           startupProbe:
             failureThreshold: 60
             httpGet:
-              path: /auth/health
+              path: /health
               port: http
             initialDelaySeconds: 15
             periodSeconds: 5
