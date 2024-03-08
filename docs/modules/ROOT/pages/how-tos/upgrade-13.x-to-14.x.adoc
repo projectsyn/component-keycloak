@@ -1,0 +1,46 @@
+= Upgrade from v13 to v14
+
+This guide describes the steps to perform an upgrade of the component from version v13 to v14.
+
+== Breaking Changes
+
+* Without intervention - see below - the default relativ path of Keycloak changes from `/auth` to `/`!
+  New installations shall follow the https://www.keycloak.org/migration/migrating-to-quarkus[default], which is `/` since a while.
+* Passthrough proxy mode `passthrough` does no longer recongnize `X-Forwarded` headers.
+
+== Changes
+
+* The component requires Kubernetes v1.24 or newer.
+* Keycloak version is v22.0.5 by default.
+* Keycloak does now https://www.keycloak.org/server/configuration-production#_configure_keycloak_server_with_ipv4_or_ipv6[support IPv4 and IPv6] at the same time (https://github.com/keycloak/keycloak/commit/ee205c8fbc1846f679bd604fa8d25310c117c87e[dualstack]).
+
+== Parameter changes
+
+* `relativePath` has been added.
+
+== Step-by-step guide
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. Do a backup of the built-in database.
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti keycloak-postgresql-0 -c postgresql -- sh -c 'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. If you want to preserve the relativ path of `/auth` for first installations based on Wildfly please add:
++
+[source,bash]
+----
+parameters:
+  <keycloak instance>:
+    relativePath: /auth
+----
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.
