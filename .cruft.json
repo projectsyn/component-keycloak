@@ -7,7 +7,7 @@
       "name": "keycloak",
       "slug": "keycloak",
       "parameter_key": "keycloak",
-      "test_cases": "builtin external openshift openshift-postgres",
+      "test_cases": "builtin builtin-auth-rewrite external openshift openshift-auth-rewrite openshift-postgres",
       "add_lib": "n",
       "add_pp": "y",
       "add_golden": "y",

@@ -1,0 +1,211 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/component: primary
+    app.kubernetes.io/instance: builtin-auth-rewrite
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/version: 15.4.0
+    helm.sh/chart: postgresql-12.12.10
+  name: keycloak-postgresql
+  namespace: syn-builtin-auth-rewrite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: primary
+      app.kubernetes.io/instance: keycloak
+      app.kubernetes.io/name: postgresql
+  serviceName: keycloak-postgresql-hl
+  template:
+    metadata:
+      annotations:
+        k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER"
+          PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
+        k8up.io/file-extension: .sql
+      labels:
+        app.kubernetes.io/component: primary
+        app.kubernetes.io/instance: keycloak
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: postgresql
+        app.kubernetes.io/version: 15.4.0
+        helm.sh/chart: postgresql-12.12.10
+      name: keycloak-postgresql
+    spec:
+      affinity:
+        nodeAffinity: null
+        podAffinity: null
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: primary
+                    app.kubernetes.io/instance: keycloak
+                    app.kubernetes.io/name: postgresql
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+      containers:
+        - env:
+            - name: BITNAMI_DEBUG
+              value: 'false'
+            - name: POSTGRESQL_PORT_NUMBER
+              value: '5432'
+            - name: POSTGRESQL_VOLUME_DIR
+              value: /bitnami/postgresql
+            - name: PGDATA
+              value: /bitnami/postgresql/data
+            - name: POSTGRES_USER
+              value: keycloak
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: keycloak-postgresql
+            - name: POSTGRES_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: postgres-password
+                  name: keycloak-postgresql
+            - name: POSTGRES_DATABASE
+              value: keycloak
+            - name: POSTGRESQL_ENABLE_LDAP
+              value: 'no'
+            - name: POSTGRESQL_ENABLE_TLS
+              value: 'yes'
+            - name: POSTGRESQL_TLS_PREFER_SERVER_CIPHERS
+              value: 'yes'
+            - name: POSTGRESQL_TLS_CERT_FILE
+              value: /opt/bitnami/postgresql/certs/tls.crt
+            - name: POSTGRESQL_TLS_KEY_FILE
+              value: /opt/bitnami/postgresql/certs/tls.key
+            - name: POSTGRESQL_LOG_HOSTNAME
+              value: 'false'
+            - name: POSTGRESQL_LOG_CONNECTIONS
+              value: 'false'
+            - name: POSTGRESQL_LOG_DISCONNECTIONS
+              value: 'false'
+            - name: POSTGRESQL_PGAUDIT_LOG_CATALOG
+              value: 'off'
+            - name: POSTGRESQL_CLIENT_MIN_MESSAGES
+              value: error
+            - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
+              value: pgaudit
+          image: docker.io/bitnami/postgresql:15.6.0-debian-12-r5
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec pg_isready -U "keycloak" -d "dbname=keycloak" -h 127.0.0.1
+                  -p 5432
+            failureThreshold: 6
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: postgresql
+          ports:
+            - containerPort: 5432
+              name: tcp-postgresql
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - -e
+                - |
+                  exec pg_isready -U "keycloak" -d "dbname=keycloak sslcert=/opt/bitnami/postgresql/certs/tls.crt sslkey=/opt/bitnami/postgresql/certs/tls.key" -h 127.0.0.1 -p 5432
+                  [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
+            failureThreshold: 6
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            limits: {}
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /opt/bitnami/postgresql/certs
+              name: postgresql-certificates
+              readOnly: true
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: /bitnami/postgresql
+              name: data
+      hostIPC: false
+      hostNetwork: false
+      initContainers:
+        - command:
+            - /bin/sh
+            - -ec
+            - |
+              chown 1001:1001 /bitnami/postgresql
+              mkdir -p /bitnami/postgresql/data
+              chmod 700 /bitnami/postgresql/data
+              find /bitnami/postgresql -mindepth 1 -maxdepth 1 -not -name "conf" -not -name ".snapshot" -not -name "lost+found" | \
+                xargs -r chown -R 1001:1001
+              chmod -R 777 /dev/shm
+              cp /tmp/certs/* /opt/bitnami/postgresql/certs/
+              chown -R 1001:1001 /opt/bitnami/postgresql/certs/
+              chmod 600 /opt/bitnami/postgresql/certs/tls.key
+          image: docker.io/bitnami/os-shell:11-debian-11-r93
+          imagePullPolicy: IfNotPresent
+          name: init-chmod-data
+          resources:
+            limits: {}
+            requests: {}
+          securityContext:
+            runAsGroup: 0
+            runAsNonRoot: false
+            runAsUser: 0
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /bitnami/postgresql
+              name: data
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: /tmp/certs
+              name: raw-certificates
+            - mountPath: /opt/bitnami/postgresql/certs
+              name: postgresql-certificates
+      securityContext:
+        fsGroup: 1001
+      serviceAccountName: default
+      volumes:
+        - name: raw-certificates
+          secret:
+            secretName: keycloak-postgresql-tls
+        - emptyDir: {}
+          name: postgresql-certificates
+        - emptyDir:
+            medium: Memory
+          name: dshm
+  updateStrategy:
+    rollingUpdate: {}
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 8Gi

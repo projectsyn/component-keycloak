@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations: {}
+  labels:
+    monitoring.syn.tools/monitoring: 'true'
+    name: syn-builtin-auth-rewrite
+    test: testing
+  name: syn-builtin-auth-rewrite

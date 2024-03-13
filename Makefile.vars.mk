@@ -57,4 +57,4 @@ KUBENT_IMAGE    ?= ghcr.io/doitintl/kube-no-trouble:latest
 KUBENT_DOCKER   ?= $(DOCKER_CMD) $(DOCKER_ARGS) $(root_volume) --entrypoint=/app/kubent $(KUBENT_IMAGE)
 
 instance ?= builtin
-test_instances = tests/builtin.yml tests/external.yml tests/openshift.yml tests/openshift-postgres.yml
+test_instances = tests/builtin.yml tests/builtin-auth-rewrite.yml tests/external.yml tests/openshift.yml tests/openshift-auth-rewrite.yml tests/openshift-postgres.yml

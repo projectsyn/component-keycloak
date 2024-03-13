@@ -381,6 +381,63 @@ type:: string
 default:: `?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/ingress-cert-key}`
 
 
+=== `ingressAuthRewrite.enabled`
+
+[horizontal]
+type:: bool
+default:: `false`
+
+Creates an additional ingress object to rewrite all traffic from `/auth` to `/`.
+
+This is intended to be used for the migration from the realm path including `/auth` to the current Keycloak default of `/`.
+The clients can interact with Keycloak on both URLs.
+This allows a soft migration over time.
+
+
+[IMPORTANT]
+====
+Keycloak relative path MUST be set to `/` to be.
+
+
+[source,bash]
+----
+parameters:
+  keycloak:
+    helm_values:
+      http:
+        relativePath: "/"
+----
+
+====
+
+
+=== `ingressAuthRewrite.annotations`
+
+[horizontal]
+type:: dict
+default:: `{}`
+
+Annotations for the `/auth` rewrite ingrss object.
+
+
+== `ingressAuthRewrite.ingressClassName`
+
+[horizontal]
+type:: string
+default:: `null`
+
+IngressClassName for the `/auth` rewrite ingrss object.
+
+
+== `ingressAuthRewrite.tls.secretName`
+
+[horizontal]
+type:: string
+default:: `${keycloak:ingress:tls:secretName}`
+
+TLS secret name for the `/auth` rewrite ingrss object.
+
+
 == `route.enabled`
 
 [horizontal]

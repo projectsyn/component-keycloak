@@ -29,6 +29,7 @@
 * xref:how-tos/upgrade-14.x-to-15.x.adoc[Upgrade 14.x to 15.x]
 * xref:how-tos/openshift-4.adoc[Install on OpenShift 4]
 * xref:how-tos/pin-versions.adoc[Pin versions]
+* xref:how-tos/change-relative-path.adoc[Change relative path /auth to /]
 
 .Explanations
 * xref:explanations/default-features.adoc[Default features]

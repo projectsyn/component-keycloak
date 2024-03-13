@@ -1,0 +1,6 @@
+spec:
+  ignoreDifferences:
+    - group: ''
+      jsonPointers:
+        - /imagePullSecrets
+      kind: ServiceAccount

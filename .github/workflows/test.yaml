@@ -33,8 +33,10 @@ jobs:
       matrix:
         provider:
           - builtin
+          - builtin-auth-rewrite
           - external
           - openshift
+          - openshift-auth-rewrite
           - openshift-postgres
     defaults:
       run:
@@ -62,8 +64,10 @@ jobs:
       matrix:
         provider:
           - builtin
+          - builtin-auth-rewrite
           - external
           - openshift
+          - openshift-auth-rewrite
           - openshift-postgres
     defaults:
       run:

@@ -24,6 +24,10 @@ parameters:
           - keycloak/component/prometheus-netpol.jsonnet
         input_type: jsonnet
         output_path: ${_instance}
+      - input_paths:
+          - keycloak/component/auth-rewrite.jsonnet
+        input_type: jsonnet
+        output_path: ${_instance}
       - output_path: ${_instance}/01_keycloak_helmchart
         input_type: helm
         output_type: yaml

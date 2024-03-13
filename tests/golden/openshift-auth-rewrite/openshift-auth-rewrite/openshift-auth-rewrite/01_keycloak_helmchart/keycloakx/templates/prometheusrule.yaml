@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: openshift-auth-rewrite
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/version: 22.0.5
+    helm.sh/chart: keycloakx-2.3.0
+  name: keycloakx
+  namespace: keycloak-dev
+spec:
+  groups:
+    - name: keycloakx
+      rules: []

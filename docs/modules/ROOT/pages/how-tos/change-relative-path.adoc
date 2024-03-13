@@ -1,0 +1,35 @@
+= Change relative path /auth to /
+
+The current default relativ path of Keycloak is `/`.
+Keycloak based on Quarkus
+
+[source,yaml]
+----
+parameters:
+  keycloak:
+    helm_values:
+      http:
+        # Default for Keycloak Quarkus
+        relativePath: "/"
+----
+
+== OpenID Connect Discovery
+
+Because of this change the well known openid configuration still shows the old path.
+
+```
+Original path: https://x.x.x.x/auth/realms/my_realm/.well-known/openid-configuration
+Ajusted path: https://x.x.x.x/realms/my_realm/.well-known/openid-configuration
+```
+
+The verification check does detect the different paths fail and prevent the login.
+
+```
+ERROR: Failed to initialise OAuth2 Proxy: error intiailising provider: could not create provider data: error building OIDC ProviderVerifier: could not get verifier builder: error while discovery OIDC configuration: oidc: issuer did not match the issuer returned by provider,
+```
+
+As a example for oauth2-proxy: To prevent the OIDC client does reject itself you can add the https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/overview/#command-line-options[parameter] to ignore the different paths:
+
+```
+--insecure-oidc-skip-issuer-verification
+```

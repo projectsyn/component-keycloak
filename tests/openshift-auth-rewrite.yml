@@ -1,0 +1,87 @@
+---
+parameters:
+  facts:
+    distribution: openshift4
+
+  keycloak:
+    namespace: keycloak-dev
+    tls:
+      provider: openshift
+    admin:
+      username: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/admin-username}"
+      password: "?{vaultkv:${cluster:tenant}/${cluster:name}/${_instance}/admin-password}"
+
+    ingressAuthRewrite:
+      enabled: true
+
+    helm_values:
+      podSecurityContext: null
+      securityContext: null
+      pgchecker:
+        securityContext: null
+      http:
+        # Default for Keycloak Quarkus
+        relativePath: "/"
+
+    database:
+      database: keycloak_dev
+      username: keycloak_dev
+      provider: external
+      tls:
+        enabled: false
+      external:
+        host: maxscale-masteronly
+        vendor: mariadb
+        port: 3306
+
+    extraVolumes:
+      themes:
+        emptyDir: {}
+      # overwrite the default that mounts a secret
+      db-certs:
+        emptyDir: {}
+
+    extraInitContainers:
+      theme-provider:
+        image: image-registry.openshift-image-registry.svc:5000/builds/customer-keycloak-theme:dev
+        imagePullPolicy: Always
+        command:
+          - sh
+        args:
+          - -c
+          - |
+            echo "Copying theme..."
+            cp -Rv /themes/* /target/
+        volumeMounts:
+          - name: themes
+            mountPath: /target
+
+    extraVolumeMounts:
+      theme-customer:
+        name: themes
+        mountPath: /opt/keycloak/themes/customer
+        subPath: customer
+      theme-app1:
+        name: themes
+        mountPath: /opt/keycloak/themes/app1
+        subPath: app1
+      theme-app2:
+        name: themes
+        mountPath: /opt/keycloak/themes/app2
+        subPath: app2
+      theme-int-app1:
+        name: themes
+        mountPath: /opt/keycloak/themes/int-app1
+        subPath: int-app1
+      theme-int-app2:
+        name: themes
+        mountPath: /opt/keycloak/themes/int-app2
+        subPath: int-app2
+      theme-dev-app1:
+        name: themes
+        mountPath: /opt/keycloak/themes/dev-app1
+        subPath: dev-app1
+      theme-dev-app2:
+        name: themes
+        mountPath: /opt/keycloak/themes/dev-app2
+        subPath: dev-app2
