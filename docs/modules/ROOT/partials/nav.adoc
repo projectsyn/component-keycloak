@@ -26,6 +26,7 @@
 * xref:how-tos/upgrade-11.x-to-12.x.adoc[Upgrade 11.x to 12.x]
 * xref:how-tos/upgrade-12.x-to-13.x.adoc[Upgrade 12.x to 13.x]
 * xref:how-tos/upgrade-13.x-to-14.x.adoc[Upgrade 13.x to 14.x]
+* xref:how-tos/upgrade-14.x-to-15.x.adoc[Upgrade 14.x to 15.x]
 * xref:how-tos/openshift-4.adoc[Install on OpenShift 4]
 * xref:how-tos/pin-versions.adoc[Pin versions]
 
