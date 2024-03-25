@@ -6,21 +6,21 @@ metadata:
     app.kubernetes.io/instance: keycloak
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 15.4.0
-    helm.sh/chart: postgresql-12.12.10
-  name: keycloak-postgresql-ingress
+    app.kubernetes.io/version: 16.2.0
+    helm.sh/chart: postgresql-15.1.4
+  name: keycloak-postgresql
   namespace: syn-builtin
 spec:
+  egress:
+    - {}
   ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/instance: keycloakx
-              app.kubernetes.io/name: keycloakx
-      ports:
+    - ports:
         - port: 5432
   podSelector:
     matchLabels:
       app.kubernetes.io/component: primary
       app.kubernetes.io/instance: keycloak
       app.kubernetes.io/name: postgresql
+  policyTypes:
+    - Ingress
+    - Egress
