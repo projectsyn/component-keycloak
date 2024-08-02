@@ -7,14 +7,14 @@ metadata:
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
     app.kubernetes.io/version: 22.0.5
-    helm.sh/chart: keycloakx-2.3.0
+    helm.sh/chart: keycloakx-2.4.4
   name: keycloakx-keycloakx
   namespace: syn-builtin
 spec:
   endpoints:
     - interval: 10s
       path: /metrics
-      port: http
+      port: http-internal
       scrapeTimeout: 10s
   selector:
     matchLabels:
