@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/instance: openshift
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 23.0.7
+    app.kubernetes.io/version: 25.0.6
     helm.sh/chart: keycloakx-2.3.0
   name: keycloakx
   namespace: keycloak-dev
@@ -95,7 +95,7 @@ spec:
                 name: keycloak-admin-user
             - secretRef:
                 name: keycloak-postgresql
-          image: quay.io/keycloak/keycloak:23.0.7
+          image: quay.io/keycloak/keycloak:25.0.6
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
