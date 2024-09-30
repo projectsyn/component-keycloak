@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  annotations: {}
+  labels:
+    name: prometheus-syn-infra-monitoring-to-keycloakx
+  name: prometheus-syn-infra-monitoring-to-keycloakx
+  namespace: syn-external
+spec:
+  egress: []
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: syn-infra-monitoring
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/component: prometheus
+      ports:
+        - port: 8080
+          protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: keycloakx
+      app.kubernetes.io/name: keycloakx
+  policyTypes:
+    - Ingress
