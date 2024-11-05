@@ -1,0 +1,30 @@
+= Upgrade from v16 to v17
+
+This guide describes the steps to perform an upgrade of the component from version v16 to v17.
+
+== Changes
+
+* The component requires Kubernetes v1.25 or newer.
+* Keycloak version is v24.0.5 by default.
+
+== Parameter changes
+
+* None
+
+== Step-by-step guide
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. Do a backup of the built-in database.
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti keycloak-postgresql-0 -c postgresql -- sh -c 'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.
