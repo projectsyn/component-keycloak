@@ -43,7 +43,7 @@ parameters:
       keycloak:
         registry: quay.io
         repository: keycloak/keycloak
-        tag: 23.0.7
+        tag: 24.0.5
       busybox:
         registry: docker.io
         repository: busybox
