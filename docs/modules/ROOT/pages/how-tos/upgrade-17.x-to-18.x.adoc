@@ -1,0 +1,45 @@
+= Upgrade from v17 to v18
+
+This guide describes the steps to perform an upgrade of the component from version v17 to v18.
+
+== Breaking Changes
+
+* The component doesn't work with an older Keycloak version than v25.
+
+== Changes
+
+* The component requires Kubernetes v1.25 or newer.
+* Keycloak version is v25.0.6 by default.
+
+== Parameter changes
+
+* The reverse proxy mode is no longer linked to the ingress mode. Source IPs taken from the `Forwarded header` as per RFC7239. To use `X-Forwarded-*` headers see below. You also may consult the  https://www.keycloak.org/server/reverseproxy#_configure_the_reverse_proxy_headers[Keycloak documentation].
+
+== Step-by-step guide
+
+When upgrading the component, the following actions are required if the built-in database is used:
+
+. If your setup requires `X-Forwarded-*` headers rather than `Forwarded header` as per RFC7239:
++
+[source,bash]
+----
+parameters:
+  keycloak:
+    helm_values:
+      proxy:
+        mode: xforwarded
+----
+
+. Do a backup of the built-in database.
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti keycloak-postgresql-0 -c postgresql -- sh -c 'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.

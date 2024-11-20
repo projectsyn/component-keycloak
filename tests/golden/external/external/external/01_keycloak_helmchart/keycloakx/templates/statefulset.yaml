@@ -6,8 +6,8 @@ metadata:
     app.kubernetes.io/instance: external
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 24.0.5
-    helm.sh/chart: keycloakx-2.3.0
+    app.kubernetes.io/version: 25.0.6
+    helm.sh/chart: keycloakx-2.5.1
   name: keycloakx
   namespace: syn-external
 spec:
@@ -56,7 +56,6 @@ spec:
       containers:
         - args:
             - start
-            - --http-enabled=true
           env:
             - name: JAVA_OPTS
               value: -XX:MaxRAMPercentage=50.0 -Djgroups.dns.query=keycloakx-headless
@@ -84,23 +83,26 @@ spec:
               value: /etc/x509/https/tls.crt
             - name: KC_HTTPS_CERTIFICATE_KEY_FILE
               value: /etc/x509/https/tls.key
+            - name: KC_HTTP_ENABLED
+              value: 'true'
             - name: KC_HTTP_RELATIVE_PATH
               value: /
             - name: KC_METRICS_ENABLED
               value: 'true'
-            - name: KC_PROXY
-              value: passthrough
+            - name: KC_PROXY_HEADERS
+              value: forwarded
           envFrom:
             - secretRef:
                 name: keycloak-admin-user
             - secretRef:
                 name: keycloak-postgresql
-          image: quay.io/keycloak/keycloak:24.0.5
+          image: quay.io/keycloak/keycloak:25.0.6
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
               path: /health/live
-              port: http
+              port: http-internal
+              scheme: HTTPS
             initialDelaySeconds: 0
             timeoutSeconds: 5
           name: keycloak
@@ -108,13 +110,17 @@ spec:
             - containerPort: 8080
               name: http
               protocol: TCP
+            - containerPort: 9000
+              name: http-internal
+              protocol: TCP
             - containerPort: 8443
               name: https
               protocol: TCP
           readinessProbe:
             httpGet:
               path: /health/ready
-              port: http
+              port: http-internal
+              scheme: HTTPS
             initialDelaySeconds: 10
             timeoutSeconds: 1
           resources:
@@ -131,7 +137,8 @@ spec:
             failureThreshold: 60
             httpGet:
               path: /health
-              port: http
+              port: http-internal
+              scheme: HTTPS
             initialDelaySeconds: 15
             periodSeconds: 5
             timeoutSeconds: 1
