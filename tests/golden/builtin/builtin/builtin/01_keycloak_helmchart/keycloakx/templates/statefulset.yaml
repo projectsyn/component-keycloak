@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
     app.kubernetes.io/version: 24.0.5
-    helm.sh/chart: keycloakx-2.3.0
+    helm.sh/chart: keycloakx-2.5.1
   name: keycloakx
   namespace: syn-builtin
 spec:
@@ -86,11 +86,13 @@ spec:
               value: /etc/x509/https/tls.crt
             - name: KC_HTTPS_CERTIFICATE_KEY_FILE
               value: /etc/x509/https/tls.key
+            - name: KC_HTTP_ENABLED
+              value: 'true'
             - name: KC_HTTP_RELATIVE_PATH
               value: /
             - name: KC_METRICS_ENABLED
               value: 'true'
-            - name: KC_PROXY
+            - name: KC_PROXY_HEADERS
               value: reencrypt
           envFrom:
             - secretRef:
@@ -102,7 +104,8 @@ spec:
           livenessProbe:
             httpGet:
               path: /health/live
-              port: http
+              port: http-internal
+              scheme: HTTP
             initialDelaySeconds: 0
             timeoutSeconds: 5
           name: keycloak
@@ -110,13 +113,17 @@ spec:
             - containerPort: 8080
               name: http
               protocol: TCP
+            - containerPort: 9000
+              name: http-internal
+              protocol: TCP
             - containerPort: 8443
               name: https
               protocol: TCP
           readinessProbe:
             httpGet:
               path: /health/ready
-              port: http
+              port: http-internal
+              scheme: HTTP
             initialDelaySeconds: 10
             timeoutSeconds: 1
           resources:
@@ -133,7 +140,8 @@ spec:
             failureThreshold: 60
             httpGet:
               path: /health
-              port: http
+              port: http-internal
+              scheme: HTTP
             initialDelaySeconds: 15
             periodSeconds: 5
             timeoutSeconds: 1
