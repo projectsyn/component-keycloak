@@ -6,15 +6,16 @@ metadata:
     app.kubernetes.io/instance: external
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 24.0.5
-    helm.sh/chart: keycloakx-2.3.0
+    app.kubernetes.io/version: 25.0.6
+    helm.sh/chart: keycloakx-2.5.1
   name: keycloakx-keycloakx
   namespace: syn-external
 spec:
   endpoints:
     - interval: 10s
       path: /metrics
-      port: http
+      port: http-internal
+      scheme: https
       scrapeTimeout: 10s
   selector:
     matchLabels:
