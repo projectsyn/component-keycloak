@@ -59,10 +59,10 @@ parameters:
     charts:
       keycloakx:
         source: https://codecentric.github.io/helm-charts
-        version: 2.5.1
+        version: 3.0.0
       postgresql:
         source: https://charts.bitnami.com/bitnami
-        version: 12.12.10
+        version: 16.3.2
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Default path since Quarkus is "/" rather than "/auth"
