@@ -15,7 +15,7 @@ parameters:
       - input_paths:
           - keycloak/component/app.jsonnet
         input_type: jsonnet
-        output_path: apps/
+        output_path: .
       - input_paths:
           - keycloak/component/main.jsonnet
         input_type: jsonnet

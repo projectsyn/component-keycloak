@@ -2,6 +2,7 @@ parameters:
   keycloak:
     =_metadata:
       multi_instance: true
+      multi_tenant: true
     # make lookup table constant to prevent changes to it through the hierarchy
     =_enable_pg_chart:
       # This lookup table controls whether to enable the chart depending on the value of `keycloak.database.provider`
