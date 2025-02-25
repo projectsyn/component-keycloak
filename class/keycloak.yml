@@ -5,30 +5,30 @@ parameters:
         source: ${keycloak:charts:keycloakx:source}
         chart_name: keycloakx
         version: ${keycloak:charts:keycloakx:version}
-        output_path: dependencies/keycloak/helmcharts/keycloakx/${keycloak:charts:keycloakx:version}
+        output_path: ${_base_directory}/helmcharts/keycloakx/${keycloak:charts:keycloakx:version}
       - type: helm
         source: ${keycloak:charts:postgresql:source}
         chart_name: postgresql
         version: ${keycloak:charts:postgresql:version}
-        output_path: dependencies/keycloak/helmcharts/postgresql/${keycloak:charts:postgresql:version}
+        output_path: ${_base_directory}/helmcharts/postgresql/${keycloak:charts:postgresql:version}
     compile:
       - input_paths:
-          - keycloak/component/app.jsonnet
+          - ${_base_directory}/component/app.jsonnet
         input_type: jsonnet
         output_path: .
       - input_paths:
-          - keycloak/component/main.jsonnet
+          - ${_base_directory}/component/main.jsonnet
         input_type: jsonnet
         output_path: ${_instance}
       - input_paths:
-          - keycloak/component/prometheus-netpol.jsonnet
+          - ${_base_directory}/component/prometheus-netpol.jsonnet
         input_type: jsonnet
         output_path: ${_instance}
       - output_path: ${_instance}/01_keycloak_helmchart
         input_type: helm
         output_type: yaml
         input_paths:
-          - keycloak/helmcharts/keycloakx/${keycloak:charts:keycloakx:version}
+          - ${_base_directory}/helmcharts/keycloakx/${keycloak:charts:keycloakx:version}
         helm_params:
           name: keycloakx
           namespace: "${keycloak:namespace}"
@@ -37,7 +37,7 @@ parameters:
         input_type: helm
         output_type: yaml
         input_paths:
-          - keycloak/helmcharts/postgresql/${keycloak:charts:postgresql:version}
+          - ${_base_directory}/helmcharts/postgresql/${keycloak:charts:postgresql:version}
         helm_params:
           name: keycloak
           namespace: "${keycloak:namespace}"
