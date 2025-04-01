@@ -2,7 +2,7 @@ module github.com/projectsyn/component-keycloak
 
 go 1.21
 
-toolchain go1.21.13
+toolchain go1.24.2
 
 require (
 	github.com/stretchr/testify v1.8.4
