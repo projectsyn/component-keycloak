@@ -9,11 +9,15 @@ metadata:
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
     app.kubernetes.io/version: 25.0.6
-    helm.sh/chart: keycloakx-6.0.0
+    helm.sh/chart: keycloakx-7.0.1
   name: keycloakx-http
   namespace: keycloak-dev
 spec:
   ports:
+    - name: http-internal
+      port: 9000
+      protocol: TCP
+      targetPort: http-internal
     - name: http
       port: 8080
       protocol: TCP
