@@ -1,0 +1,38 @@
+= Upgrade from v18 to v19
+
+This guide describes the steps to perform an upgrade of the component from version v18 to v19.
+
+== Breaking Changes
+
+* The component doesn't work with an older Keycloak version than v26.
+* See the breaking changes of the keycloak version https://www.keycloak.org/docs/latest/upgrading/#migrating-to-26-0-0[26.0].
+* See the breaking changes of the keycloak version https://www.keycloak.org/docs/latest/upgrading/#breaking-changes[26.2].
+
+== Changes
+
+* The component requires Kubernetes v1.25 or newer.
+* Keycloak version is v26.2.3 by default.
+
+== Attention
+
+* To prevent losing user sessions upgrade to Keycloak 25 first and enable the persistent sessions feature as outlined in the migration guide for Keycloak 25. See https://www.keycloak.org/docs/latest/upgrading/#infinispan-marshalling-changes[reference].
+
+== Parameter changes
+
+* None
+
+== Step-by-step guide
+
+. Do a backup of the built-in database.
++
+[source,bash]
+----
+instance=keycloak
+namespace=syn-${instance}
+
+kubectl -n "${namespace}" exec -ti keycloak-postgresql-0 -c postgresql -- sh -c 'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean' > keycloak-postgresql-$(date +%F-%H-%M-%S).sql
+----
+
+. Apply the parameter changes.
+
+. Compile and push the cluster catalog.
