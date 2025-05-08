@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/instance: builtin
     app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/version: 26.2.3
+    app.kubernetes.io/version: 26.2.4
     helm.sh/chart: keycloakx-7.0.1
   name: keycloakx
   namespace: syn-builtin
@@ -98,7 +98,7 @@ spec:
                 name: keycloak-admin-user
             - secretRef:
                 name: keycloak-postgresql
-          image: quay.io/keycloak/keycloak:26.2.3
+          image: quay.io/keycloak/keycloak:26.2.4
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
