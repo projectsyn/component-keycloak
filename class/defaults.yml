@@ -57,7 +57,7 @@ parameters:
       bitnamishell:
         registry: docker.io
         repository: bitnami/os-shell
-        tag: 12-debian-12-r47
+        tag: 12-debian-12-r48
     charts:
       keycloakx:
         source: https://codecentric.github.io/helm-charts
