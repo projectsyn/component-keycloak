@@ -92,7 +92,7 @@ spec:
               value: error
             - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
               value: pgaudit
-          image: docker.io/bitnami/postgresql:15.10.0-debian-12-r2
+          image: docker.io/bitnamilegacy/postgresql:15.10.0-debian-12-r2
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
@@ -152,7 +152,7 @@ spec:
             - |
               cp /tmp/certs/* /opt/bitnami/postgresql/certs/
               chmod 600 /opt/bitnami/postgresql/certs/tls.key
-          image: docker.io/bitnami/os-shell:12-debian-12-r49
+          image: docker.io/bitnamilegacy/os-shell:12-debian-12-r49
           imagePullPolicy: IfNotPresent
           name: copy-certs
           resources:
