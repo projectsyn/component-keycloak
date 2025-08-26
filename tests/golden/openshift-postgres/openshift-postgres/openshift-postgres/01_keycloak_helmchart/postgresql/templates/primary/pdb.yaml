@@ -1,26 +1,19 @@
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
+apiVersion: policy/v1
+kind: PodDisruptionBudget
 metadata:
   labels:
     app.kubernetes.io/component: primary
-    app.kubernetes.io/instance: keycloak
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/instance: openshift-postgres
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
     app.kubernetes.io/version: 17.6.0
     helm.sh/chart: postgresql-16.7.27
   name: keycloak-postgresql
   namespace: syn-openshift-postgres
 spec:
-  egress:
-    - {}
-  ingress:
-    - ports:
-        - port: 5432
-  podSelector:
+  maxUnavailable: 1
+  selector:
     matchLabels:
       app.kubernetes.io/component: primary
       app.kubernetes.io/instance: keycloak
       app.kubernetes.io/name: postgresql
-  policyTypes:
-    - Ingress
-    - Egress
