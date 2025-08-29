@@ -1,0 +1,80 @@
+apiVersion: v1
+data: {}
+kind: Secret
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: openshift
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    name: k8up-repo
+  name: k8up-repo
+stringData:
+  password: t-silent-test-1234/c-green-test-1234/keycloak/k8up-repo-password
+type: Opaque
+---
+apiVersion: v1
+data: {}
+kind: Secret
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/component: keycloak
+    app.kubernetes.io/instance: openshift
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    name: k8up-s3-credentials
+  name: k8up-s3-credentials
+stringData:
+  password: t-silent-test-1234/c-green-test-1234/keycloak/k8up-s3-secretkey
+  username: t-silent-test-1234/c-green-test-1234/keycloak/k8up-s3-accesskey
+type: Opaque
+---
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: backup
+spec:
+  backend:
+    repoPasswordSecretRef:
+      key: password
+      name: k8up-repo
+    s3:
+      accessKeyIDSecretRef:
+        key: username
+        name: k8up-s3-credentials
+      bucket: k8up-c-green-test-1234-syn-keycloak
+      endpoint: null
+      secretAccessKeySecretRef:
+        key: password
+        name: k8up-s3-credentials
+    tlsOptions:
+      caCert: /mnt/ca/ca.crt
+    volumeMounts:
+      - mountPath: /mnt/ca/
+        name: ca
+  backup:
+    keepJobs: 3
+    schedule: '@hourly-random'
+    volumes:
+      - configMap:
+          name: k8up-custom-ca
+        name: ca
+  check:
+    schedule: 30 3 * * *
+  prune:
+    retention:
+      keepDaily: 30
+      keepLast: 20
+    schedule: '@daily-random'
+---
+apiVersion: v1
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MY AWESOME CA
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  name: k8up-custom-ca

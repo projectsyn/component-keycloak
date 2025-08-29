@@ -185,6 +185,18 @@ local k8up_s3_secret_ref = {
   secretkeyname: 'password',
 };
 
+local k8up_custom_ca = if params.k8up.customCA != null then {
+  apiVersion: 'v1',
+  kind: 'ConfigMap',
+  metadata: {
+    name: 'k8up-custom-ca',
+  },
+  data: {
+    'ca.crt': params.k8up.customCA,
+  },
+};
+local k8up_custom_ca_name = if params.k8up.customCA != null then k8up_custom_ca.metadata.name else null;
+
 local k8up_schedule =
   k8up.Schedule(
     'backup',
@@ -194,6 +206,7 @@ local k8up_schedule =
     backupkey=k8up_repo_secret_ref,
     s3secret=k8up_s3_secret_ref,
     create_bucket=false,
+    caConfigMap=k8up_custom_ca_name,
   ).schedule + k8up.PruneSpec('@daily-random', 30, 20);
 
 // Define outputs below
@@ -206,5 +219,5 @@ local k8up_schedule =
   [if create_keycloak_cert_secret then '13_keycloak_certs']: keycloak_cert_secret,
   [if create_ingress_cert_secret then '14_ingress_certs']: ingress_tls_secret,
   [if create_ingress_cert then '20_le_cert']: cert_manager_cert,
-  [if params.k8up.enabled then '30_k8up']: [ k8up_repo_secret, k8up_s3_secret, k8up_schedule ],
+  [if params.k8up.enabled then '30_k8up']: [ k8up_repo_secret, k8up_s3_secret, k8up_schedule ] + if params.k8up.customCA != null then [ k8up_custom_ca ] else [],
 }
