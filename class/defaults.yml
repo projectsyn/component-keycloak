@@ -184,6 +184,7 @@ parameters:
         bucket: k8up-${cluster:name}-syn-keycloak
         accessKey: "?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-accesskey}"
         secretKey: "?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-secretkey}"
+      customCA: null
 
     helm_values:
       image:

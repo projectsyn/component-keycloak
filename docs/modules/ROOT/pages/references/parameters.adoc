@@ -774,6 +774,14 @@ default:: `?{vaultkv:${cluster:tenant}/${cluster:name}/keycloak/k8up-s3-secretke
 
 S3 secret key to the bucket where the backups gets stored.
 
+== `k8up.s3.customCA`
+
+[horizontal]
+type:: dict
+default:: `null`
+
+Configure a custom CA for connecting to the backend.
+
 
 == `helm_values`
 

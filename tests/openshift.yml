@@ -3,6 +3,17 @@ parameters:
   facts:
     distribution: openshift4
 
+  kapitan:
+    dependencies:
+      - type: https
+        source: https://raw.githubusercontent.com/projectsyn/component-backup-k8up/master/lib/backup-k8up.libjsonnet
+        output_path: vendor/lib/backup-k8up.libjsonnet
+
+  backup_k8up:
+    global_backup_config:
+      s3_endpoint: null
+    prometheus_push_gateway: null
+
   keycloak:
     namespace: keycloak-dev
     tls:
@@ -79,3 +90,10 @@ parameters:
         name: themes
         mountPath: /opt/keycloak/themes/dev-app2
         subPath: dev-app2
+
+    k8up:
+      enabled: true
+      customCA: |
+        -----BEGIN CERTIFICATE-----
+        MY AWESOME CA
+        -----END CERTIFICATE-----
