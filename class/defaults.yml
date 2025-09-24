@@ -64,7 +64,7 @@ parameters:
         version: 7.0.1
       postgresql:
         source: https://charts.bitnami.com/bitnami
-        version: 12.12.10
+        version: 16.7.27
     # FQDN should be overwritten on the cluster level
     fqdn: keycloak.example.com
     # Default path since Quarkus is "/" rather than "/auth"
