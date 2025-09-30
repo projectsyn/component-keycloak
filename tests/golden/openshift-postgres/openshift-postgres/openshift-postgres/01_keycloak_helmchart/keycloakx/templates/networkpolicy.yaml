@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/instance: keycloakx
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: keycloakx
-    app.kubernetes.io/version: 26.2.5
+    app.kubernetes.io/version: 26.4.0
     helm.sh/chart: keycloakx-7.0.1
   name: keycloakx
   namespace: syn-openshift-postgres
