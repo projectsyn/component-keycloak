@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/projectsyn/commodore-component-template.git",
-  "commit": "8f2273cd8ab13c55eb0f6dd621c70c4c9e4786fd",
+  "commit": "5ae57721558399419f867334e31d23a7f7a892ba",
   "checkout": "main",
   "context": {
     "cookiecutter": {
@@ -25,7 +25,7 @@
       "github_name": "component-keycloak",
       "github_url": "https://github.com/projectsyn/component-keycloak",
       "_template": "https://github.com/projectsyn/commodore-component-template.git",
-      "_commit": "8f2273cd8ab13c55eb0f6dd621c70c4c9e4786fd"
+      "_commit": "5ae57721558399419f867334e31d23a7f7a892ba"
     }
   },
   "directory": null
