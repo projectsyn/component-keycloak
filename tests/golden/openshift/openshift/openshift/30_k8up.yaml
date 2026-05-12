@@ -63,11 +63,19 @@ spec:
         name: ca
   check:
     schedule: 30 3 * * *
+    volumes:
+      - configMap:
+          name: k8up-custom-ca
+        name: ca
   prune:
     retention:
       keepDaily: 30
       keepLast: 20
     schedule: '@daily-random'
+    volumes:
+      - configMap:
+          name: k8up-custom-ca
+        name: ca
 ---
 apiVersion: v1
 data:
