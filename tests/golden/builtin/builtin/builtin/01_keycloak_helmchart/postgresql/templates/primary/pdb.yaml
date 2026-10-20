@@ -1,0 +1,19 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app.kubernetes.io/component: primary
+    app.kubernetes.io/instance: builtin
+    app.kubernetes.io/managed-by: commodore
+    app.kubernetes.io/name: keycloak
+    app.kubernetes.io/version: 18.6.0
+    helm.sh/chart: postgresql-18.12.14
+  name: keycloak-postgresql
+  namespace: syn-builtin
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: primary
+      app.kubernetes.io/instance: keycloak
+      app.kubernetes.io/name: postgresql
